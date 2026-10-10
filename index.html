@@ -121,6 +121,20 @@ button.it:active,.vb:active{transform:scale(.97);background:var(--goldbg)}
 .days button{width:48px;height:40px;border-radius:9px;background:var(--panel2);font-weight:500;color:var(--muted)}
 .days button[aria-pressed="true"]{background:var(--gold);color:var(--panel)}
 .dh .btn.csv{width:auto;height:44px;flex:none;font-size:16px}
+.it{gap:10px}
+.it.has{border-color:var(--gold);background:var(--goldbg)}
+.vr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.vr+.vr{margin-top:0}
+.vp{font-size:15px;color:var(--muted)}
+.vp b{color:var(--ink);font-weight:500}
+.stp{display:flex;align-items:center;gap:2px;flex:none}
+.stp button{width:40px;height:40px;border-radius:9px;background:var(--panel2);font-size:22px;line-height:1}
+.stp button[data-act="add"]{background:var(--gold);color:var(--panel)}
+.stp button:disabled{opacity:.35;cursor:default}
+.stp button:active{transform:scale(.93)}
+.cn{min-width:26px;text-align:center;font-weight:700;font-size:18px}
+.vr:not(.has) .cn{color:var(--muted);font-weight:500}
+.items{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
 /* modal */
 .ov{position:fixed;inset:0;background:rgba(20,12,8,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
 .md{background:var(--panel);border-radius:16px;padding:22px;width:min(460px,100%);max-height:90%;overflow:auto;display:grid;gap:14px}
@@ -369,10 +383,24 @@ function renderTable(){
 function renderItems(){
   const c=menu.cats[view.cat];const el=$('#items');if(!el)return;
   if(!c||!c.items.length){el.innerHTML=`<div class="empty">Bu kategoride ürün yok. Menü ekranından ekleyebilirsiniz.</div>`;return}
-  el.innerHTML=c.items.map((it,ii)=>it.v.length===1
-    ?`<button class="it" data-act="add" data-ii="${ii}" data-vi="0"><span class="nm">${esc(it.name)}</span><span class="pr">${it.v[0].l?esc(it.v[0].l)+' · ':''}${eur(cents(it.v[0].p))}</span></button>`
-    :`<div class="it"><span class="nm">${esc(it.name)}</span><div class="vs">${it.v.map((v,vi)=>`<button class="vb" data-act="add" data-ii="${ii}" data-vi="${vi}"><b>${esc(v.l||'—')}</b>${eur(cents(v.p))}</button>`).join('')}</div></div>`
-  ).join('');
+  el.innerHTML=c.items.map((it,ii)=>`<div class="it" data-it="${esc(it.id)}"><span class="nm">${esc(it.name)}</span>
+    ${it.v.map((v,vi)=>`<div class="vr" data-k="${esc(it.id+'|'+v.l+'|')}">
+      <span class="vp">${v.l?`<b>${esc(v.l)}</b> `:''}${eur(cents(v.p))}</span>
+      <span class="stp"><button data-act="sub" data-ii="${ii}" data-vi="${vi}" aria-label="Azalt">−</button><span class="cn">0</span><button data-act="add" data-ii="${ii}" data-vi="${vi}" aria-label="Ekle">+</button></span>
+    </div>`).join('')}</div>`).join('');
+  updateCounts();
+}
+function updateCounts(){
+  const t=tables[view.table],lines=t?t.lines:[];
+  document.querySelectorAll('#items .it').forEach(tile=>{
+    let any=false;
+    tile.querySelectorAll('.vr').forEach(r=>{
+      const k=r.dataset.k,n=lines.filter(l=>l.key.startsWith(k)).reduce((s,l)=>s+l.q,0);
+      r.querySelector('.cn').textContent=n;r.querySelector('[data-act="sub"]').disabled=!n;
+      r.classList.toggle('has',n>0);if(n)any=true;
+    });
+    tile.classList.toggle('has',any);
+  });
 }
 function renderOrder(){
   const el=$('#order');if(!el)return;
@@ -387,6 +415,7 @@ function renderOrder(){
       <div class="row"><button class="btn" data-act="custom">Özel ürün</button><button class="btn" data-act="move" ${lines.length?'':'disabled'}>Masayı taşı</button></div>
       <button class="btn primary" data-act="close" ${lines.length?'':'disabled'}>Hesabı kapat</button>
     </div>`;
+  updateCounts();
   const ob=$('#orderbar');if(ob)ob.innerHTML=`<span>Masa ${esc(n)} · ${tCount(t)} ürün</span><span>${eur(tTotal(t))}</span>`;
   flashKey=null;
 }
@@ -409,6 +438,7 @@ async function renderDay(){
       <ul>${b.lines.map(l=>`<li><span>${l.q}× ${esc(l.name)}${l.l?' ('+esc(l.l)+')':''}</span><span>${eur(l.p*l.q)}</span></li>`).join('')}</ul></details>`).join('')
       :'<p class="hint">Bu gün için kapatılmış hesap yok.</p>'}
     <p id="dlmsg" class="hint"></p>
+    ${bills.length?`<button class="btn danger" style="margin-top:12px" data-act="dayreset">${off===0?'Bugünün kasasını sıfırla':'Bu günün kasasını sıfırla'}</button>`:''}
     <p class="hint" style="margin-top:18px;font-size:14px">Gün sabah 06:00'da değişir; gece yarısından sonraki hesaplar önceki güne yazılır.</p>
   </div></div>`;
   if((downloads||!window.claude)&&bills.length){const c=main.querySelector('.csv');if(c)c.hidden=false}
@@ -472,6 +502,9 @@ document.addEventListener('click',e=>{
     case'cat':view.cat=+d.i;document.querySelectorAll('.cats button').forEach(x=>x.setAttribute('aria-current',String(+x.dataset.i===view.cat)));renderItems();$('#items').scrollTop=0;break;
     case'add':{const it=menu.cats[view.cat].items[+d.ii],v=it.v[+d.vi];
       mutateTable(view.table,t=>addLine(t,{key:it.id+'|'+v.l+'|'+cents(v.p),name:it.name,l:v.l,p:cents(v.p),q:1}));break}
+    case'sub':{const it=menu.cats[view.cat].items[+d.ii],v=it.v[+d.vi],pre=it.id+'|'+v.l+'|',exact=pre+cents(v.p);
+      mutateTable(view.table,t=>{let i=t.lines.findIndex(l=>l.key===exact);if(i<0)i=t.lines.findIndex(l=>l.key.startsWith(pre));if(i<0)return;
+        if(t.lines[i].q>1)t.lines[i].q--;else t.lines.splice(i,1)});break}
     case'inc':mutateTable(view.table,t=>{t.lines[+d.i].q++});break;
     case'dec':mutateTable(view.table,t=>{const l=t.lines[+d.i];if(l.q>1)l.q--;else t.lines.splice(+d.i,1)});break;
     case'showorder':document.body.classList.add('show-order');break;
@@ -502,6 +535,12 @@ document.addEventListener('click',e=>{
       <div class="row"><button class="btn" data-act="close">Geri</button><button class="btn danger" data-act="wipeok">Boşalt</button></div>`);break;
     case'wipeok':delete tables[view.table];saveTable(view.table);closeModal();view.screen='tables';render();break;
     case'mclose':closeModal();break;
+    case'dayreset':{const tot=dayBills.reduce((s,b)=>s+b.total,0);
+      modal(`<h3>Kasa sıfırlansın mı?</h3><p>${dayBills.length} hesap (${eur(tot)}) kalıcı olarak silinecek. Bu işlem geri alınamaz.</p><p>Açık masalar etkilenmez. Silmeden önce CSV indirmeniz önerilir.</p>
+      <div class="row"><button class="btn" data-act="mclose">İptal</button><button class="btn danger" data-act="dayresetok">Sıfırla</button></div>`);break}
+    case'dayresetok':{const date=bizDate(view.dayOff);closeModal();
+      dayChain=dayChain.then(async()=>{if(db){try{await db.doc('days/'+date).delete()}catch(e){onDbErr(e)}}else{try{localStorage.removeItem('snug.days.'+date)}catch(e){}}});
+      dayChain.then(()=>renderDay());break}
     case'csv':exportCsv();break;
     case'dayprev':view.dayOff--;renderDay();break;
     case'daynext':if(view.dayOff<0){view.dayOff++;renderDay()}break;
