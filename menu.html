@@ -136,86 +136,11 @@ const T={
   hh:'Коктейльный час — все коктейли по 5 €, до',hhGone:'Коктейльный час закончился, эти позиции удалены из заказа.',
   items:'шт.',age:'Алкоголь продаётся только лицам старше 18 лет.',allergy:'Пожалуйста, сообщите персоналу об аллергиях.',allergens:'Аллергены'}
 };
-const ALG={A01:['gluten','lipeklis','глютен'],A03:['eggs','olas','яйца'],A05:['peanuts','zemesrieksti','арахис'],A07:['milk','piens','молоко'],
-  A08:['nuts','rieksti','орехи'],A11:['sesame','sezams','кунжут'],A12:['sulphites','sulfīti','сульфиты'],A14:['molluscs','gliemji','моллюски']};
-const TAGS={vegan:['vegan','vegāns','веган'],veg:['vegetarian','veģetārs','вегетарианское'],share:['for sharing (2–3)','dalīšanai (2–3)','на компанию (2–3)']};
-const LI={en:0,lv:1,ru:2};
-const CATS={hh:['Cocktail Hour 5 €','Kokteiļu stunda 5 €','Коктейльный час 5 €'],c0:['Classics','Klasiskie','Классика'],c1:['House favourites','Mājas favorīti','Фирменные'],
-  c2:['Beer cocktails','Alus kokteiļi','Пивные коктейли'],c3:['Non-alcoholic cocktails','Bezalkoholiskie kokteiļi','Безалкогольные коктейли'],c4:['Shots','Šoti','Шоты'],
-  c5:['Beer','Alus','Пиво'],c6:['Wine','Vīns','Вино'],c7:['Spirits','Stiprie dzērieni','Крепкие напитки'],c8:['Liqueurs','Liķieri','Ликёры'],
-  c9:['Soft drinks','Bezalkoholiskie dzērieni','Безалкогольные напитки'],c10:['Hot drinks','Karstie dzērieni','Горячие напитки'],c11:['Burgers','Burgeri','Бургеры'],
-  c12:['Mains','Galvenie ēdieni','Основные блюда'],c13:['Soups','Zupas','Супы'],c14:['Snacks','Uzkodas','Закуски'],c15:['Desserts','Deserti','Десерты'],c16:['Sauces','Mērces','Соусы']};
-const VL={Still:['Still','Negāzēts','Без газа'],Sparkling:['Sparkling','Gāzēts','С газом']};
-/* name: [lvName, ruName, enDesc, lvDesc, ruDesc, allergens, tag] */
-const INFO={
- 'Cuba Libre':[,,'White rum, cola, lemon juice','Baltais rums, kola, citronu sula','Белый ром, кола, лимонный сок'],
- 'Tom Collins':[,,'Gin, lemon juice, soda, simple syrup','Džins, citronu sula, soda, vienkāršs sīrups','Джин, лимонный сок, содовая, сахарный сироп'],
- 'Classic Mojito':['Klasiskais mohito','Классический мохито','Rum, fresh lime, mint, sugar, soda','Rums, svaiga laima, piparmētra, cukurs, soda','Ром, свежий лайм, мята, сахар, содовая'],
- 'Moscow Mule':['Maskavas mūlis',,'Vodka, lime juice, ginger beer, mint','Degvīns, laimas sula, ingvera alus, piparmētra','Водка, сок лайма, имбирное пиво, мята'],
- 'Long Island Iced Tea':[,,'Tequila, vodka, gin, white rum, orange liqueur, cola','Tekila, degvīns, džins, baltais rums, apelsīnu liķieris, kola','Текила, водка, джин, белый ром, апельсиновый ликёр, кола'],
- 'Hemingway Special':[,,'White rum, grapefruit, cherry liqueur, lemon juice','Baltais rums, greipfrūtu sula, ķiršu liķieris, citronu sula','Белый ром, грейпфрут, вишнёвый ликёр, лимонный сок'],
- 'Blue Lady Sour':[,,'Gin, blue curaçao, lime, simple syrup, egg white','Džins, zilais kiraso, laima, vienkāršs sīrups, olu baltums','Джин, блю кюрасао, лайм, сахарный сироп, яичный белок','A03'],
- 'Aperol Spritz':[,,'Prosecco, Aperol, tonic','Prosecco, Aperol, toniks','Просекко, Апероль, тоник'],
- 'Hugo Spritz':[,,'Prosecco, elderflower syrup, soda, mint, lime','Prosecco, plūškoka sīrups, soda, piparmētra, laima','Просекко, сироп бузины, содовая, мята, лайм'],
- 'Tequila Sunrise':['Tekila Sunrise',,'Tequila, orange juice, grenadine','Tekila, apelsīnu sula, grenadīns','Текила, апельсиновый сок, гренадин'],
- 'Espresso Martini':[,,'Vodka, coffee liqueur, simple syrup, espresso','Degvīns, kafijas liķieris, vienkāršs sīrups, espresso','Водка, кофейный ликёр, сахарный сироп, эспрессо'],
- 'Amaretto Sour':[,,'Amaretto, bourbon whiskey, lemon juice, simple syrup, egg white','Amaretto, burbona viskijs, citronu sula, vienkāršs sīrups, olu baltums','Амаретто, бурбон, лимонный сок, сахарный сироп, яичный белок','A03 A08'],
- 'Gin Fizz':[,,'Gin, lime juice, tonic, sugar, egg white','Džins, laimas sula, toniks, cukurs, olu baltums','Джин, сок лайма, тоник, сахар, яичный белок','A03'],
- 'Mystery of the Pomegranate':[,,'Vodka, pomegranate sauce, pomegranate juice, blackberry syrup','Degvīns, granātābolu mērce, granātābolu sula, kazenes sīrups','Водка, гранатовый соус, гранатовый сок, ежевичный сироп'],
- 'Mancolada':[,,'Captain Morgan, coconut cream, pineapple, lemon juice','Captain Morgan, kokosriekstu krēms, ananāsu sula, citronu sula','Captain Morgan, кокосовые сливки, ананас, лимонный сок'],
- 'Bramble':[,,'Pink gin, lemon juice, blackberry syrup, tonic','Rozā džins, citronu sula, kazenes sīrups, toniks','Розовый джин, лимонный сок, ежевичный сироп, тоник'],
- 'Pistachio Dream':['Pistāciju Sapnis','Фисташковая мечта','Pistachio, vodka, milk, vanilla','Antepa pistācijas, degvīns, piens, vaniļa','Фисташки, водка, молоко, ваниль','A07 A08'],
- 'Snug Peach Gin':['Snug Persiku Džins',,'Peach liqueur, gin, tonic','Persiku liķieris, džins, toniks','Персиковый ликёр, джин, тоник'],
- 'Istanbul City':[,,'Beer, amaretto, orange liqueur','Alus, amaretto, apelsīnu liķieris','Пиво, амаретто, апельсиновый ликёр','A01 A08'],
- 'Antalya Sun':[,,'Beer, tequila, Malibu, simple syrup','Alus, tekila, Malibu, vienkāršs sīrups','Пиво, текила, Malibu, сахарный сироп','A01'],
- 'Anatolian':[,,'Beer, cherry liqueur, peppermint syrup','Alus, ķiršu liķieris, piparmētru sīrups','Пиво, вишнёвый ликёр, мятный сироп','A01'],
- 'Troia':['Troja','Троя','Beer, Ouzo, Jägermeister, lemon','Alus, Ouzo, Jägermeister, citrons','Пиво, узо, Jägermeister, лимон','A01'],
- 'Mexican':[,,'Beer, tequila, lemon juice, salt','Alus, tekila, citronu sula, sāls','Пиво, текила, лимонный сок, соль','A01'],
- 'Virgin Mojito':['Mohito Virgin',,'Lime, mint, brown sugar, soda','Laima, piparmētra, brūnais cukurs, soda','Лайм, мята, коричневый сахар, содовая'],
- 'c3:Piña Colada':['Pinjakolada',,'Pineapple juice, coconut milk, lemon juice, sugar syrup','Ananāsu sula, kokosriekstu piens, citrona sula, cukura sīrups','Ананасовый сок, кокосовое молоко, лимонный сок, сахарный сироп'],
- 'Piña Colada':['Pinjakolada'],
- 'Sunset Cooler':[,,'Orange juice, grenadine, lemon juice, soda','Apelsīnu sula, grenadīns, citrona sula, soda','Апельсиновый сок, гренадин, лимонный сок, содовая'],
- 'Green Apple Spritz':[,,'Apple juice, lime, sugar syrup, soda','Ābolu sula, laima, cukura sīrups, soda','Яблочный сок, лайм, сахарный сироп, содовая'],
- 'Gin Tonic':['Džins ar tonisko ūdeni','Джин-тоник'],
- 'Rum & Cola':['Rums ar kolu','Ром с колой'],
- 'Whisky & Cola':['Viskijs ar kolu','Виски с колой'],
- 'Snuggest Peach':[,,'House pick','Autordzēriens','Фирменный напиток'],
- 'Piña Colada Virgin':['Pinjakolada Virgin'],
- 'Sunset Cooler Virgin':[],'Green Apple Spritz Virgin':[],
- 'The Snuggest':[,,'Vodka, Malibu, blackberry syrup','Degvīns, Malibu, kazenes sīrups','Водка, Malibu, ежевичный сироп'],
- 'Mexican Strawberry':['Meksikāņu Zemene','Мексиканская клубника','Tequila, strawberry liqueur, mint syrup','Tekila, zemeņu liķieris, piparmētru sīrups','Текила, клубничный ликёр, мятный сироп'],
- 'Black Angel':['Melnais Eņģelis','Чёрный ангел','Black Balsam, cream liqueur, coffee liqueur','Rīgas Melnais Balzams, krējuma liķieris, kafijas liķieris','Рижский чёрный бальзам, сливочный ликёр, кофейный ликёр','A07'],
- 'Midnight Tropic':[,,'Banana liqueur, coffee liqueur, Blue Curaçao','Banānu liķieris, kafijas liķieris, Blue Curaçao','Банановый ликёр, кофейный ликёр, блю кюрасао'],
- 'Meters Cocktail x8':['Metru Kokteilis x8','Метр коктейлей x8'],
- 'Red Wine':['Sarkanvīns','Красное вино',,,,'A12'],'White Wine':['Baltvīns','Белое вино',,,,'A12'],'Rosé Wine':['Rozā vīns','Розовое вино',,,,'A12'],'Prosecco':[,'Просекко',,,,'A12'],
- 'Vodka':['Degvīns','Водка'],'Gin':['Džins','Джин'],'Tequila':['Tekila','Текила'],'Rum (white/dark)':['Rums (baltais/melnais)','Ром (белый/тёмный)'],
- 'Ararat 5*':['Ararat 5* Konjaks','Коньяк Арарат 5*'],
- 'Amaretto':[,'Амаретто',,,,'A08'],'Baileys':[,,,,,'A07'],'Cream Liqueur':['Krējuma liķieris','Сливочный ликёр',,,,'A07'],'Lychee Liqueur':['Ličī liķieris','Ликёр личи'],
- 'Pistachio Cream':['Pistāciju krēms','Фисташковый крем',,,,'A08'],'Black Balsam':['Rīgas Melnais Balzams','Рижский чёрный бальзам'],
- 'Fruit Juice':['Augļu sula','Фруктовый сок'],'Soft Drink':['Gāzēts dzēriens','Газированный напиток'],'Energy Drink':['Enerģijas dzēriens','Энергетический напиток'],
- 'Double Espresso':['Dubultais espresso','Двойной эспрессо'],'Cappuccino':[,'Капучино',,,,'A07'],'Turkish Black Tea':['Turku melnā tēja','Турецкий чёрный чай'],'Turkish Coffee':['Turku kafija','Кофе по-турецки'],
- 'Snug Smash Burger':[,,'2× smash beef patty, tomato, iceberg, onion, pickles, ketchup, mayo · with fries','2× smashēta liellopa kotlete, tomāti, aisbergs, sīpols, marinēti gurķi, kečups, majonēze · ar frī','2× говяжья смэш-котлета, томат, айсберг, лук, маринованные огурцы, кетчуп, майонез · с картофелем фри','A01 A03 A07'],
- 'Snug Smash Cheeseburger':[,,'2× smash beef patty, cheese, tomato, iceberg, onion, pickles · with fries','2× smashēta liellopa kotlete, siers, tomāti, aisbergs, sīpols, marinēti gurķi · ar frī','2× говяжья смэш-котлета, сыр, томат, айсберг, лук, маринованные огурцы · с картофелем фри','A01 A03 A07'],
- 'Snuggest XL Chicken Burger':[,,'Crispy fried chicken, special yoghurt sauce, pickles, lettuce · served with fries','Kraukšķīga cepta vista, īpašā jogurta mērce, marinēti gurķi, salāti · ar frī kartupeļiem','Хрустящая жареная курица, фирменный йогуртовый соус, маринованные огурцы, салат · с картофелем фри','A01 A03 A07'],
- 'Turkish Kofta & Rice':['Turku Kofta & Rīsi','Турецкая кёфте с рисом','Beef kofta, white rice, bean salad (piyaz)','Liellopa kofta, baltie rīsi, pupiņu salāti (piyaz)','Говяжья кёфте, белый рис, фасолевый салат (пияз)','A01'],
- 'Schnitzel':['Šnicele','Шницель','With lemon slice and cold potato salad','Ar citrona šķēli un auksto kartupeļu salātiem','С долькой лимона и холодным картофельным салатом','A01 A03'],
- 'Snug Grill Chicken Wings XL':[,,'500 g grilled chicken wings, fresh salad, bread','500 g grilēti vistas spārniņi, svaigi salāti, maize','500 г куриных крылышек на гриле, свежий салат, хлеб','A01'],
- 'Snug Chicken Shashlik Wrap':[,,'Chicken shashlik, pickles, fresh salad, french fries, wrapped','Vistas šašliks, marinēti gurķi, svaigi salāti, frī kartupeļi, ietīts tortiljā','Куриный шашлык, маринованные огурцы, свежий салат, картофель фри в лаваше','A01'],
- 'Lentil Soup':['Lēcu zupa','Чечевичный суп','Warm lentil soup, crispy bread, lemon','Siltā lēcu zupa, kraukšķīga maize, citrons','Тёплый чечевичный суп, хрустящий хлеб, лимон','A01','veg'],
- 'Turkish Bean Salad':['Turku pupiņu salāti','Турецкий фасолевый салат','White beans, olive oil, parsley, onion, tomato, sumac','Baltās pupas, olīveļļa, pētersīļi, sīpols, tomāts, sumaks','Белая фасоль, оливковое масло, петрушка, лук, томат, сумах',,'vegan'],
- 'Çiğköfte':[,'Чигкёфте','Spiced bulgur, olive oil, mint','Garšvielots bulgurs, olīveļļa, piparmētra','Пряный булгур, оливковое масло, мята','A01','vegan'],
- 'French Fries':['Frī kartupeļi','Картофель фри','250 g, with sauce','250 g, ar mērci','250 г, с соусом'],
- 'The Snuggest Fries':[,,'Fries, crispy chicken, calamari, cheese balls, sausage','Frī, kraukšķīga vista, kalmārs, siera bumbiņas, desa','Фри, хрустящая курица, кальмары, сырные шарики, колбаска','A01 A03 A07 A14','share'],
- 'Snug Brownie':['Snug Browni','Брауни','Homemade chocolate brownie, warm and fudgy','Mājās gatavota šokolādes brūnā kūka, silta un sulīga','Домашний шоколадный брауни, тёплый и влажный','A01 A03 A07 A08'],
- 'Special Yoghurt Sauce':['Snuggest īpašā jogurta mērce','Фирменный йогуртовый соус',,,,'A07'],'Mayonnaise':['Majonēze','Майонез',,,,'A03 A07'],'Ketchup':['Kečups','Кетчуп'],
- 'Mustard':['Sinepes','Горчица'],'Barbecue Sauce':['Bārbekjū mērce','Соус барбекю'],'Garlic Sauce':['Ķiploku mērce','Чесночный соус',,,,'A03 A07']
-};
-
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cents=p=>Math.round(Number(p)*100);
-const eur=c=>(c/100).toFixed(2).replace('.',',')+' €';
+const eur=c=>(c/100).toFixed(2)+' €';
 const LS={get(k,d){try{const v=sessionStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{sessionStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const toMin=s=>{const m=/^(\d{1,2})[:.](\d{2})$/.exec(String(s).trim());return m?+m[1]*60+ +m[2]:NaN};
 function catVisible(c,d=new Date()){
@@ -231,11 +156,15 @@ const rawT=(qs.get('masa')||qs.get('t')||qs.get('table')||'').trim();
 let lang=(()=>{try{const s=localStorage.getItem('snug.lang');if(s&&T[s])return s}catch(e){}const n=(navigator.language||'').slice(0,2);return n==='lv'?'lv':n==='ru'?'ru':'en'})();
 let menu=null,table=null,cart=LS.get('snug.cart.'+rawT,{}),sending=false;
 const tx=k=>T[lang][k];
-function info(c,it){return INFO[c.id+':'+it.name]||INFO[it.name]||[]}
-function iname(c,it){const i=info(c,it),k=LI[lang];return(k===1&&i[0])||(k===2&&i[1])||it.name}
-function idesc(c,it){const i=info(c,it);return i[2+LI[lang]]||i[2]||''}
+function iname(c,it){return it.name}
+const LI={en:0,lv:1,ru:2};
+const CATS={hh:['Cocktail Hour 5 €','Kokteiļu stunda 5 €','Коктейльный час 5 €'],c0:['Classics','Klasiskie kokteiļi','Классические коктейли'],c1:['House favourites','Mājas favorīti','Фирменные коктейли'],
+  c2:['Beer cocktails','Alus kokteiļi','Пивные коктейли'],c3:['Non-alcoholic cocktails','Bezalkoholiskie kokteiļi','Безалкогольные коктейли'],c4:['Shots','Šoti','Шоты'],
+  c5:['Beer','Alus','Пиво'],c6:['Wine','Vīns','Вино'],c7:['Spirits','Stiprie dzērieni','Крепкие напитки'],c8:['Liqueurs','Liķieri','Ликёры'],
+  c9:['Soft drinks','Bezalkoholiskie dzērieni','Безалкогольные напитки'],c10:['Hot drinks','Karstie dzērieni','Горячие напитки'],c11:['Burgers','Burgeri','Бургеры'],
+  c12:['Mains','Galvenie ēdieni','Основные блюда'],c13:['Soups','Zupas','Супы'],c14:['Snacks','Uzkodas','Закуски'],c15:['Desserts','Deserti','Десерты'],c16:['Sauces','Mērces','Соусы']};
 function cname(c){const n=CATS[c.id];return n?n[LI[lang]]:c.name}
-function vlabel(l){if(l==='Kokteyl saati')return'';const v=VL[l];return v?v[LI[lang]]:l}
+function vlabel(l){return l}
 const ckey=(itId,l)=>itId+'|'+l;
 function findLine(k){const[i,...r]=k.split('|');const l=r.join('|');for(const c of menu.cats)for(const it of c.items)if(it.id===i){const v=it.v.find(x=>x.l===l);if(v)return{c,it,v}}return null}
 function cartLines(){return Object.entries(cart).map(([k,q])=>{const f=findLine(k);return f&&q>0?{k,q,...f}:null}).filter(Boolean)}
@@ -254,13 +183,10 @@ function render(){
   $('#cats').hidden=false;
   $('#catbtns').innerHTML=cats.map((c,i)=>`<button data-act="jump" data-c="${esc(c.id)}" aria-current="${i===0}">${esc(cname(c))}</button>`).join('');
   $('#main').innerHTML=cats.map(c=>`<section class="cat" id="cat-${esc(c.id)}"><h2>${esc(cname(c))}</h2>${c.items.map(it=>{
-    const i=info(c,it),d=idesc(c,it),al=(i[5]||'').split(' ').filter(Boolean),tag=i[6];
-    return`<div class="it" data-it="${esc(it.id)}"><div class="nm">${esc(iname(c,it))}</div>${d?`<div class="ds">${esc(d)}</div>`:''}
-      ${tag||al.length?`<div class="tags">${tag?`<span class="tag v">${esc(TAGS[tag][LI[lang]])}</span>`:''}${al.map(a=>`<span class="tag" title="${esc(tx('allergens'))}">${esc(ALG[a]?ALG[a][LI[lang]]:a)}</span>`).join('')}</div>`:''}
+    return`<div class="it" data-it="${esc(it.id)}"><div class="nm">${esc(iname(c,it))}</div>
       ${it.v.map(v=>{const k=ckey(it.id,v.l),q=cart[k]||0,vl=vlabel(v.l);return`<div class="vr"><div class="vp">${vl?`<b>${esc(vl)}</b>`:''}<span>${eur(cents(v.p))}</span></div>
         <div class="stp"><button data-act="sub" data-k="${esc(k)}" aria-label="−" ${q?'':'disabled'}>−</button><span class="cn${q?'':' z'}">${q}</span><button class="add" data-act="add" data-k="${esc(k)}" aria-label="+">+</button></div></div>`}).join('')}
-    </div>`}).join('')}</section>`).join('')+
-    `<footer class="note">${esc(tx('allergy'))}<br>${esc(tx('age'))}</footer>`;
+    </div>`}).join('')}</section>`).join('');
   if(!table)$('#main').insertAdjacentHTML('afterbegin',`<p class="center" style="padding:20px 0 0">${esc(tx('noTable'))}</p>`);
   renderBar();spy();
 }
@@ -299,7 +225,7 @@ async function send(){
   const order={table,lang,lines:ls.map(x=>({id:x.it.id,l:x.v.l,q:x.q}))};
   try{
     await window.FBC.sendOrder(order);
-    if(menu.notifyUrl)fetch(menu.notifyUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({table,total:eur(cartTotal()),lines:ls.map(x=>({name:x.it.name,l:x.v.l==='Kokteyl saati'?'5€':x.v.l,q:x.q}))})}).catch(()=>{});
+    if(menu.notifyUrl)fetch(menu.notifyUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({table,total:eur(cartTotal()),lines:ls.map(x=>({name:x.it.name,l:x.v.l,q:x.q}))})}).catch(()=>{});
     const summary=ls.map(x=>`${x.q}× ${esc(iname(x.c,x.it))}`).join('<br>');
     cart={};saveCart();sending=false;
     $('#sheet').innerHTML=`<div class="sheet"><div class="in" role="dialog" aria-modal="true" style="text-align:center">
