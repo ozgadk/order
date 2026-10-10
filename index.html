@@ -313,7 +313,10 @@ async function exportCsv(){
 
 /* ---------- storage ---------- */
 function setBanner(t){$('#banner').innerHTML=t?`<div class="banner">${esc(t)}</div>`:''}
-function onDbErr(e){setBanner(e&&e.code==='invalid_argument'?'Bu hesap değişiklik kaydedemiyor. Değişiklikler sadece bu cihazda.':'Bağlantı sorunu — değişiklikler şimdilik bu cihazda tutuluyor.')}
+function onDbErr(e){const c=(e&&e.code)||'';console.error(e);
+  setBanner(c==='permission-denied'?'Erişim reddedildi (permission-denied): Firebase Rules yayınlanmamış ya da giriş e-postası kuraldakiyle aynı değil.'
+   :c==='unavailable'?'İnternet bağlantısı yok — değişiklikler bu cihazda bekliyor, bağlantı gelince gönderilecek.'
+   :'Bağlantı sorunu ('+(c||(e&&e.message)||'bilinmiyor')+')')}
 function write(path,data){
   if(!db)return;
   const w=pending[path]||(pending[path]={busy:false,has:false});
