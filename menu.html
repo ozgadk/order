@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Snuggest · Menu</title>
+<meta name="theme-color" content="#2a1d15">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3eadb;--panel:#fffaf1;--panel2:#eadcc4;--ink:#2a1d15;--muted:#76624c;
+  --gold:#8f6624;--goldbg:#ecd9b0;--line:#d9c6a6;--danger:#a8402a;--dark:#2a1d15;--onDark:#f6ead3;
+  --serif:"Alegreya",Georgia,serif;--sans:"Alegreya Sans","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1b130e;--panel:#261c15;--panel2:#33261c;--ink:#f1e5d0;--muted:#a58f76;
+  --gold:#d6ad64;--goldbg:#4a3721;--line:#3d2f24;--danger:#e0735a;--dark:#120c08;--onDark:#f1e5d0;}}
+:root[data-theme="dark"]{--bg:#1b130e;--panel:#261c15;--panel2:#33261c;--ink:#f1e5d0;--muted:#a58f76;
+  --gold:#d6ad64;--goldbg:#4a3721;--line:#3d2f24;--danger:#e0735a;--dark:#120c08;--onDark:#f1e5d0;}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;-webkit-tap-highlight-color:transparent;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto}
+
+header.hero{background:var(--dark);color:var(--onDark);padding:calc(18px + env(safe-area-inset-top,0px)) 16px 18px}
+.hero .wrap{display:flex;align-items:flex-start;gap:12px}
+.brand{margin-right:auto}
+.brand small{display:block;letter-spacing:.35em;font-size:11px;opacity:.75}
+.brand b{font-family:var(--serif);font-size:30px;line-height:1;letter-spacing:.02em}
+.brand span{display:block;font-size:14px;opacity:.75;margin-top:6px}
+.langs{display:flex;gap:2px;background:rgba(255,255,255,.08);border-radius:10px;padding:3px}
+.langs button{padding:6px 10px;border-radius:8px;font-weight:700;font-size:14px;opacity:.7}
+.langs button[aria-pressed="true"]{background:var(--onDark);color:var(--dark);opacity:1}
+.tbl[hidden]{display:none}
+.tbl{display:inline-block;margin-top:14px;border:1px solid rgba(246,234,211,.35);border-radius:999px;padding:5px 14px;font-weight:500}
+
+.hh{margin:14px 16px 0;background:var(--gold);color:var(--panel);border-radius:12px;padding:12px 14px;font-weight:700}
+.hh .wrap{display:block}
+
+nav.cats{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+nav.cats::-webkit-scrollbar{display:none}
+nav.cats .wrap{display:flex;gap:6px;padding:10px 16px;width:max-content;min-width:100%}
+nav.cats button{white-space:nowrap;padding:8px 14px;border-radius:999px;background:var(--panel2);color:var(--muted);font-weight:500}
+nav.cats button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+
+main{padding:0 16px}
+section.cat{padding-top:18px;scroll-margin-top:60px}
+section.cat h2{font-family:var(--serif);font-size:24px;margin:4px 0 10px}
+.it{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.it.has{border-color:var(--gold)}
+.it .nm{font-weight:700;font-size:18px;line-height:1.2}
+.it .ds{color:var(--muted);font-size:15px;margin-top:4px;line-height:1.3}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tag{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--muted)}
+.tag.v{border-color:var(--gold);color:var(--gold)}
+.vr{display:flex;align-items:center;gap:8px;margin-top:10px}
+.vr+.vr{padding-top:10px;border-top:1px solid var(--line)}
+.vp{flex:1;min-width:0;line-height:1.25}
+.vp b{display:block;font-weight:500}
+.vp span{color:var(--muted)}
+.stp{display:flex;align-items:center;gap:2px;flex:none}
+.stp button{width:42px;height:42px;border-radius:10px;background:var(--panel2);font-size:22px;line-height:1}
+.stp .add{background:var(--gold);color:var(--panel)}
+.stp button:disabled{opacity:.3;cursor:default}
+.stp .cn{min-width:26px;text-align:center;font-weight:700}
+.stp .cn.z{color:var(--muted);font-weight:400}
+footer.note{color:var(--muted);font-size:13px;padding:24px 16px 8px;line-height:1.4}
+
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 30%)}
+.bar button{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:640px;margin:0 auto;background:var(--gold);color:var(--panel);border-radius:14px;padding:16px 18px;font-weight:700;font-size:18px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(20,12,8,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet .in{background:var(--panel);width:100%;max-width:640px;max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:20px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.sheet h3{font-family:var(--serif);font-size:26px;margin:0 0 4px}
+.sheet .sub{color:var(--muted);margin:0 0 12px}
+.ln{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ln .t{flex:1;min-width:0;line-height:1.25}
+.ln .t span{color:var(--muted);font-size:14px}
+.ln .p{font-weight:500;min-width:64px;text-align:right}
+.tot{display:flex;justify-content:space-between;align-items:baseline;margin:14px 0}
+.tot b{font-family:var(--serif);font-size:30px}
+.btn{display:block;width:100%;padding:15px;border-radius:13px;background:var(--panel2);font-weight:700;font-size:17px;margin-top:8px}
+.btn.primary{background:var(--gold);color:var(--panel)}
+.btn:disabled{opacity:.5}
+.err{color:var(--danger);margin:8px 0 0}
+.center{text-align:center;padding:60px 24px;color:var(--muted)}
+.center h2{font-family:var(--serif);color:var(--ink);font-size:28px;margin:0 0 8px}
+.ok{font-size:54px;line-height:1;margin-bottom:10px;color:var(--gold)}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="brand"><small>THE</small><b>SNUGGEST</b><span>Bārs &amp; virtuve · Vecrīga</span><div class="tbl" id="tbl" hidden></div></div>
+  <div class="langs" id="langs"><button data-lang="lv">LV</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div>
+</div></header>
+<div id="hh"></div>
+<nav class="cats" id="cats" hidden><div class="wrap" id="catbtns"></div></nav>
+<main id="main"><div class="center" id="loading">…</div></main>
+<div class="bar" id="bar" hidden><button data-act="cart" id="barbtn"></button></div>
+<div id="sheet"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getFirestore,doc,getDoc,collection,addDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const app=initializeApp({
+  apiKey:"AIzaSyDGyXU05B0kApVv4mH9UEElnRFQCbBMxvc",
+  authDomain:"snuggest-order.firebaseapp.com",
+  projectId:"snuggest-order",
+  storageBucket:"snuggest-order.firebasestorage.app",
+  messagingSenderId:"95742498164",
+  appId:"1:95742498164:web:ccf507421e8f3b2927c821"
+});
+const fs=getFirestore(app);
+window.FBC={
+  getConfig:async()=>{const s=await getDoc(doc(fs,'bar/config'));return s.exists()?s.data():null},
+  sendOrder:o=>addDoc(collection(fs,'orders'),{...o,status:'new',t:serverTimestamp()})
+};
+window.dispatchEvent(new Event('fbcready'));
+</script>
+<script>
+/* ---------- texts ---------- */
+const T={
+ en:{table:'Table',order:'View order',cart:'Your order',total:'Total',send:'Send order',sending:'Sending…',sent:'Order sent!',sentSub:'The bar has received your order.',more:'Order more',close:'Back to menu',
+  noTable:'Please scan the QR code on your table to order.',err:'Could not send. Please try again or order at the bar.',loadErr:'The menu could not be loaded. Please check your connection.',retry:'Try again',
+  hh:'Cocktail Hour — every cocktail 5 €, until',hhGone:'Cocktail Hour has ended, so those items were removed from your order.',
+  items:'items',age:'Alcohol is served only to guests aged 18 and over.',allergy:'Please tell our staff about any allergies.',allergens:'Allergens'},
+ lv:{table:'Galds',order:'Skatīt pasūtījumu',cart:'Jūsu pasūtījums',total:'Kopā',send:'Nosūtīt pasūtījumu',sending:'Sūta…',sent:'Pasūtījums nosūtīts!',sentSub:'Bārs ir saņēmis jūsu pasūtījumu.',more:'Pasūtīt vēl',close:'Atpakaļ uz ēdienkarti',
+  noTable:'Lai pasūtītu, lūdzu, noskenējiet QR kodu uz sava galda.',err:'Neizdevās nosūtīt. Mēģiniet vēlreiz vai pasūtiet pie bāra.',loadErr:'Ēdienkarti neizdevās ielādēt. Lūdzu, pārbaudiet savienojumu.',retry:'Mēģināt vēlreiz',
+  hh:'Kokteiļu stunda — visi kokteiļi 5 €, līdz',hhGone:'Kokteiļu stunda ir beigusies, tāpēc šīs pozīcijas tika noņemtas no pasūtījuma.',
+  items:'gab.',age:'Alkohols tiek pārdots tikai personām no 18 gadu vecuma.',allergy:'Lūdzu, informējiet personālu par alerģijām.',allergens:'Alergēni'},
+ ru:{table:'Стол',order:'Мой заказ',cart:'Ваш заказ',total:'Итого',send:'Отправить заказ',sending:'Отправка…',sent:'Заказ отправлен!',sentSub:'Бар получил ваш заказ.',more:'Заказать ещё',close:'Назад к меню',
+  noTable:'Чтобы сделать заказ, отсканируйте QR-код на вашем столе.',err:'Не удалось отправить. Попробуйте ещё раз или закажите у бара.',loadErr:'Не удалось загрузить меню. Проверьте подключение.',retry:'Повторить',
+  hh:'Коктейльный час — все коктейли по 5 €, до',hhGone:'Коктейльный час закончился, эти позиции удалены из заказа.',
+  items:'шт.',age:'Алкоголь продаётся только лицам старше 18 лет.',allergy:'Пожалуйста, сообщите персоналу об аллергиях.',allergens:'Аллергены'}
+};
+const ALG={A01:['gluten','lipeklis','глютен'],A03:['eggs','olas','яйца'],A05:['peanuts','zemesrieksti','арахис'],A07:['milk','piens','молоко'],
+  A08:['nuts','rieksti','орехи'],A11:['sesame','sezams','кунжут'],A12:['sulphites','sulfīti','сульфиты'],A14:['molluscs','gliemji','моллюски']};
+const TAGS={vegan:['vegan','vegāns','веган'],veg:['vegetarian','veģetārs','вегетарианское'],share:['for sharing (2–3)','dalīšanai (2–3)','на компанию (2–3)']};
+const LI={en:0,lv:1,ru:2};
+const CATS={hh:['Cocktail Hour 5 €','Kokteiļu stunda 5 €','Коктейльный час 5 €'],c0:['Classics','Klasiskie','Классика'],c1:['House favourites','Mājas favorīti','Фирменные'],
+  c2:['Beer cocktails','Alus kokteiļi','Пивные коктейли'],c3:['Non-alcoholic cocktails','Bezalkoholiskie kokteiļi','Безалкогольные коктейли'],c4:['Shots','Šoti','Шоты'],
+  c5:['Beer','Alus','Пиво'],c6:['Wine','Vīns','Вино'],c7:['Spirits','Stiprie dzērieni','Крепкие напитки'],c8:['Liqueurs','Liķieri','Ликёры'],
+  c9:['Soft drinks','Bezalkoholiskie dzērieni','Безалкогольные напитки'],c10:['Hot drinks','Karstie dzērieni','Горячие напитки'],c11:['Burgers','Burgeri','Бургеры'],
+  c12:['Mains','Galvenie ēdieni','Основные блюда'],c13:['Soups','Zupas','Супы'],c14:['Snacks','Uzkodas','Закуски'],c15:['Desserts','Deserti','Десерты'],c16:['Sauces','Mērces','Соусы']};
+const VL={Still:['Still','Negāzēts','Без газа'],Sparkling:['Sparkling','Gāzēts','С газом']};
+/* name: [lvName, ruName, enDesc, lvDesc, ruDesc, allergens, tag] */
+const INFO={
+ 'Cuba Libre':[,,'White rum, cola, lemon juice','Baltais rums, kola, citronu sula','Белый ром, кола, лимонный сок'],
+ 'Tom Collins':[,,'Gin, lemon juice, soda, simple syrup','Džins, citronu sula, soda, vienkāršs sīrups','Джин, лимонный сок, содовая, сахарный сироп'],
+ 'Classic Mojito':['Klasiskais mohito','Классический мохито','Rum, fresh lime, mint, sugar, soda','Rums, svaiga laima, piparmētra, cukurs, soda','Ром, свежий лайм, мята, сахар, содовая'],
+ 'Moscow Mule':['Maskavas mūlis',,'Vodka, lime juice, ginger beer, mint','Degvīns, laimas sula, ingvera alus, piparmētra','Водка, сок лайма, имбирное пиво, мята'],
+ 'Long Island Iced Tea':[,,'Tequila, vodka, gin, white rum, orange liqueur, cola','Tekila, degvīns, džins, baltais rums, apelsīnu liķieris, kola','Текила, водка, джин, белый ром, апельсиновый ликёр, кола'],
+ 'Hemingway Special':[,,'White rum, grapefruit, cherry liqueur, lemon juice','Baltais rums, greipfrūtu sula, ķiršu liķieris, citronu sula','Белый ром, грейпфрут, вишнёвый ликёр, лимонный сок'],
+ 'Blue Lady Sour':[,,'Gin, blue curaçao, lime, simple syrup, egg white','Džins, zilais kiraso, laima, vienkāršs sīrups, olu baltums','Джин, блю кюрасао, лайм, сахарный сироп, яичный белок','A03'],
+ 'Aperol Spritz':[,,'Prosecco, Aperol, tonic','Prosecco, Aperol, toniks','Просекко, Апероль, тоник'],
+ 'Hugo Spritz':[,,'Prosecco, elderflower syrup, soda, mint, lime','Prosecco, plūškoka sīrups, soda, piparmētra, laima','Просекко, сироп бузины, содовая, мята, лайм'],
+ 'Tequila Sunrise':['Tekila Sunrise',,'Tequila, orange juice, grenadine','Tekila, apelsīnu sula, grenadīns','Текила, апельсиновый сок, гренадин'],
+ 'Espresso Martini':[,,'Vodka, coffee liqueur, simple syrup, espresso','Degvīns, kafijas liķieris, vienkāršs sīrups, espresso','Водка, кофейный ликёр, сахарный сироп, эспрессо'],
+ 'Amaretto Sour':[,,'Amaretto, bourbon whiskey, lemon juice, simple syrup, egg white','Amaretto, burbona viskijs, citronu sula, vienkāršs sīrups, olu baltums','Амаретто, бурбон, лимонный сок, сахарный сироп, яичный белок','A03 A08'],
+ 'Gin Fizz':[,,'Gin, lime juice, tonic, sugar, egg white','Džins, laimas sula, toniks, cukurs, olu baltums','Джин, сок лайма, тоник, сахар, яичный белок','A03'],
+ 'Mystery of the Pomegranate':[,,'Vodka, pomegranate sauce, pomegranate juice, blackberry syrup','Degvīns, granātābolu mērce, granātābolu sula, kazenes sīrups','Водка, гранатовый соус, гранатовый сок, ежевичный сироп'],
+ 'Mancolada':[,,'Captain Morgan, coconut cream, pineapple, lemon juice','Captain Morgan, kokosriekstu krēms, ananāsu sula, citronu sula','Captain Morgan, кокосовые сливки, ананас, лимонный сок'],
+ 'Bramble':[,,'Pink gin, lemon juice, blackberry syrup, tonic','Rozā džins, citronu sula, kazenes sīrups, toniks','Розовый джин, лимонный сок, ежевичный сироп, тоник'],
+ 'Pistachio Dream':['Pistāciju Sapnis','Фисташковая мечта','Pistachio, vodka, milk, vanilla','Antepa pistācijas, degvīns, piens, vaniļa','Фисташки, водка, молоко, ваниль','A07 A08'],
+ 'Snug Peach Gin':['Snug Persiku Džins',,'Peach liqueur, gin, tonic','Persiku liķieris, džins, toniks','Персиковый ликёр, джин, тоник'],
+ 'Istanbul City':[,,'Beer, amaretto, orange liqueur','Alus, amaretto, apelsīnu liķieris','Пиво, амаретто, апельсиновый ликёр','A01 A08'],
+ 'Antalya Sun':[,,'Beer, tequila, Malibu, simple syrup','Alus, tekila, Malibu, vienkāršs sīrups','Пиво, текила, Malibu, сахарный сироп','A01'],
+ 'Anatolian':[,,'Beer, cherry liqueur, peppermint syrup','Alus, ķiršu liķieris, piparmētru sīrups','Пиво, вишнёвый ликёр, мятный сироп','A01'],
+ 'Troia':['Troja','Троя','Beer, Ouzo, Jägermeister, lemon','Alus, Ouzo, Jägermeister, citrons','Пиво, узо, Jägermeister, лимон','A01'],
+ 'Mexican':[,,'Beer, tequila, lemon juice, salt','Alus, tekila, citronu sula, sāls','Пиво, текила, лимонный сок, соль','A01'],
+ 'Virgin Mojito':['Mohito Virgin',,'Lime, mint, brown sugar, soda','Laima, piparmētra, brūnais cukurs, soda','Лайм, мята, коричневый сахар, содовая'],
+ 'c3:Piña Colada':['Pinjakolada',,'Pineapple juice, coconut milk, lemon juice, sugar syrup','Ananāsu sula, kokosriekstu piens, citrona sula, cukura sīrups','Ананасовый сок, кокосовое молоко, лимонный сок, сахарный сироп'],
+ 'Piña Colada':['Pinjakolada'],
+ 'Sunset Cooler':[,,'Orange juice, grenadine, lemon juice, soda','Apelsīnu sula, grenadīns, citrona sula, soda','Апельсиновый сок, гренадин, лимонный сок, содовая'],
+ 'Green Apple Spritz':[,,'Apple juice, lime, sugar syrup, soda','Ābolu sula, laima, cukura sīrups, soda','Яблочный сок, лайм, сахарный сироп, содовая'],
+ 'Gin Tonic':['Džins ar tonisko ūdeni','Джин-тоник'],
+ 'Rum & Cola':['Rums ar kolu','Ром с колой'],
+ 'Whisky & Cola':['Viskijs ar kolu','Виски с колой'],
+ 'Snuggest Peach':[,,'House pick','Autordzēriens','Фирменный напиток'],
+ 'Piña Colada Virgin':['Pinjakolada Virgin'],
+ 'Sunset Cooler Virgin':[],'Green Apple Spritz Virgin':[],
+ 'The Snuggest':[,,'Vodka, Malibu, blackberry syrup','Degvīns, Malibu, kazenes sīrups','Водка, Malibu, ежевичный сироп'],
+ 'Mexican Strawberry':['Meksikāņu Zemene','Мексиканская клубника','Tequila, strawberry liqueur, mint syrup','Tekila, zemeņu liķieris, piparmētru sīrups','Текила, клубничный ликёр, мятный сироп'],
+ 'Black Angel':['Melnais Eņģelis','Чёрный ангел','Black Balsam, cream liqueur, coffee liqueur','Rīgas Melnais Balzams, krējuma liķieris, kafijas liķieris','Рижский чёрный бальзам, сливочный ликёр, кофейный ликёр','A07'],
+ 'Midnight Tropic':[,,'Banana liqueur, coffee liqueur, Blue Curaçao','Banānu liķieris, kafijas liķieris, Blue Curaçao','Банановый ликёр, кофейный ликёр, блю кюрасао'],
+ 'Meters Cocktail x8':['Metru Kokteilis x8','Метр коктейлей x8'],
+ 'Red Wine':['Sarkanvīns','Красное вино',,,,'A12'],'White Wine':['Baltvīns','Белое вино',,,,'A12'],'Rosé Wine':['Rozā vīns','Розовое вино',,,,'A12'],'Prosecco':[,'Просекко',,,,'A12'],
+ 'Vodka':['Degvīns','Водка'],'Gin':['Džins','Джин'],'Tequila':['Tekila','Текила'],'Rum (white/dark)':['Rums (baltais/melnais)','Ром (белый/тёмный)'],
+ 'Ararat 5*':['Ararat 5* Konjaks','Коньяк Арарат 5*'],
+ 'Amaretto':[,'Амаретто',,,,'A08'],'Baileys':[,,,,,'A07'],'Cream Liqueur':['Krējuma liķieris','Сливочный ликёр',,,,'A07'],'Lychee Liqueur':['Ličī liķieris','Ликёр личи'],
+ 'Pistachio Cream':['Pistāciju krēms','Фисташковый крем',,,,'A08'],'Black Balsam':['Rīgas Melnais Balzams','Рижский чёрный бальзам'],
+ 'Fruit Juice':['Augļu sula','Фруктовый сок'],'Soft Drink':['Gāzēts dzēriens','Газированный напиток'],'Energy Drink':['Enerģijas dzēriens','Энергетический напиток'],
+ 'Double Espresso':['Dubultais espresso','Двойной эспрессо'],'Cappuccino':[,'Капучино',,,,'A07'],'Turkish Black Tea':['Turku melnā tēja','Турецкий чёрный чай'],'Turkish Coffee':['Turku kafija','Кофе по-турецки'],
+ 'Snug Smash Burger':[,,'2× smash beef patty, tomato, iceberg, onion, pickles, ketchup, mayo · with fries','2× smashēta liellopa kotlete, tomāti, aisbergs, sīpols, marinēti gurķi, kečups, majonēze · ar frī','2× говяжья смэш-котлета, томат, айсберг, лук, маринованные огурцы, кетчуп, майонез · с картофелем фри','A01 A03 A07'],
+ 'Snug Smash Cheeseburger':[,,'2× smash beef patty, cheese, tomato, iceberg, onion, pickles · with fries','2× smashēta liellopa kotlete, siers, tomāti, aisbergs, sīpols, marinēti gurķi · ar frī','2× говяжья смэш-котлета, сыр, томат, айсберг, лук, маринованные огурцы · с картофелем фри','A01 A03 A07'],
+ 'Snuggest XL Chicken Burger':[,,'Crispy fried chicken, special yoghurt sauce, pickles, lettuce · served with fries','Kraukšķīga cepta vista, īpašā jogurta mērce, marinēti gurķi, salāti · ar frī kartupeļiem','Хрустящая жареная курица, фирменный йогуртовый соус, маринованные огурцы, салат · с картофелем фри','A01 A03 A07'],
+ 'Turkish Kofta & Rice':['Turku Kofta & Rīsi','Турецкая кёфте с рисом','Beef kofta, white rice, bean salad (piyaz)','Liellopa kofta, baltie rīsi, pupiņu salāti (piyaz)','Говяжья кёфте, белый рис, фасолевый салат (пияз)','A01'],
+ 'Schnitzel':['Šnicele','Шницель','With lemon slice and cold potato salad','Ar citrona šķēli un auksto kartupeļu salātiem','С долькой лимона и холодным картофельным салатом','A01 A03'],
+ 'Snug Grill Chicken Wings XL':[,,'500 g grilled chicken wings, fresh salad, bread','500 g grilēti vistas spārniņi, svaigi salāti, maize','500 г куриных крылышек на гриле, свежий салат, хлеб','A01'],
+ 'Snug Chicken Shashlik Wrap':[,,'Chicken shashlik, pickles, fresh salad, french fries, wrapped','Vistas šašliks, marinēti gurķi, svaigi salāti, frī kartupeļi, ietīts tortiljā','Куриный шашлык, маринованные огурцы, свежий салат, картофель фри в лаваше','A01'],
+ 'Lentil Soup':['Lēcu zupa','Чечевичный суп','Warm lentil soup, crispy bread, lemon','Siltā lēcu zupa, kraukšķīga maize, citrons','Тёплый чечевичный суп, хрустящий хлеб, лимон','A01','veg'],
+ 'Turkish Bean Salad':['Turku pupiņu salāti','Турецкий фасолевый салат','White beans, olive oil, parsley, onion, tomato, sumac','Baltās pupas, olīveļļa, pētersīļi, sīpols, tomāts, sumaks','Белая фасоль, оливковое масло, петрушка, лук, томат, сумах',,'vegan'],
+ 'Çiğköfte':[,'Чигкёфте','Spiced bulgur, olive oil, mint','Garšvielots bulgurs, olīveļļa, piparmētra','Пряный булгур, оливковое масло, мята','A01','vegan'],
+ 'French Fries':['Frī kartupeļi','Картофель фри','250 g, with sauce','250 g, ar mērci','250 г, с соусом'],
+ 'The Snuggest Fries':[,,'Fries, crispy chicken, calamari, cheese balls, sausage','Frī, kraukšķīga vista, kalmārs, siera bumbiņas, desa','Фри, хрустящая курица, кальмары, сырные шарики, колбаска','A01 A03 A07 A14','share'],
+ 'Snug Brownie':['Snug Browni','Брауни','Homemade chocolate brownie, warm and fudgy','Mājās gatavota šokolādes brūnā kūka, silta un sulīga','Домашний шоколадный брауни, тёплый и влажный','A01 A03 A07 A08'],
+ 'Special Yoghurt Sauce':['Snuggest īpašā jogurta mērce','Фирменный йогуртовый соус',,,,'A07'],'Mayonnaise':['Majonēze','Майонез',,,,'A03 A07'],'Ketchup':['Kečups','Кетчуп'],
+ 'Mustard':['Sinepes','Горчица'],'Barbecue Sauce':['Bārbekjū mērce','Соус барбекю'],'Garlic Sauce':['Ķiploku mērce','Чесночный соус',,,,'A03 A07']
+};
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cents=p=>Math.round(Number(p)*100);
+const eur=c=>(c/100).toFixed(2).replace('.',',')+' €';
+const LS={get(k,d){try{const v=sessionStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{sessionStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const toMin=s=>{const m=/^(\d{1,2})[:.](\d{2})$/.exec(String(s).trim());return m?+m[1]*60+ +m[2]:NaN};
+function catVisible(c,d=new Date()){
+  if(!c.hh)return true;const t=d.getHours()*60+d.getMinutes(),f=toMin(c.hh.from),e=toMin(c.hh.to),day=d.getDay();
+  if(isNaN(f)||isNaN(e))return false;
+  if(e>f)return c.hh.days.includes(day)&&t>=f&&t<e;
+  if(t>=f)return c.hh.days.includes(day);
+  if(t<e)return c.hh.days.includes((day+6)%7);
+  return false;
+}
+const qs=new URLSearchParams(location.search);
+const rawT=(qs.get('masa')||qs.get('t')||qs.get('table')||'').trim();
+let lang=(()=>{try{const s=localStorage.getItem('snug.lang');if(s&&T[s])return s}catch(e){}const n=(navigator.language||'').slice(0,2);return n==='lv'?'lv':n==='ru'?'ru':'en'})();
+let menu=null,table=null,cart=LS.get('snug.cart.'+rawT,{}),sending=false;
+const tx=k=>T[lang][k];
+function info(c,it){return INFO[c.id+':'+it.name]||INFO[it.name]||[]}
+function iname(c,it){const i=info(c,it),k=LI[lang];return(k===1&&i[0])||(k===2&&i[1])||it.name}
+function idesc(c,it){const i=info(c,it);return i[2+LI[lang]]||i[2]||''}
+function cname(c){const n=CATS[c.id];return n?n[LI[lang]]:c.name}
+function vlabel(l){if(l==='Kokteyl saati')return'';const v=VL[l];return v?v[LI[lang]]:l}
+const ckey=(itId,l)=>itId+'|'+l;
+function findLine(k){const[i,...r]=k.split('|');const l=r.join('|');for(const c of menu.cats)for(const it of c.items)if(it.id===i){const v=it.v.find(x=>x.l===l);if(v)return{c,it,v}}return null}
+function cartLines(){return Object.entries(cart).map(([k,q])=>{const f=findLine(k);return f&&q>0?{k,q,...f}:null}).filter(Boolean)}
+function cartTotal(){return cartLines().reduce((s,x)=>s+cents(x.v.p)*x.q,0)}
+function saveCart(){LS.set('snug.cart.'+rawT,cart)}
+
+/* ---------- render ---------- */
+function renderLangs(){document.documentElement.lang=lang;document.querySelectorAll('#langs button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)))}
+function visibleCats(){const v=menu.cats.filter(c=>c.items.length&&catVisible(c));return[...v.filter(c=>c.hh),...v.filter(c=>!c.hh)]}
+function render(){
+  renderLangs();
+  if(table){$('#tbl').hidden=false;$('#tbl').textContent=tx('table')+' '+table}
+  if(!menu)return;
+  const cats=visibleCats(),hh=cats.find(c=>c.hh);
+  $('#hh').innerHTML=hh?`<div class="hh"><div class="wrap">${esc(tx('hh'))} ${esc(hh.hh.to)}</div></div>`:'';
+  $('#cats').hidden=false;
+  $('#catbtns').innerHTML=cats.map((c,i)=>`<button data-act="jump" data-c="${esc(c.id)}" aria-current="${i===0}">${esc(cname(c))}</button>`).join('');
+  $('#main').innerHTML=cats.map(c=>`<section class="cat" id="cat-${esc(c.id)}"><h2>${esc(cname(c))}</h2>${c.items.map(it=>{
+    const i=info(c,it),d=idesc(c,it),al=(i[5]||'').split(' ').filter(Boolean),tag=i[6];
+    return`<div class="it" data-it="${esc(it.id)}"><div class="nm">${esc(iname(c,it))}</div>${d?`<div class="ds">${esc(d)}</div>`:''}
+      ${tag||al.length?`<div class="tags">${tag?`<span class="tag v">${esc(TAGS[tag][LI[lang]])}</span>`:''}${al.map(a=>`<span class="tag" title="${esc(tx('allergens'))}">${esc(ALG[a]?ALG[a][LI[lang]]:a)}</span>`).join('')}</div>`:''}
+      ${it.v.map(v=>{const k=ckey(it.id,v.l),q=cart[k]||0,vl=vlabel(v.l);return`<div class="vr"><div class="vp">${vl?`<b>${esc(vl)}</b>`:''}<span>${eur(cents(v.p))}</span></div>
+        <div class="stp"><button data-act="sub" data-k="${esc(k)}" aria-label="−" ${q?'':'disabled'}>−</button><span class="cn${q?'':' z'}">${q}</span><button class="add" data-act="add" data-k="${esc(k)}" aria-label="+">+</button></div></div>`}).join('')}
+    </div>`}).join('')}</section>`).join('')+
+    `<footer class="note">${esc(tx('allergy'))}<br>${esc(tx('age'))}</footer>`;
+  if(!table)$('#main').insertAdjacentHTML('afterbegin',`<p class="center" style="padding:20px 0 0">${esc(tx('noTable'))}</p>`);
+  renderBar();spy();
+}
+function renderBar(){
+  const n=Object.values(cart).reduce((s,q)=>s+q,0);
+  $('#bar').hidden=!(n&&table);
+  $('#barbtn').innerHTML=`<span>${esc(tx('order'))} · ${n} ${esc(tx('items'))}</span><span>${eur(cartTotal())}</span>`;
+  document.querySelectorAll('.it').forEach(el=>{const has=[...el.querySelectorAll('[data-act=add]')].some(b=>cart[b.dataset.k]);el.classList.toggle('has',has)});
+}
+function bump(k,d){
+  const q=Math.max(0,Math.min(20,(cart[k]||0)+d));if(q)cart[k]=q;else delete cart[k];saveCart();
+  document.querySelectorAll(`[data-k="${CSS.escape(k)}"]`).forEach(b=>{const r=b.closest('.stp');if(!r)return;r.querySelector('.cn').textContent=q;r.querySelector('.cn').classList.toggle('z',!q);r.querySelector('[data-act=sub]').disabled=!q});
+  renderBar();
+}
+function openCart(msg){
+  const ls=cartLines();
+  $('#sheet').innerHTML=`<div class="sheet" data-act="shut"><div class="in" role="dialog" aria-modal="true">
+    <h3>${esc(tx('cart'))}</h3><p class="sub">${esc(tx('table'))} ${esc(table)}</p>
+    ${msg?`<p class="err">${esc(msg)}</p>`:''}
+    ${ls.map(x=>{const vl=vlabel(x.v.l);return`<div class="ln"><div class="t">${esc(iname(x.c,x.it))}${vl?` <span>${esc(vl)}</span>`:''}</div>
+      <div class="stp"><button data-act="csub" data-k="${esc(x.k)}">−</button><span class="cn">${x.q}</span><button class="add" data-act="cadd" data-k="${esc(x.k)}">+</button></div>
+      <div class="p">${eur(cents(x.v.p)*x.q)}</div></div>`}).join('')}
+    <div class="tot"><span>${esc(tx('total'))}</span><b>${eur(cartTotal())}</b></div>
+    <p class="err" id="serr"></p>
+    <button class="btn primary" data-act="send" ${ls.length&&!sending?'':'disabled'}>${esc(sending?tx('sending'):tx('send'))}</button>
+    <button class="btn" data-act="close">${esc(tx('close'))}</button>
+  </div></div>`;
+}
+function closeSheet(){$('#sheet').innerHTML=''}
+async function send(){
+  if(sending)return;
+  const gone=cartLines().filter(x=>!catVisible(x.c));
+  if(gone.length){gone.forEach(x=>delete cart[x.k]);saveCart();render();if(cartLines().length)openCart(tx('hhGone'));else{closeSheet();alert(tx('hhGone'))}return}
+  const ls=cartLines();if(!ls.length)return;
+  sending=true;openCart();
+  const order={table,lang,lines:ls.map(x=>({id:x.it.id,l:x.v.l,q:x.q}))};
+  try{
+    await window.FBC.sendOrder(order);
+    if(menu.notifyUrl)fetch(menu.notifyUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({table,total:eur(cartTotal()),lines:ls.map(x=>({name:x.it.name,l:x.v.l==='Kokteyl saati'?'5€':x.v.l,q:x.q}))})}).catch(()=>{});
+    const summary=ls.map(x=>`${x.q}× ${esc(iname(x.c,x.it))}`).join('<br>');
+    cart={};saveCart();sending=false;
+    $('#sheet').innerHTML=`<div class="sheet"><div class="in" role="dialog" aria-modal="true" style="text-align:center">
+      <div class="ok">✓</div><h3>${esc(tx('sent'))}</h3><p class="sub">${esc(tx('sentSub'))}</p><p style="line-height:1.5">${summary}</p>
+      <button class="btn primary" data-act="close">${esc(tx('more'))}</button></div></div>`;
+    render();
+  }catch(e){sending=false;openCart();$('#serr').textContent=tx('err')}
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,k=b.dataset.k;
+  if(a==='shut'){if(e.target===b)closeSheet();return}
+  if(a==='add')bump(k,1);
+  else if(a==='sub')bump(k,-1);
+  else if(a==='cadd'||a==='csub'){bump(k,a==='cadd'?1:-1);if(cartLines().length)openCart();else closeSheet()}
+  else if(a==='cart')openCart();
+  else if(a==='close')closeSheet();
+  else if(a==='send')send();
+  else if(a==='retry')load();
+  else if(a==='jump'){const s=document.getElementById('cat-'+b.dataset.c);if(s)s.scrollIntoView({behavior:'smooth'})}
+});
+$('#langs').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(!b)return;lang=b.dataset.lang;try{localStorage.setItem('snug.lang',lang)}catch(x){}const y=scrollY;render();scrollTo(0,y);if($('#sheet .ln'))openCart()});
+let spyT=0;
+function spy(){
+  const secs=[...document.querySelectorAll('section.cat')];if(!secs.length)return;
+  let cur=secs[0].id;for(const s of secs)if(s.getBoundingClientRect().top<90)cur=s.id;
+  document.querySelectorAll('#catbtns button').forEach(b=>{const on='cat-'+b.dataset.c===cur;if(b.getAttribute('aria-current')!==String(on)){b.setAttribute('aria-current',String(on));if(on)b.scrollIntoView({block:'nearest',inline:'center'})}});
+}
+addEventListener('scroll',()=>{if(spyT)return;spyT=requestAnimationFrame(()=>{spyT=0;spy()})},{passive:true});
+
+/* ---------- load ---------- */
+async function load(){
+  $('#main').innerHTML='<div class="center">…</div>';
+  try{
+    const cfg=await window.FBC.getConfig();
+    if(!cfg||!cfg.menu||!cfg.menu.cats)throw new Error('no menu');
+    menu=cfg.menu;
+    const n=parseInt(rawT,10);
+    table=/^\d{1,3}$/.test(rawT)&&n>=1&&n<=(menu.tableCount||200)?String(n):null;
+    for(const k of Object.keys(cart))if(!findLine(k))delete cart[k];
+    render();
+  }catch(e){
+    $('#main').innerHTML=`<div class="center"><h2>:(</h2><p>${esc(tx('loadErr'))}</p><button class="btn primary" data-act="retry" style="max-width:260px;margin:16px auto 0">${esc(tx('retry'))}</button></div>`;
+  }
+}
+renderLangs();
+if(window.FBC)load();else addEventListener('fbcready',load,{once:true});
+setInterval(()=>{if(menu&&!$('#sheet').innerHTML){const y=scrollY;render();scrollTo(0,y)}},60000);
+</script>
+</body>
+</html>

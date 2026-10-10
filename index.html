@@ -135,6 +135,8 @@ button.it:active,.vb:active{transform:scale(.97);background:var(--goldbg)}
 .cn{min-width:26px;text-align:center;font-weight:700;font-size:18px}
 .vr:not(.has) .cn{color:var(--muted);font-weight:500}
 .items{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+.eb label.nu{margin-right:0}.eb label.nu input{width:260px}
+.toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:700;z-index:60;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 /* modal */
 .ov{position:fixed;inset:0;background:rgba(20,12,8,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
 .md{background:var(--panel);border-radius:16px;padding:22px;width:min(460px,100%);max-height:90%;overflow:auto;display:grid;gap:14px}
@@ -207,7 +209,7 @@ details.bill summary::-webkit-details-marker{display:none}
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,collection,getDoc,setDoc,deleteDoc,onSnapshot,arrayUnion} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,collection,getDoc,setDoc,deleteDoc,onSnapshot,arrayUnion,query,where,runTransaction} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 const app=initializeApp({
   apiKey:"AIzaSyDGyXU05B0kApVv4mH9UEElnRFQCbBMxvc",
   authDomain:"snuggest-order.firebaseapp.com",
@@ -228,7 +230,14 @@ const db={
     delete:()=>deleteDoc(r),
     onSnapshot:(cb,err)=>onSnapshot(r,s=>cb(wrapSnap(s)),err)}},
   collection:p=>({onSnapshot:(cb,err)=>onSnapshot(collection(fs,p),q=>cb({docs:q.docs.map(wrapSnap)}),err)}),
-  appendBill:(date,bill)=>setDoc(doc(fs,'days/'+date),{bills:arrayUnion(bill)},{merge:true})
+  appendBill:(date,bill)=>setDoc(doc(fs,'days/'+date),{bills:arrayUnion(bill)},{merge:true}),
+  newOrders:(cb,err)=>onSnapshot(query(collection(fs,'orders'),where('status','==','new')),q=>cb(q.docs.map(d=>{const x=d.data();return{id:d.id,...x,t:x.t&&x.t.toMillis?x.t.toMillis():Date.now()}})),err),
+  mergeOrder:(id,table,build)=>runTransaction(fs,async tr=>{
+    const oref=doc(fs,'orders/'+id),o=await tr.get(oref);if(!o.exists())return null;
+    if(!table){tr.delete(oref);return null}
+    const tref=doc(fs,'tables/'+table),t=await tr.get(tref);
+    const next=build(t.exists()?t.data():null);
+    if(next)tr.set(tref,next);tr.delete(oref);return next})
 };
 window.FB={db,
   onAuth:cb=>onAuthStateChanged(auth,cb),
@@ -264,9 +273,9 @@ function hhCat(){return{id:'hh',name:'Kokteyl saati 5€',hh:{days:[0,4],from:'1
 function migrate(m){if((m.ver||0)<2){m.cats.unshift(hhCat());m.ver=2}return m}
 const DAYS=['Pz','Pt','Sa','Ça','Pe','Cu','Ct'];
 const toMin=s=>{const m=/^(\d{1,2})[:.](\d{2})$/.exec(String(s).trim());return m&&+m[1]<24&&+m[2]<60?+m[1]*60+ +m[2]:NaN};
-function catVisible(c){
+function catVisible(c,now=new Date()){
   if(!c.hh)return true;
-  const now=new Date(),t=now.getHours()*60+now.getMinutes(),f=toMin(c.hh.from),e=toMin(c.hh.to);
+  const t=now.getHours()*60+now.getMinutes(),f=toMin(c.hh.from),e=toMin(c.hh.to);
   let day=now.getDay();
   if(isNaN(f)||isNaN(e))return false;
   if(e>f)return c.hh.days.includes(day)&&t>=f&&t<e;
@@ -314,7 +323,7 @@ async function exportCsv(){
 /* ---------- storage ---------- */
 function setBanner(t){$('#banner').innerHTML=t?`<div class="banner">${esc(t)}</div>`:''}
 function onDbErr(e){const c=(e&&e.code)||'';console.error(e);
-  setBanner(c==='permission-denied'?'Erişim reddedildi (permission-denied): Firebase Rules yayınlanmamış ya da giriş e-postası kuraldakiyle aynı değil.'
+  setBanner(c==='permission-denied'?'Erişim reddedildi: giriş yapılan e-posta ('+userEmail+') Firebase Rules\'taki e-postayla aynı değil ya da kural yayınlanmamış.'
    :c==='unavailable'?'İnternet bağlantısı yok — değişiklikler bu cihazda bekliyor, bağlantı gelince gönderilecek.'
    :'Bağlantı sorunu ('+(c||(e&&e.message)||'bilinmiyor')+')')}
 function write(path,data){
@@ -349,7 +358,7 @@ function addBill(bill){
   });
   return dayChain;
 }
-let unsubs=[];
+let unsubs=[],userEmail='';
 function showLogin(msg){
   modal(`<h3>Giriş</h3><p>Ortak veriler için bar hesabıyla giriş yapın.</p>
     <label>E-posta<input class="tx" id="le" type="email" autocomplete="username"></label>
@@ -365,13 +374,13 @@ async function doLogin(){
   try{await window.FB.login(e,p)}catch(x){er.textContent='Giriş başarısız. E-posta veya şifre yanlış olabilir; internet bağlantısını da kontrol edin.'}
 }
 function startSync(){
-  const m=$('#mode');m.textContent='Senkron';m.className='mode sync';m.title='Veriler Firebase\'de, tüm cihazlarla eşleniyor';
+  const m=$('#mode');m.textContent='Senkron';m.className='mode sync';m.title='Giriş: '+userEmail;
   setBanner('');
   unsubs.push(db.doc('bar/config').onSnapshot(s=>{
     if(pending['bar/config'])return;
-    if(!s.exists){saveMenu();return}
+    if(!s.exists){saveMenu();startOrders();return}
     const mm=s.data().menu;if(!mm||!mm.cats)return;
-    menu=migrate(clone(mm));LS.set('snug.menu',menu);
+    menu=migrate(clone(mm));LS.set('snug.menu',menu);startOrders();
     if(view.screen!=='menu')render();
   },onDbErr));
   unsubs.push(db.collection('tables').onSnapshot(snap=>{
@@ -381,11 +390,41 @@ function startSync(){
   },onDbErr));
   if(view.screen==='day')renderDay();
 }
+let ordersOn=false;const busyOrders=new Set();
+function startOrders(){
+  if(ordersOn||!db||!db.newOrders)return;ordersOn=true;
+  unsubs.push(db.newOrders(list=>list.forEach(processOrder),onDbErr));
+  unsubs.push(()=>{ordersOn=false});
+}
+function buildFromOrder(o){
+  return cur=>{
+    const t=cur&&cur.lines&&cur.lines.length?clone(cur):{lines:[],openedAt:o.t};
+    let added=0;const at=new Date(o.t);
+    (Array.isArray(o.lines)?o.lines:[]).slice(0,40).forEach(x=>{
+      let it=null,cat=null;for(const c of menu.cats){const f=c.items.find(i=>i.id===x.id);if(f){it=f;cat=c;break}}
+      if(!it||!catVisible(cat,at))return;
+      const v=it.v.find(v=>v.l===x.l);if(!v)return;
+      const q=Math.max(1,Math.min(20,parseInt(x.q,10)||1));
+      addLine(t,{key:it.id+'|'+v.l+'|'+cents(v.p),name:it.name,l:v.l,p:cents(v.p),q});added+=q;
+    });
+    flashKey=null;
+    return added?t:null;
+  };
+}
+async function processOrder(o){
+  if(busyOrders.has(o.id))return;busyOrders.add(o.id);
+  const n=parseInt(o.table,10);
+  const table=/^\d{1,3}$/.test(String(o.table))&&n>=1&&n<=menu.tableCount?String(n):null;
+  try{const r=await db.mergeOrder(o.id,table,buildFromOrder(o));if(r)toast('Masa '+table+': QR siparişi eklendi')}
+  catch(e){busyOrders.delete(o.id);onDbErr(e);return}
+  setTimeout(()=>busyOrders.delete(o.id),60000);
+}
+function toast(t){const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.remove(),5000)}
 function connect(){
   const go=()=>{
     window.FB.onAuth(u=>{
       unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];
-      if(u){db=window.FB.db;closeModal();startSync();$('#logout').hidden=false}
+      if(u){userEmail=u.email||'';db=window.FB.db;closeModal();startSync();$('#logout').hidden=false}
       else{db=null;$('#logout').hidden=true;const m=$('#mode');m.textContent='Giriş yok';m.className='mode';showLogin()}
     });
   };
@@ -508,6 +547,7 @@ function renderEditor(){
   const c=cats[view.ecat];
   $('#main').innerHTML=`<div class="ed">
     <div class="eb"><label>Masa sayısı <input class="tx" data-edit="tables" inputmode="numeric" value="${draft.tableCount}"></label>
+      <label class="nu">Telegram adresi <input class="tx" data-edit="notify" placeholder="https://…workers.dev" value="${esc(draft.notifyUrl||'')}"></label>
       <button class="btn" data-act="edcancel">Vazgeç</button><button class="btn primary" data-act="edsave">Değişiklikleri kaydet</button></div>
     <nav class="ecats">${cats.map((x,i)=>`<button data-act="ecat" data-i="${i}" aria-current="${i===view.ecat}">${esc(x.name||'Adsız')}</button>`).join('')}<button class="add" data-act="addcat">+ Kategori ekle</button></nav>
     <section class="eitems">${c?`
@@ -623,11 +663,13 @@ document.addEventListener('click',e=>{
     case'edsave':{closeModal();
       const bad=[];const tc=parseInt(draft.tableCount,10);
       if(!(tc>=1&&tc<=200))bad.push('Masa sayısı 1–200 arası olmalı.');
+      if(draft.notifyUrl&&!/^https:\/\/[^\s]+$/.test(String(draft.notifyUrl).trim()))bad.push('Telegram adresi https:// ile başlamalı.');
       draft.cats.forEach(c=>{if(!c.name.trim())bad.push('Adsız bir kategori var.');if(c.hh&&(isNaN(toMin(c.hh.from))||isNaN(toMin(c.hh.to))))bad.push(`"${c.name}" için saatleri 18:00 biçiminde yazın.`);c.items.forEach(it=>{
         if(!it.name.trim())bad.push(`"${c.name}" içinde adsız bir ürün var.`);
         it.v.forEach(v=>{if(!(num(v.p)>=0))bad.push(`"${it.name||'Adsız'}" için fiyat geçersiz.`)});
         if(it.v.length>1&&it.v.some(v=>!String(v.l).trim()))bad.push(`"${it.name||'Adsız'}" için her boyutun bir adı olmalı.`)})});
       if(bad.length){modal(`<h3>Kaydedilemedi</h3>${[...new Set(bad)].slice(0,6).map(x=>`<p>${esc(x)}</p>`).join('')}<button class="btn" data-act="mclose">Düzelt</button>`);return}
+      draft.notifyUrl=String(draft.notifyUrl||'').trim();
       draft.tableCount=tc;draft.cats.forEach(c=>{c.name=c.name.trim();c.items.forEach(it=>{it.name=it.name.trim();it.v.forEach(v=>{v.l=String(v.l).trim();v.p=Math.round(num(v.p)*100)/100})})});
       menu=draft;draft=null;dirty=false;saveMenu();view.screen='tables';render();break}
   }
@@ -636,6 +678,7 @@ document.addEventListener('input',e=>{
   const el=e.target,k=el.dataset.edit;if(!k||!draft)return;
   const c=draft.cats[view.ecat];dirty=true;
   if(k==='tables')draft.tableCount=el.value;
+  else if(k==='notify')draft.notifyUrl=el.value;
   else if(k==='cat'){c.name=el.value;const b=document.querySelectorAll('.ecats button')[view.ecat];if(b)b.textContent=el.value||'Adsız'}
   else if(k==='hhfrom')c.hh.from=el.value;
   else if(k==='hhto')c.hh.to=el.value;
