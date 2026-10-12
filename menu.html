@@ -352,7 +352,6 @@ function footHtml(){return`<footer class="ft">
 let note='',sugShown=new Set();
 function suggest(k){
   const f=findLine(k);if(!f||!f.c.sug)return;const sid=f.c.sug;
-  if(sugShown.has(sid))return;
   let it=null,c=null;for(const x of menu.cats){const y=x.items.find(i=>i.id===sid);if(y){it=y;c=x;break}}
   if(!it||it.out||!catVisible(c)||!it.v.length)return;
   if(it.v.some(v=>cart[ckey(it.id,v.l)]))return;
