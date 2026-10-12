@@ -140,6 +140,53 @@ button.it:active,.vb:active{transform:scale(.97);background:var(--goldbg)}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .eb label.nu{margin-right:0}.eb label.nu input{width:260px}
 .toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:700;z-index:60;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.stockbtn{color:var(--danger)!important;border:1px dashed var(--danger)!important;margin-top:8px}
+.stockbtn[aria-pressed="true"]{background:var(--danger)!important;color:#fff!important}
+.stockhint{grid-column:1/-1;margin:0;padding:10px 12px;border-radius:10px;background:var(--goldbg);font-size:15px}
+.it.out{opacity:.55}
+.it .nm[role=button]{cursor:pointer;text-decoration:underline dotted}
+.sold{font-style:normal;font-size:13px;font-weight:700;color:#fff;background:var(--danger);border-radius:6px;padding:1px 6px;margin-left:4px}
+.notes{padding:8px 10px 0;display:grid;gap:6px}
+.note{display:flex;align-items:flex-start;gap:8px;background:var(--goldbg);border-radius:10px;padding:8px 10px;font-size:15px;line-height:1.3}
+.note span{flex:1;min-width:0;overflow-wrap:anywhere}
+.note button{width:28px;height:28px;border-radius:8px;background:var(--panel);flex:none}
+.li.gift .nm{color:var(--ok)}.li.gift .lt{color:var(--ok)}
+.loy{display:grid;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg)}
+.loy label{font-size:14px;color:var(--muted)}
+.loy p{margin:0;color:var(--ink)}
+.loy .err{color:var(--danger)}
+.btn.gold{background:var(--goldbg);border:1px solid var(--gold)}
+.pickl{display:grid;gap:8px}
+.spl{display:grid;gap:4px;max-height:42vh;overflow:auto}
+.sl{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;border:1px solid var(--line)}
+.sl.on{border-color:var(--gold);background:var(--goldbg)}
+.sl .t{flex:1;min-width:0;line-height:1.25}
+.sl small{display:block;color:var(--muted);font-size:13px}
+.sl .qty{display:flex;align-items:center;gap:4px}
+.sl .qty button{width:38px;height:36px;border-radius:9px;background:var(--panel2);font-size:20px}
+.sl .qty span{min-width:42px;text-align:center;font-weight:700}
+.sl .qty button:disabled{opacity:.35}
+.eq{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--muted)}
+.eq .btn{flex:none;width:40px;padding:8px 0}
+.eq b{color:var(--ink)}
+.copts{display:grid;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:16px}
+.copts label{display:grid;gap:4px;color:var(--muted);font-size:14px}
+.ck{display:flex!important;align-items:center;gap:8px;color:var(--ink)!important;font-size:15px!important;cursor:pointer}
+.ck input{width:20px;height:20px;accent-color:var(--gold)}
+.ck.out{flex:none;color:var(--danger)!important;white-space:nowrap}
+select.tx,textarea.tx{font:inherit;color:inherit}
+textarea.tx{resize:vertical}
+.tx.emo{width:64px;flex:none;text-align:center}
+.rr{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.rr button{padding:9px 14px;border-radius:999px;background:var(--panel2);font-weight:500;color:var(--muted)}
+.rr button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.rh{font-family:var(--serif);font-size:21px;margin:22px 0 10px}
+.bars{display:grid;gap:6px}
+.br{display:grid;grid-template-columns:minmax(90px,38%) 1fr auto;align-items:center;gap:10px;font-size:15px}
+.br .k{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br .bt{height:14px;background:var(--panel2);border-radius:7px;overflow:hidden}
+.br .bt i{display:block;height:100%;background:var(--gold);border-radius:7px}
+.br .v{font-weight:700;min-width:70px;text-align:right}
 /* modal */
 .ov{position:fixed;inset:0;background:rgba(20,12,8,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
 .md{background:var(--panel);border-radius:16px;padding:22px;width:min(460px,100%);max-height:90%;overflow:auto;display:grid;gap:14px}
@@ -200,6 +247,7 @@ details.bill summary::-webkit-details-marker{display:none}
     <nav class="nav" id="nav">
       <button data-act="go" data-s="tables">Masalar</button>
       <button data-act="go" data-s="day">Kasa</button>
+      <button data-act="go" data-s="report">Rapor</button>
       <button data-act="go" data-s="menu">Menü</button>
     </nav>
     <span class="mode" id="mode" title="">Bağlanıyor…</span><button class="btn" id="logout" data-act="logout" hidden style="flex:none;padding:8px 12px">Çıkış</button>
@@ -240,7 +288,9 @@ const db={
     if(!table){tr.delete(oref);return null}
     const tref=doc(fs,'tables/'+table),t=await tr.get(tref);
     const next=build(t.exists()?t.data():null);
-    if(next)tr.set(tref,next);tr.delete(oref);return next})
+    if(next)tr.set(tref,next);tr.delete(oref);return next}),
+  loyalty:(id,fn)=>runTransaction(fs,async tr=>{
+    const r=doc(fs,'loyalty/'+id),s=await tr.get(r);const next=fn(s.exists()?s.data():null);if(next)tr.set(r,next);return next})
 };
 window.FB={db,
   onAuth:cb=>onAuthStateChanged(auth,cb),
@@ -273,7 +323,15 @@ const RAW=[
 ];
 const HH_ITEMS=['Gin Tonic','Aperol Spritz','Rum & Cola','Whisky & Cola','Classic Mojito','Hugo Spritz','Espresso Martini','Bramble','Tequila Sunrise','Piña Colada','Moscow Mule','Snuggest Peach','Istanbul City','Antalya Sun','Anatolian','Troia','Mexican','Virgin Mojito','Piña Colada Virgin','Sunset Cooler Virgin','Green Apple Spritz Virgin'];
 function hhCat(){return{id:'hh',name:'Kokteyl saati 5€',hh:{days:[0,4],from:'18:00',to:'23:00'},items:HH_ITEMS.map((n,i)=>({id:'hh'+i,name:n,v:[{l:'Kokteyl saati',p:5}]}))}}
-function migrate(m){if((m.ver||0)<2){m.cats.unshift(hhCat());m.ver=2}return m}
+function migrate(m){
+  if((m.ver||0)<2){m.cats.unshift(hhCat());m.ver=2}
+  if(m.ver<3){
+    m.cats.forEach(c=>{if(['hh','c0','c1','c2','c3'].includes(c.id))c.stamp=true;if(c.id==='c11')c.sug='c14i2';if(c.id==='c12')c.sug='c15i0'});
+    m.events=m.events||[];m.ver=3;
+  }
+  return m;
+}
+function findItem(id){for(const c of menu.cats){const it=c.items.find(i=>i.id===id);if(it)return{c,it}}return null}
 const DAYS=['Pz','Pt','Sa','Ça','Pe','Cu','Ct'];
 const toMin=s=>{const m=/^(\d{1,2})[:.](\d{2})$/.exec(String(s).trim());return m&&+m[1]<24&&+m[2]<60?+m[1]*60+ +m[2]:NaN};
 function catVisible(c,now=new Date()){
@@ -405,12 +463,14 @@ function buildFromOrder(o){
     let added=0;const at=new Date(o.t);
     (Array.isArray(o.lines)?o.lines:[]).slice(0,40).forEach(x=>{
       let it=null,cat=null;for(const c of menu.cats){const f=c.items.find(i=>i.id===x.id);if(f){it=f;cat=c;break}}
-      if(!it||!catVisible(cat,at))return;
+      if(!it||it.out||!catVisible(cat,at))return;
       const v=it.v.find(v=>v.l===x.l);if(!v)return;
       const q=Math.max(1,Math.min(20,parseInt(x.q,10)||1));
       addLine(t,{key:it.id+'|'+v.l+'|'+cents(v.p),name:it.name,l:v.l,p:cents(v.p),q});added+=q;
     });
     flashKey=null;
+    const nt=typeof o.note==='string'?o.note.trim().slice(0,200):'';
+    if(added&&nt){t.notes=t.notes||[];t.notes.push({t:o.t,text:nt,src:'qr'})}
     return added?t:null;
   };
 }
@@ -446,6 +506,7 @@ function render(){
   else if(s==='table')renderTable();
   else if(s==='day')renderDay();
   else if(s==='menu')renderEditor();
+  else if(s==='report')renderReport();
 }
 function softRender(){
   if(view.screen==='tables')renderTables();
@@ -474,7 +535,8 @@ function renderTable(){
   if(!vis.includes(view.cat))view.cat=vis[0]||0;
   view.sig=visSig();
   $('#main').innerHTML=`<div class="tv">
-    <nav class="cats">${vis.map(i=>`<button data-act="cat" data-i="${i}" aria-current="${i===view.cat}"${cats[i].hh?' class="hh"':''}>${esc(cats[i].name)}</button>`).join('')}</nav>
+    <nav class="cats">${vis.map(i=>`<button data-act="cat" data-i="${i}" aria-current="${i===view.cat}"${cats[i].hh?' class="hh"':''}>${esc(cats[i].name)}</button>`).join('')}
+      <button class="stockbtn" data-act="stockmode" aria-pressed="${!!view.stock}">${view.stock?'✓ Stok modu':'Stok modu'}</button></nav>
     <section class="items" id="items"></section>
     <aside class="order" id="order"></aside>
     <button class="orderbar" id="orderbar" data-act="showorder"></button>
@@ -484,10 +546,11 @@ function renderTable(){
 function renderItems(){
   const c=menu.cats[view.cat];const el=$('#items');if(!el)return;
   if(!c||!c.items.length){el.innerHTML=`<div class="empty">Bu kategoride ürün yok. Menü ekranından ekleyebilirsiniz.</div>`;return}
-  el.innerHTML=c.items.map((it,ii)=>`<div class="it" data-it="${esc(it.id)}"><span class="nm">${esc(it.name)}</span>
+  const sm=view.stock?`<p class="stockhint">Stok modu: bir ürünün adına dokunun, tükendi / var olarak değişsin. Bitince "Stok modu"na tekrar basın.</p>`:'';
+  el.innerHTML=sm+c.items.map((it,ii)=>`<div class="it${it.out?' out':''}" data-it="${esc(it.id)}"><span class="nm" ${view.stock?`data-act="toggleout" data-ii="${ii}" role="button"`:''}>${esc(it.name)}${it.out?' <em class="sold">Tükendi</em>':''}</span>
     ${it.v.map((v,vi)=>`<div class="vr" data-k="${esc(it.id+'|'+v.l+'|')}">
       <span class="vp">${v.l?`<b>${esc(v.l)}</b> `:''}${eur(cents(v.p))}</span>
-      <span class="stp"><button data-act="sub" data-ii="${ii}" data-vi="${vi}" aria-label="Azalt">−</button><span class="cn">0</span><button data-act="add" data-ii="${ii}" data-vi="${vi}" aria-label="Ekle">+</button></span>
+      <span class="stp"><button data-act="sub" data-ii="${ii}" data-vi="${vi}" aria-label="Azalt">−</button><span class="cn">0</span><button data-act="add" data-ii="${ii}" data-vi="${vi}" aria-label="Ekle" ${it.out?'disabled':''}>+</button></span>
     </div>`).join('')}</div>`).join('');
   updateCounts();
 }
@@ -507,14 +570,15 @@ function renderOrder(){
   const el=$('#order');if(!el)return;
   const n=view.table,t=tables[n],lines=t?t.lines:[];
   el.innerHTML=`<div class="oh"><h2>Masa ${esc(n)}</h2>${t&&lines.length?`<span class="since">${hm(t.openedAt)} · ${mins(t.openedAt)}</span>`:''}<button class="btn oclose" style="flex:none" data-act="hideorder">Menü</button></div>
-    <div class="ol">${lines.length?lines.map((l,i)=>`<div class="li${l.key===flashKey?' flash':''}">
+    ${t&&t.notes&&t.notes.length?`<div class="notes">${t.notes.map((nt,i)=>`<div class="note"><span>📝 ${nt.src==='qr'?'<b>QR</b> ':''}${esc(nt.text)}</span><button data-act="delnote" data-i="${i}" aria-label="Notu sil">✕</button></div>`).join('')}</div>`:''}
+    <div class="ol">${lines.length?lines.map((l,i)=>`<div class="li${l.key===flashKey?' flash':''}${l.p<0?' gift':''}">
       <span class="nm">${esc(l.name)}${l.l?` <span class="vl">${esc(l.l)}</span>`:''}</span><span class="lt">${eur(l.p*l.q)}</span>
-      <div class="qty"><button data-act="dec" data-i="${i}" aria-label="Azalt">−</button><span>${l.q}</span><button data-act="inc" data-i="${i}" aria-label="Arttır">+</button><span class="each">${eur(l.p)} / adet</span></div>
+      <div class="qty">${l.p<0?`<button data-act="dec" data-i="${i}" aria-label="Kaldır">✕</button><span class="each">sadakat hediyesi</span>`:`<button data-act="dec" data-i="${i}" aria-label="Azalt">−</button><span>${l.q}</span><button data-act="inc" data-i="${i}" aria-label="Arttır">+</button><span class="each">${eur(l.p)} / adet</span>`}</div>
     </div>`).join(''):'<p class="hint" style="padding:14px 6px">Henüz sipariş yok. Soldan ürün seçin.</p>'}</div>
     <div class="of">
       <div class="total"><span>Toplam</span><b>${eur(tTotal(t))}</b></div>
-      <div class="row"><button class="btn" data-act="custom">Özel ürün</button><button class="btn" data-act="move" ${lines.length?'':'disabled'}>Masayı taşı</button></div>
-      <button class="btn primary" data-act="close" ${lines.length?'':'disabled'}>Hesabı kapat</button>
+      <div class="row"><button class="btn" data-act="custom">Özel ürün</button><button class="btn" data-act="addnote" ${lines.length?'':'disabled'}>Not ekle</button><button class="btn" data-act="move" ${lines.length?'':'disabled'}>Taşı</button></div>
+      <div class="row"><button class="btn" data-act="split" ${lines.length?'':'disabled'}>Hesabı böl</button><button class="btn primary" data-act="close" ${lines.length?'':'disabled'}>Hesabı kapat</button></div>
     </div>`;
   updateCounts();
   const ob=$('#orderbar');if(ob)ob.innerHTML=`<span>Masa ${esc(n)} · ${tCount(t)} ürün</span><span>${eur(tTotal(t))}</span>`;
@@ -538,6 +602,7 @@ async function renderDay(){
     ${bills.length?bills.slice().reverse().map(b=>`<details class="bill"><summary><span>${hm(b.t)}</span><span>Masa ${esc(b.table)}</span><span class="m">${b.method==='card'?'Kart':'Nakit'}</span><b>${eur(b.total)}</b></summary>
       <ul>${b.lines.map(l=>`<li><span>${l.q}× ${esc(l.name)}${l.l?' ('+esc(l.l)+')':''}</span><span>${eur(l.p*l.q)}</span></li>`).join('')}</ul></details>`).join('')
       :'<p class="hint">Bu gün için kapatılmış hesap yok.</p>'}
+    ${bills.length?`<button class="btn" style="margin-top:12px;width:100%" data-act="dayreport">📨 Gün sonu raporunu Telegram'a gönder</button>`:''}
     <p id="dlmsg" class="hint"></p>
     ${bills.length?`<button class="btn danger" style="margin-top:12px" data-act="dayreset">${off===0?'Bugünün kasasını sıfırla':'Bu günün kasasını sıfırla'}</button>`:''}
     <p class="hint" style="margin-top:18px;font-size:14px">Gün sabah 06:00'da değişir; gece yarısından sonraki hesaplar önceki güne yazılır.</p>
@@ -546,20 +611,24 @@ async function renderDay(){
 }
 function renderEditor(){
   if(!draft){draft=clone(menu);dirty=false}
+  draft.events=draft.events||[];
   const cats=draft.cats;if(view.ecat>=cats.length)view.ecat=Math.max(0,cats.length-1);
-  const c=cats[view.ecat];
+  const c=view.ecat<0?null:cats[view.ecat];
+  const allItems=[];cats.forEach(x=>x.items.forEach(it=>{if(it.name)allItems.push([it.id,x.name+' › '+it.name])}));
   $('#main').innerHTML=`<div class="ed">
     <div class="eb"><label>Masa sayısı <input class="tx" data-edit="tables" inputmode="numeric" value="${draft.tableCount}"></label>
       <label class="nu">Telegram adresi <input class="tx" data-edit="notify" placeholder="https://…workers.dev" value="${esc(draft.notifyUrl||'')}"></label>
       <button class="btn" data-act="edcancel">Vazgeç</button><button class="btn primary" data-act="edsave">Değişiklikleri kaydet</button></div>
-    <nav class="ecats">${cats.map((x,i)=>`<button data-act="ecat" data-i="${i}" aria-current="${i===view.ecat}">${esc(x.name||'Adsız')}</button>`).join('')}<button class="add" data-act="addcat">+ Kategori ekle</button></nav>
-    <section class="eitems">${c?`
+    <nav class="ecats"><button data-act="ecat" data-i="-1" aria-current="${view.ecat<0}">🎉 Etkinlikler</button>${cats.map((x,i)=>`<button data-act="ecat" data-i="${i}" aria-current="${i===view.ecat}">${esc(x.name||'Adsız')}</button>`).join('')}<button class="add" data-act="addcat">+ Kategori ekle</button></nav>
+    <section class="eitems">${view.ecat<0?eventsEditor():c?`
       <div class="ech"><label>Kategori adı<input class="tx" data-edit="cat" value="${esc(c.name)}"></label><button class="btn danger" style="flex:none" data-act="delcat">Kategoriyi sil</button></div>
+      <div class="copts"><label class="ck"><input type="checkbox" data-edit="stamp" ${c.stamp?'checked':''}> Sadakat kartında damga sayılır</label>
+        <label>Müşteriye öneri ("bunu da deneyin")<select class="tx" data-edit="sug"><option value="">— yok —</option>${allItems.map(([id,n])=>`<option value="${esc(id)}" ${c.sug===id?'selected':''}>${esc(n)}</option>`).join('')}</select></label></div>
       ${c.hh?`<div class="sched"><p>Bu kategori sipariş ekranında sadece seçili günlerde ve saatlerde görünür.</p>
         <div class="days">${DAYS.map((n,i)=>`<button data-act="hhday" data-d="${i}" aria-pressed="${c.hh.days.includes(i)}">${n}</button>`).join('')}</div>
         <div class="ev"><input class="tx p" data-edit="hhfrom" value="${esc(c.hh.from)}" inputmode="numeric"><span class="cur">–</span><input class="tx p" data-edit="hhto" value="${esc(c.hh.to)}" inputmode="numeric"></div></div>`:''}
       ${c.items.map((it,ii)=>`<div class="erow">
-        <div class="r1"><input class="tx" data-edit="name" data-ii="${ii}" value="${esc(it.name)}" placeholder="Ürün adı"><button class="x" data-act="delitem" data-ii="${ii}" aria-label="Ürünü sil">✕</button></div>
+        <div class="r1"><input class="tx" data-edit="name" data-ii="${ii}" value="${esc(it.name)}" placeholder="Ürün adı"><label class="ck out"><input type="checkbox" data-edit="out" data-ii="${ii}" ${it.out?'checked':''}> Tükendi</label><button class="x" data-act="delitem" data-ii="${ii}" aria-label="Ürünü sil">✕</button></div>
         ${it.v.map((v,vi)=>`<div class="ev">
           <input class="tx l" data-edit="vl" data-ii="${ii}" data-vi="${vi}" value="${esc(v.l)}" placeholder="${it.v.length>1?'örn. 50 ml':'boyut (ops.)'}">
           <input class="tx p" data-edit="vp" data-ii="${ii}" data-vi="${vi}" inputmode="decimal" value="${Number(v.p).toFixed(2)}"><span class="cur">€</span>
@@ -571,6 +640,146 @@ function renderEditor(){
     </section></div>`;
 }
 
+/* ---------- payment, split, loyalty ---------- */
+let pay={phone:'',info:null,redeemed:false},split=null;
+function normPhone(p){let d=String(p||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);if(d.length===8)d='371'+d;return d.length>=8&&d.length<=15?d:''}
+async function loyId(phone){const d=normPhone(phone);if(!d||!crypto.subtle)return null;const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('snuggest:'+d));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function stampCount(lines){const n=lines.reduce((s,l)=>{if(!l.key)return s;if(l.key.startsWith('gift|'))return s-l.q;if(!(l.p>0))return s;const f=findItem(l.key.split('|')[0]);return s+(f&&f.c.stamp?l.q:0)},0);return Math.max(0,n)}
+function loyBlock(){return`<div class="loy"><label>Sadakat kartı — telefon (isteğe bağlı)</label>
+  <div class="row"><input class="tx" id="lph" inputmode="tel" autocomplete="off" value="${esc(pay.phone)}" placeholder="2xxxxxxx"><button class="btn" data-act="loycheck" style="flex:none">Kontrol</button></div>
+  <div id="loyinfo">${loyInfo()}</div></div>`}
+function loyInfo(){const i=pay.info;if(!i)return'';if(i.err)return`<p class="err">${esc(i.err)}</p>`;
+  return`<p>🎟️ <b>${i.stamps}/10</b> damga${i.free?` · <b>🎁 ${i.free} hediye hakkı</b>`:''}${i.isNew?' · yeni müşteri':''}</p>
+  ${i.free&&!pay.redeemed?`<button class="btn gold" data-act="redeem">🎁 Hediye kokteyli kullan</button>`:''}${pay.redeemed?'<p>🎁 Hediye bu hesaba uygulandı.</p>':''}`}
+function readPhone(){const el=$('#lph');if(el)pay.phone=el.value.trim();return pay.phone}
+async function loyCheck(){
+  const ph=readPhone();if(!normPhone(ph)){pay.info={err:'Geçerli bir telefon numarası girin.'};$('#loyinfo').innerHTML=loyInfo();return}
+  $('#loyinfo').innerHTML='<p>Kontrol ediliyor…</p>';
+  try{const id=await loyId(ph);const sn=await db.doc('loyalty/'+id).get();const d=sn.exists?sn.data():{};
+    pay.info={stamps:d.stamps||0,free:d.free||0,isNew:!sn.exists}}catch(e){pay.info={err:'Kart okunamadı (bağlantı?).'}}
+  const el=$('#loyinfo');if(el)el.innerHTML=loyInfo();
+}
+async function addStamps(phone,n){
+  if(!n||!normPhone(phone)||!db||!db.loyalty)return;
+  try{const id=await loyId(phone);const r=await db.loyalty(id,d=>{d=d||{};const s=(d.stamps||0)+n;return{stamps:s%10,free:(d.free||0)+Math.floor(s/10),total:(d.total||0)+n,used:d.used||0,last:Date.now()}});
+    toast(`🎟️ +${n} damga · ${r.stamps}/10${r.free?` · 🎁 ${r.free} hediye`:''}`)}catch(e){toast('Damga eklenemedi: bağlantıyı kontrol edin')}
+}
+function closeHtml(){const t=tables[view.table];return`<h3>Masa ${esc(view.table)} — hesap</h3><div class="big">${eur(tTotal(t))}</div><p>${tCount(t)} ürün</p>
+  ${loyBlock()}
+  <p>Ödeme şekli:</p>
+  <div class="row"><button class="btn primary" data-act="pay" data-m="cash">Nakit</button><button class="btn primary" data-act="pay" data-m="card">Kart</button></div>
+  <div class="row"><button class="btn" data-act="split">Hesabı böl</button><button class="btn" data-act="mclose">Geri</button><button class="btn danger" data-act="wipe">Boşalt</button></div>`}
+function splitHtml(){
+  const t=tables[view.table];const sel=split.sel;const tot=t.lines.reduce((s,l,i)=>s+l.p*(sel[i]||0),0);
+  const ppl=split.ppl||2;
+  return`<h3>Masa ${esc(view.table)} — hesabı böl</h3><p>Bu kişinin ödeyeceği ürünleri seçin, ödemeyi alın. Kalanlar masada kalır.</p>
+  <div class="spl">${t.lines.map((l,i)=>`<div class="sl${sel[i]?' on':''}"><span class="t">${esc(l.name)}${l.l?` <small>${esc(l.l)}</small>`:''}<small>${eur(l.p)} × ${l.q}</small></span>
+    <span class="qty"><button data-act="ssub" data-i="${i}" ${sel[i]?'':'disabled'}>−</button><span>${sel[i]||0}/${l.q}</span><button data-act="sadd" data-i="${i}" ${(sel[i]||0)<l.q?'':'disabled'}>+</button></span></div>`).join('')}</div>
+  <div class="row"><button class="btn" data-act="sall">Hepsini seç</button><button class="btn" data-act="snone">Temizle</button></div>
+  <div class="total"><span>Seçilen</span><b>${eur(tot)}</b></div>
+  ${loyBlock()}
+  <div class="row"><button class="btn primary" data-act="spay" data-m="cash" ${tot>0?'':'disabled'}>Seçileni nakit al</button><button class="btn primary" data-act="spay" data-m="card" ${tot>0?'':'disabled'}>Seçileni kart al</button></div>
+  <div class="eq"><span>Eşit böl:</span><button class="btn" data-act="pplm">−</button><b>${ppl} kişi</b><button class="btn" data-act="pplp">+</button><span>= <b>${eur(Math.ceil(tTotal(t)/ppl))}</b> / kişi</span></div>
+  <button class="btn" data-act="close">Geri</button>`}
+function doPay(method,sel){
+  const n=view.table,t=clone(tables[n]);if(!t)return;
+  const paid=[];t.lines.forEach((l,i)=>{const q=sel?Math.min(sel[i]||0,l.q):l.q;if(q>0)paid.push({...l,q})});
+  if(!paid.length)return;
+  const phone=readPhone(),stamps=stampCount(paid);
+  const total=paid.reduce((s,l)=>s+l.p*l.q,0);
+  addBill({t:Date.now(),table:n,method,total,lines:paid.map(l=>({name:l.name,l:l.l,p:l.p,q:l.q}))});
+  if(stamps&&normPhone(phone))addStamps(phone,stamps);
+  if(sel){paid.forEach(pl=>{const x=t.lines.find(l=>l.key===pl.key);if(x)x.q-=pl.q});t.lines=t.lines.filter(l=>l.q>0);if(!t.lines.some(l=>l.p>0))t.lines=[]}
+  else t.lines=[];
+  pay={phone:'',info:null,redeemed:false};
+  tables[n]=t;saveTable(n);
+  if(t.lines.length){split={sel:t.lines.map(()=>0),ppl:split?split.ppl:2};modal(splitHtml());toast('Ödeme alındı: '+eur(total));renderOrder()}
+  else{split=null;closeModal();view.screen='tables';render();toast('Hesap kapandı: '+eur(total))}
+}
+async function redeemPick(i){
+  const t=tables[view.table],l=t&&t.lines[i];if(!l)return;
+  const id=await loyId(pay.phone);if(!id)return;
+  try{const r=await db.loyalty(id,d=>(!d||!(d.free>0))?null:{...d,free:d.free-1,used:(d.used||0)+1,last:Date.now()});
+    if(!r){pay.info={err:'Bu kartta kullanılabilir hediye yok.'};modal(closeHtml());return}
+    pay.redeemed=true;pay.info={...pay.info,free:r.free};
+    mutateTable(view.table,x=>x.lines.push({key:'gift|'+uid(),name:'🎁 Hediye: '+l.name,l:l.l,p:-l.p,q:1}));
+    modal(closeHtml());toast('🎁 Hediye uygulandı')}
+  catch(e){pay.info={err:'Hediye uygulanamadı (bağlantı?).'};modal(closeHtml())}
+}
+
+/* ---------- reports ---------- */
+const WD=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+function dayList(r){
+  const base=bizDate(0),[Y,M,D]=base.split('-').map(Number),fmt=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const out=[];const add=(a,b)=>{for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1))out.push(fmt(d))};
+  const today=new Date(Y,M-1,D);
+  if(r==='1')add(today,today);
+  else if(r==='7')add(new Date(Y,M-1,D-6),today);
+  else if(r==='30')add(new Date(Y,M-1,D-29),today);
+  else if(r==='m')add(new Date(Y,M-1,1),today);
+  else if(r==='pm')add(new Date(Y,M-2,1),new Date(Y,M-1,0));
+  return out;
+}
+function bars(rows,fmtv){const mx=Math.max(1,...rows.map(r=>r[1]));
+  return`<div class="bars">${rows.map(([k,v])=>`<div class="br"><span class="k">${esc(k)}</span><span class="bt"><i style="width:${(v/mx*100).toFixed(1)}%"></i></span><span class="v">${fmtv(v)}</span></div>`).join('')}</div>`}
+async function renderReport(){
+  const r=view.rr||'7',days=dayList(r);
+  const main=$('#main');
+  main.innerHTML=`<div class="scroll"><div class="day"><div class="rr">${[['1','Bugün'],['7','Son 7 gün'],['30','Son 30 gün'],['m','Bu ay'],['pm','Geçen ay']].map(([k,l])=>`<button data-act="rr" data-r="${k}" aria-pressed="${k===r}">${l}</button>`).join('')}</div><p class="hint">Yükleniyor…</p></div></div>`;
+  const all=await Promise.all(days.map(d=>getDay(d).then(b=>b.map(x=>({...x,day:d})))));
+  if(view.screen!=='report'||(view.rr||'7')!==r)return;
+  const bills=all.flat(),tot=bills.reduce((s,b)=>s+b.total,0),cash=bills.filter(b=>b.method==='cash').reduce((s,b)=>s+b.total,0);
+  const items={},hours={},wds={},perDay={};let hh=0,gifts=0,giftN=0;
+  bills.forEach(b=>{
+    const h=new Date(b.t).getHours();hours[h]=(hours[h]||0)+b.total;
+    const wd=new Date(b.day+'T12:00:00').getDay();wds[wd]=(wds[wd]||0)+b.total;perDay[b.day]=(perDay[b.day]||0)+b.total;
+    b.lines.forEach(l=>{if(l.p<0){gifts+=-l.p*l.q;giftN+=l.q;return}const k=l.name+(l.l&&l.l!=='Kokteyl saati'?' ('+l.l+')':l.l==='Kokteyl saati'?' (5€)':'');
+      const x=items[k]||(items[k]={q:0,c:0});x.q+=l.q;x.c+=l.p*l.q;if(l.l==='Kokteyl saati')hh+=l.p*l.q});
+  });
+  const top=Object.entries(items).sort((a,b)=>b[1].q-a[1].q).slice(0,12);
+  const topRev=Object.entries(items).sort((a,b)=>b[1].c-a[1].c).slice(0,8);
+  const hourOrder=[...Array(24).keys()].map(i=>(i+10)%24).filter(h=>hours[h]);
+  main.querySelector('.day').innerHTML=`<div class="rr">${[['1','Bugün'],['7','Son 7 gün'],['30','Son 30 gün'],['m','Bu ay'],['pm','Geçen ay']].map(([k,l])=>`<button data-act="rr" data-r="${k}" aria-pressed="${k===r}">${l}</button>`).join('')}</div>
+    <div class="sum"><div><span>Ciro</span><b>${eur(tot)}</b></div><div><span>Hesap</span><b>${bills.length}</b></div><div><span>Ortalama hesap</span><b>${eur(bills.length?Math.round(tot/bills.length):0)}</b></div><div><span>Nakit / Kart</span><b>${tot?Math.round(cash/tot*100):0}% / ${tot?100-Math.round(cash/tot*100):0}%</b></div></div>
+    ${bills.length?`
+    <div class="sum"><div><span>Kokteyl saati cirosu</span><b>${eur(hh)}</b></div><div><span>Kokteyl saati payı</span><b>${tot?Math.round(hh/tot*100):0}%</b></div><div><span>Sadakat hediyesi</span><b>${giftN} · ${eur(gifts)}</b></div><div><span>Günlük ortalama</span><b>${eur(Math.round(tot/days.length))}</b></div></div>
+    <h3 class="rh">En çok satanlar (adet)</h3>${bars(top.map(([k,v])=>[k,v.q]),v=>v+' ad.')}
+    <h3 class="rh">En çok kazandıranlar (ciro)</h3>${bars(topRev.map(([k,v])=>[k,v.c]),eur)}
+    <h3 class="rh">Saatlere göre ciro</h3>${bars(hourOrder.map(h=>[String(h).padStart(2,'0')+':00',hours[h]]),eur)}
+    ${days.length>1?`<h3 class="rh">Günlere göre ciro</h3>${bars(days.filter(d=>perDay[d]).map(d=>[d.slice(8)+'.'+d.slice(5,7)+' '+WD[new Date(d+'T12:00:00').getDay()],perDay[d]]),eur)}
+    <h3 class="rh">Haftanın günleri</h3>${bars([1,2,3,4,5,6,0].filter(w=>wds[w]).map(w=>[WD[w],wds[w]]),eur)}`:''}
+    `:'<p class="hint">Bu dönemde kapatılmış hesap yok.</p>'}
+    <p class="hint" style="font-size:14px;margin-top:18px">Rapor, kasaya kaydedilen (kapatılmış) hesaplardan hesaplanır. Sıfırlanan günler rapora girmez.</p>`;
+}
+function dayReportText(date,bills){
+  const tot=bills.reduce((s,b)=>s+b.total,0),cash=bills.filter(b=>b.method==='cash').reduce((s,b)=>s+b.total,0);
+  const items={};bills.forEach(b=>b.lines.forEach(l=>{if(l.p<0)return;const k=l.name+(l.l&&l.l!=='Kokteyl saati'?' ('+l.l+')':'');items[k]=(items[k]||0)+l.q}));
+  const top=Object.entries(items).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const open=Object.values(tables).filter(t=>t.lines.length);
+  const [y,m,d]=date.split('-');
+  return `📊 Gün sonu — ${d}.${m}.${y}\n💶 Ciro: ${eur(tot)}\n💵 Nakit: ${eur(cash)}\n💳 Kart: ${eur(tot-cash)}\n🧾 Hesap: ${bills.length} · ort. ${eur(bills.length?Math.round(tot/bills.length):0)}`+
+    (top.length?`\n\n🏆 En çok satanlar:\n`+top.map(([k,q],i)=>`${i+1}. ${k} — ${q}`).join('\n'):'')+
+    (open.length?`\n\n⚠️ Açık masa: ${open.length} (${eur(open.reduce((s,t)=>s+tTotal(t),0))})`:'');
+}
+async function sendDayReport(){
+  const m=$('#dlmsg');if(!menu.notifyUrl){if(m)m.textContent='Önce Menü ekranında Telegram adresini girin.';return}
+  if(m)m.textContent='Gönderiliyor…';
+  try{const r=await fetch(menu.notifyUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'report',text:dayReportText(bizDate(view.dayOff),dayBills)})});
+    if(m)m.textContent=r.ok?'✓ Rapor Telegram\'a gönderildi.':'Gönderilemedi. Cloudflare worker kodunun güncel olduğundan emin olun.'}
+  catch(e){if(m)m.textContent='Gönderilemedi (bağlantı?).'}
+}
+
+function eventsEditor(){
+  const ev=draft.events;
+  return`<p class="hint">Burada eklediğiniz etkinlikler QR menünün en üstünde görünür. Metni müşterinin okuyacağı şekilde yazın (örn. İngilizce / Letonca).</p>
+  ${ev.map((e,i)=>`<div class="erow">
+    <div class="r1"><input class="tx emo" data-edit="evf" data-ei="${i}" data-f="emoji" value="${esc(e.emoji||'')}" placeholder="🎤" maxlength="4"><input class="tx" data-edit="evf" data-ei="${i}" data-f="title" value="${esc(e.title||'')}" placeholder="Etkinlik adı (örn. Music Bingo)"><button class="x" data-act="delev" data-ei="${i}" aria-label="Etkinliği sil">✕</button></div>
+    <input class="tx" data-edit="evf" data-ei="${i}" data-f="when" value="${esc(e.when||'')}" placeholder="Ne zaman (örn. Every Wednesday · 20:30)">
+    <textarea class="tx" rows="2" data-edit="evf" data-ei="${i}" data-f="desc" placeholder="Kısa açıklama (örn. Line = free shot, full card = free cocktail)">${esc(e.desc||'')}</textarea>
+    <label class="ck"><input type="checkbox" data-edit="evon" data-ei="${i}" ${e.on!==false?'checked':''}> Menüde göster</label>
+  </div>`).join('')}
+  <button class="btn" data-act="addev">+ Etkinlik ekle</button>`;
+}
 /* ---------- modal ---------- */
 function modal(html){$('#modal').innerHTML=`<div class="ov" data-act="ovclose"><div class="md" role="dialog" aria-modal="true">${html}</div></div>`;const f=$('#modal input');if(f)f.focus()}
 function closeModal(){$('#modal').innerHTML=''}
@@ -628,12 +837,27 @@ document.addEventListener('click',e=>{
       src.lines.forEach(l=>addLine(dst,l));dst.openedAt=Math.min(dst.openedAt,src.openedAt);
       tables[to]=dst;saveTable(to);delete tables[from];saveTable(from);
       closeModal();view.table=to;render();break}
-    case'close':{const t=tables[view.table];modal(`<h3>Masa ${esc(view.table)} — hesap</h3><div class="big">${eur(tTotal(t))}</div><p>${tCount(t)} ürün. Ödeme şekli seçin:</p>
-      <div class="row"><button class="btn primary" data-act="pay" data-m="cash">Nakit</button><button class="btn primary" data-act="pay" data-m="card">Kart</button></div>
-      <div class="row"><button class="btn" data-act="mclose">Geri</button><button class="btn danger" data-act="wipe">Kaydetmeden boşalt</button></div>`);break}
-    case'pay':{const n=view.table,t=tables[n];
-      addBill({t:Date.now(),table:n,method:d.m,total:tTotal(t),lines:t.lines.map(l=>({name:l.name,l:l.l,p:l.p,q:l.q}))});
-      delete tables[n];saveTable(n);closeModal();view.screen='tables';render();break}
+    case'close':{if(!tables[view.table])return;readPhone();split=null;modal(closeHtml());break}
+    case'pay':doPay(d.m,null);break;
+    case'split':{const t=tables[view.table];if(!t)return;readPhone();split={sel:t.lines.map(()=>0),ppl:split?split.ppl:2};modal(splitHtml());break}
+    case'sadd':case'ssub':{readPhone();const i=+d.i,l=tables[view.table].lines[i];split.sel[i]=Math.max(0,Math.min(l.q,(split.sel[i]||0)+(a==='sadd'?1:-1)));modal(splitHtml());break}
+    case'sall':readPhone();split.sel=tables[view.table].lines.map(l=>l.q);modal(splitHtml());break;
+    case'snone':readPhone();split.sel=split.sel.map(()=>0);modal(splitHtml());break;
+    case'pplp':case'pplm':readPhone();split.ppl=Math.max(2,Math.min(20,(split.ppl||2)+(a==='pplp'?1:-1)));modal(splitHtml());break;
+    case'spay':doPay(d.m,split.sel);break;
+    case'loycheck':loyCheck();break;
+    case'redeem':{readPhone();const t=tables[view.table];const ls=t.lines.map((l,i)=>[l,i]).filter(([l])=>l.p>0&&stampCount([l]));
+      if(!ls.length){pay.info={...pay.info,err:'Bu hesapta sadakat kartına uygun kokteyl yok.'};modal(closeHtml());break}
+      modal(`<h3>Hangi kokteyl hediye?</h3><div class="pickl">${ls.map(([l,i])=>`<button class="btn" data-act="redeemon" data-i="${i}">${esc(l.name)}${l.l?' · '+esc(l.l):''} — ${eur(l.p)}</button>`).join('')}</div><button class="btn" data-act="close">Geri</button>`);break}
+    case'redeemon':redeemPick(+d.i);break;
+    case'addnote':modal(`<h3>Masa ${esc(view.table)} — not</h3><label>Not<input class="tx" id="nt" maxlength="200" placeholder="örn. buzsuz, fıstık alerjisi"></label>
+      <div class="row"><button class="btn" data-act="mclose">İptal</button><button class="btn primary" data-act="noteok">Ekle</button></div>`);break;
+    case'noteok':{const v=$('#nt').value.trim();if(!v)return;closeModal();mutateTable(view.table,t=>{t.notes=t.notes||[];t.notes.push({t:Date.now(),text:v.slice(0,200),src:'staff'})});break}
+    case'delnote':mutateTable(view.table,t=>{(t.notes||[]).splice(+d.i,1)});break;
+    case'stockmode':view.stock=!view.stock;renderTable();break;
+    case'toggleout':{const it=menu.cats[view.cat].items[+d.ii];it.out=!it.out;saveMenu();renderItems();toast(it.name+(it.out?': tükendi':': tekrar satışta'));break}
+    case'rr':view.rr=d.r;renderReport();break;
+    case'dayreport':sendDayReport();break;
     case'wipe':modal(`<h3>Masa ${esc(view.table)} boşaltılsın mı?</h3><p>Siparişler silinir ve kasaya yazılmaz.</p>
       <div class="row"><button class="btn" data-act="close">Geri</button><button class="btn danger" data-act="wipeok">Boşalt</button></div>`);break;
     case'wipeok':delete tables[view.table];saveTable(view.table);closeModal();view.screen='tables';render();break;
@@ -652,6 +876,8 @@ document.addEventListener('click',e=>{
     case'daynext':if(view.dayOff<0){view.dayOff++;renderDay()}break;
     /* editor */
     case'ecat':view.ecat=+d.i;renderEditor();break;
+    case'addev':draft.events.push({id:uid(),emoji:'',title:'',when:'',desc:'',on:true});dirty=true;renderEditor();break;
+    case'delev':draft.events.splice(+d.ei,1);dirty=true;renderEditor();break;
     case'hhday':{const h=draft.cats[view.ecat].hh,i=+d.d;h.days=h.days.includes(i)?h.days.filter(x=>x!==i):[...h.days,i].sort();dirty=true;b.setAttribute('aria-pressed',String(h.days.includes(i)));break}
     case'addcat':draft.cats.push({id:uid(),name:'Yeni kategori',items:[]});view.ecat=draft.cats.length-1;dirty=true;renderEditor();break;
     case'delcat':{const c=draft.cats[view.ecat];modal(`<h3>"${esc(c.name)}" silinsin mi?</h3><p>İçindeki ${c.items.length} ürün de silinir.</p>
@@ -673,22 +899,32 @@ document.addEventListener('click',e=>{
         if(it.v.length>1&&it.v.some(v=>!String(v.l).trim()))bad.push(`"${it.name||'Adsız'}" için her boyutun bir adı olmalı.`)})});
       if(bad.length){modal(`<h3>Kaydedilemedi</h3>${[...new Set(bad)].slice(0,6).map(x=>`<p>${esc(x)}</p>`).join('')}<button class="btn" data-act="mclose">Düzelt</button>`);return}
       draft.notifyUrl=String(draft.notifyUrl||'').trim();
+      draft.events=(draft.events||[]).filter(e=>String(e.title||'').trim()).map(e=>({...e,title:String(e.title).trim(),when:String(e.when||'').trim(),desc:String(e.desc||'').trim(),emoji:String(e.emoji||'').trim()}));
       draft.tableCount=tc;draft.cats.forEach(c=>{c.name=c.name.trim();c.items.forEach(it=>{it.name=it.name.trim();it.v.forEach(v=>{v.l=String(v.l).trim();v.p=Math.round(num(v.p)*100)/100})})});
       menu=draft;draft=null;dirty=false;saveMenu();view.screen='tables';render();break}
   }
 });
-document.addEventListener('input',e=>{
+function onEdit(e){
   const el=e.target,k=el.dataset.edit;if(!k||!draft)return;
   const c=draft.cats[view.ecat];dirty=true;
-  if(k==='tables')draft.tableCount=el.value;
+  if(k==='evf'){draft.events[+el.dataset.ei][el.dataset.f]=el.value;return}
+  if(k==='evon'){draft.events[+el.dataset.ei].on=el.checked;return}
+  if(k==='stamp'){c.stamp=el.checked;return}
+  if(k==='sug'){c.sug=el.value;return}
+  if(k==='out'){c.items[+el.dataset.ii].out=el.checked;return}
+  if(k==='tables'){draft.tableCount=el.value;return}
+  if(k==='notify'){draft.notifyUrl=el.value;return}
+  if(!c)return;
   else if(k==='notify')draft.notifyUrl=el.value;
-  else if(k==='cat'){c.name=el.value;const b=document.querySelectorAll('.ecats button')[view.ecat];if(b)b.textContent=el.value||'Adsız'}
+  else if(k==='cat'){c.name=el.value;const b=document.querySelectorAll('.ecats button')[view.ecat+1];if(b)b.textContent=el.value||'Adsız'}
   else if(k==='hhfrom')c.hh.from=el.value;
   else if(k==='hhto')c.hh.to=el.value;
   else if(k==='name')c.items[+el.dataset.ii].name=el.value;
   else if(k==='vl')c.items[+el.dataset.ii].v[+el.dataset.vi].l=el.value;
   else if(k==='vp')c.items[+el.dataset.ii].v[+el.dataset.vi].p=el.value;
-});
+}
+document.addEventListener('input',onEdit);
+document.addEventListener('change',e=>{if(e.target.type==='checkbox')onEdit(e)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal [data-act="lock"]'))closeModal();if(e.key==='Enter'&&$('#lp')&&document.activeElement&&document.activeElement.closest('#modal'))doLogin()});
 setInterval(()=>{if($('#modal').innerHTML)return;if(view.screen==='tables')renderTables();else if(view.screen==='table'&&view.sig!==visSig())renderTable()},30000);
 

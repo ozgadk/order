@@ -112,6 +112,43 @@ section.cat h2 i{display:inline-grid;place-items:center;width:40px;height:40px;b
 .center h2{font-family:var(--serif);color:var(--ink);font-size:28px;margin:0 0 8px}
 .ok{font-size:56px;line-height:1;margin-bottom:8px}
 
+.hr{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.loyb{font-size:13px;font-weight:700;color:#ffe2a8;background:rgba(241,185,74,.14);border:1px solid rgba(241,185,74,.45);border-radius:999px;padding:5px 10px;white-space:nowrap}
+.it.out{opacity:.5}
+.sold{font-style:normal;font-size:12px;font-weight:700;color:#1a110b;background:var(--danger);border-radius:6px;padding:2px 6px;margin-left:4px;vertical-align:2px}
+.evs{display:grid;gap:10px}
+.ev{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(120deg,rgba(176,124,255,.18),rgba(255,93,115,.12));border:1px solid rgba(176,124,255,.45);border-radius:16px;padding:14px}
+.ev .ee{font-size:30px;line-height:1}
+.ev b{display:block;font-size:19px;font-family:var(--serif)}
+.ev .ew{display:inline-block;margin-top:4px;font-weight:700;color:#d9c2ff;font-size:15px}
+.ev p{margin:6px 0 0;color:var(--muted);line-height:1.35}
+.ft{display:grid;gap:10px;padding:30px 0 10px}
+.fl{display:block;text-align:center;padding:14px;border-radius:14px;font-weight:700;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line)}
+.fl.g{border-color:rgba(255,209,102,.5)}
+.fl.i{background:linear-gradient(90deg,rgba(255,93,115,.18),rgba(176,124,255,.18));border-color:rgba(255,93,115,.45)}
+.fl.l{width:100%;border-color:rgba(241,185,74,.5)}
+.nl{display:grid;gap:6px;color:var(--muted);font-size:14px;margin-top:6px}
+.tx{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;width:100%;min-width:0}
+textarea.tx{resize:vertical}
+a.btn{text-align:center;text-decoration:none;color:var(--ink)}
+.btn.rv{border:1px solid rgba(255,209,102,.5)}
+.btn.ig{background:linear-gradient(90deg,rgba(255,93,115,.22),rgba(176,124,255,.22))}
+.card{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:center}
+.dots{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:300px;margin:0 auto 10px}
+.dot{aspect-ratio:1;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;font-size:20px}
+.dot.on{border:2px solid var(--gold);background:rgba(241,185,74,.15)}
+.fr{color:var(--gold)}
+#sug{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:15;display:flex;justify-content:center}
+#sug[hidden]{display:none}
+.sg{display:flex;align-items:center;gap:10px;width:100%;max-width:616px;background:var(--bg2);border:1px solid var(--acc);border-radius:16px;padding:10px 10px 10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.45);animation:up .3s ease}
+.sg .se{font-size:26px}
+.sg .st{flex:1;min-width:0;line-height:1.2}
+.sg .st small{display:block;color:var(--acc);font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.sg .st b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sg .st span{color:var(--muted);font-size:14px}
+.sg .sa{background:var(--acc);color:#1a110b;font-weight:700;border-radius:10px;padding:10px 12px;white-space:nowrap}
+.sg .sx{width:34px;height:34px;border-radius:10px;background:var(--panel2);color:var(--muted)}
+[hidden]{display:none!important}
 /* welcome splash */
 #splash{position:fixed;inset:0;z-index:50;display:grid;place-items:center;text-align:center;padding:24px;
   background:radial-gradient(circle at 50% 40%,#3a1e22,#170f0b 70%);transition:opacity .5s ease,visibility .5s}
@@ -147,13 +184,14 @@ section.cat h2 i{display:inline-grid;place-items:center;width:40px;height:40px;b
 <div id="splash" hidden></div>
 <header class="hero"><div class="bubbles" aria-hidden="true"><span style="left:8%;animation-delay:0s"></span><span style="left:22%;animation-delay:2.4s;width:5px;height:5px"></span><span style="left:47%;animation-delay:4.1s"></span><span style="left:63%;animation-delay:1.2s;width:6px;height:6px"></span><span style="left:81%;animation-delay:3.3s"></span><span style="left:92%;animation-delay:5.2s;width:5px;height:5px"></span></div><div class="wrap">
   <div class="brand"><small>THE</small><b>SNUGGEST</b><span>Bārs &amp; virtuve · Vecrīga</span><div class="tbl" id="tbl" hidden></div></div>
-  <div class="langs" id="langs"><button data-lang="lv">LV</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div>
+  <div class="hr"><div class="langs" id="langs"><button data-lang="lv">LV</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div><button class="loyb" data-act="loy" id="loyb">🎟️ <span></span></button></div>
 </div></header>
 <div id="hh"></div>
 <nav class="cats" id="cats" hidden><div class="wrap" id="catbtns"></div></nav>
 <main id="main"><div class="center" id="loading">…</div></main>
 <div class="bar" id="bar" hidden><button data-act="cart" id="barbtn"></button></div>
 <div id="sheet"></div>
+<div id="sug" hidden></div>
 <canvas id="fw" hidden></canvas><div id="hhpop" hidden></div>
 
 <script type="module">
@@ -170,7 +208,8 @@ const app=initializeApp({
 const fs=getFirestore(app);
 window.FBC={
   getConfig:async()=>{const s=await getDoc(doc(fs,'bar/config'));return s.exists()?s.data():null},
-  sendOrder:o=>addDoc(collection(fs,'orders'),{...o,status:'new',t:serverTimestamp()})
+  sendOrder:o=>addDoc(collection(fs,'orders'),{...o,status:'new',t:serverTimestamp()}),
+  getLoyalty:async id=>{const s=await getDoc(doc(fs,'loyalty/'+id));return s.exists()?s.data():null}
 };
 window.dispatchEvent(new Event('fbcready'));
 </script>
@@ -180,15 +219,15 @@ const T={
  en:{table:'Table',order:'View order',cart:'Your order',total:'Total',send:'Send order',sending:'Sending…',sent:'Order sent!',sentSub:'The bar has received your order.',more:'Order more',close:'Back to menu',
   noTable:'Please scan the QR code on your table to order.',err:'Could not send. Please try again or order at the bar.',loadErr:'The menu could not be loaded. Please check your connection.',retry:'Try again',
   hh:'Cocktail Hour — every cocktail 5 €, until',hhGone:'Cocktail Hour has ended, so those items were removed from your order.',
-  items:'items',age:'Alcohol is served only to guests aged 18 and over.',allergy:'Please tell our staff about any allergies.',allergens:'Allergens',welcome:'Welcome',tap:'Tap to continue',hhTitle:'COCKTAIL HOUR',hhSub:'Every cocktail 5 €',left:'left',min:'min',h:'h'},
+  items:'items',age:'Alcohol is served only to guests aged 18 and over.',allergy:'Please tell our staff about any allergies.',allergens:'Allergens',welcome:'Welcome',tap:'Tap to continue',hhTitle:'COCKTAIL HOUR',sold:'Sold out',soldGone:'Some items just sold out and were removed from your order.',noteL:'Note for the bar (optional)',noteP:'e.g. no ice, nut allergy',tryT:'Try this too',addB:'Add',later:'No thanks',events:'Events',review:'Enjoying your visit? Leave us a Google review',insta:'Follow us on Instagram',loy:'Loyalty card',loyT:'Your loyalty card',loyRule:'Every cocktail = 1 stamp. 10 stamps = 1 free cocktail. Tell the staff your phone number when you pay.',loyPh:'Your phone number',loyCheck:'Show my stamps',loyFree:'free cocktail(s) waiting',loyNone:'No stamps yet — order a cocktail and give your number when paying.',loyErr:'Please enter a valid phone number.',loyPriv:'Your number is stored only as an anonymous code to count stamps.',hhSub:'Every cocktail 5 €',left:'left',min:'min',h:'h'},
  lv:{table:'Galds',order:'Skatīt pasūtījumu',cart:'Jūsu pasūtījums',total:'Kopā',send:'Nosūtīt pasūtījumu',sending:'Sūta…',sent:'Pasūtījums nosūtīts!',sentSub:'Bārs ir saņēmis jūsu pasūtījumu.',more:'Pasūtīt vēl',close:'Atpakaļ uz ēdienkarti',
   noTable:'Lai pasūtītu, lūdzu, noskenējiet QR kodu uz sava galda.',err:'Neizdevās nosūtīt. Mēģiniet vēlreiz vai pasūtiet pie bāra.',loadErr:'Ēdienkarti neizdevās ielādēt. Lūdzu, pārbaudiet savienojumu.',retry:'Mēģināt vēlreiz',
   hh:'Kokteiļu stunda — visi kokteiļi 5 €, līdz',hhGone:'Kokteiļu stunda ir beigusies, tāpēc šīs pozīcijas tika noņemtas no pasūtījuma.',
-  items:'gab.',age:'Alkohols tiek pārdots tikai personām no 18 gadu vecuma.',allergy:'Lūdzu, informējiet personālu par alerģijām.',allergens:'Alergēni',welcome:'Laipni lūdzam',tap:'Pieskarieties, lai turpinātu',hhTitle:'KOKTEIĻU STUNDA',hhSub:'Visi kokteiļi 5 €',left:'atlicis',min:'min',h:'st'},
+  items:'gab.',age:'Alkohols tiek pārdots tikai personām no 18 gadu vecuma.',allergy:'Lūdzu, informējiet personālu par alerģijām.',allergens:'Alergēni',welcome:'Laipni lūdzam',tap:'Pieskarieties, lai turpinātu',hhTitle:'KOKTEIĻU STUNDA',sold:'Izpārdots',soldGone:'Dažas pozīcijas tikko izpārdotas un noņemtas no pasūtījuma.',noteL:'Piezīme bāram (nav obligāti)',noteP:'piem., bez ledus, riekstu alerģija',tryT:'Pamēģiniet arī',addB:'Pievienot',later:'Nē, paldies',events:'Pasākumi',review:'Patīk pie mums? Atstājiet atsauksmi Google',insta:'Sekojiet mums Instagram',loy:'Lojalitātes karte',loyT:'Jūsu lojalitātes karte',loyRule:'Katrs kokteilis = 1 zīmogs. 10 zīmogi = 1 kokteilis bez maksas. Maksājot nosauciet savu tālruņa numuru.',loyPh:'Jūsu tālruņa numurs',loyCheck:'Rādīt manus zīmogus',loyFree:'bezmaksas kokteilis(-ļi) gaida',loyNone:'Vēl nav zīmogu — pasūtiet kokteili un maksājot nosauciet numuru.',loyErr:'Lūdzu, ievadiet derīgu tālruņa numuru.',loyPriv:'Jūsu numurs tiek glabāts tikai kā anonīms kods zīmogu skaitīšanai.',hhSub:'Visi kokteiļi 5 €',left:'atlicis',min:'min',h:'st'},
  ru:{table:'Стол',order:'Мой заказ',cart:'Ваш заказ',total:'Итого',send:'Отправить заказ',sending:'Отправка…',sent:'Заказ отправлен!',sentSub:'Бар получил ваш заказ.',more:'Заказать ещё',close:'Назад к меню',
   noTable:'Чтобы сделать заказ, отсканируйте QR-код на вашем столе.',err:'Не удалось отправить. Попробуйте ещё раз или закажите у бара.',loadErr:'Не удалось загрузить меню. Проверьте подключение.',retry:'Повторить',
   hh:'Коктейльный час — все коктейли по 5 €, до',hhGone:'Коктейльный час закончился, эти позиции удалены из заказа.',
-  items:'шт.',age:'Алкоголь продаётся только лицам старше 18 лет.',allergy:'Пожалуйста, сообщите персоналу об аллергиях.',allergens:'Аллергены',welcome:'Добро пожаловать',tap:'Нажмите, чтобы продолжить',hhTitle:'КОКТЕЙЛЬНЫЙ ЧАС',hhSub:'Все коктейли по 5 €',left:'осталось',min:'мин',h:'ч'}
+  items:'шт.',age:'Алкоголь продаётся только лицам старше 18 лет.',allergy:'Пожалуйста, сообщите персоналу об аллергиях.',allergens:'Аллергены',welcome:'Добро пожаловать',tap:'Нажмите, чтобы продолжить',hhTitle:'КОКТЕЙЛЬНЫЙ ЧАС',sold:'Нет в наличии',soldGone:'Некоторые позиции закончились и были удалены из заказа.',noteL:'Комментарий для бара (необязательно)',noteP:'напр., без льда, аллергия на орехи',tryT:'Попробуйте также',addB:'Добавить',later:'Нет, спасибо',events:'События',review:'Вам у нас нравится? Оставьте отзыв в Google',insta:'Мы в Instagram',loy:'Карта лояльности',loyT:'Ваша карта лояльности',loyRule:'Каждый коктейль = 1 штамп. 10 штампов = 1 коктейль в подарок. Назовите номер телефона при оплате.',loyPh:'Ваш номер телефона',loyCheck:'Показать мои штампы',loyFree:'коктейль(ей) в подарок ждут вас',loyNone:'Пока нет штампов — закажите коктейль и назовите номер при оплате.',loyErr:'Введите корректный номер телефона.',loyPriv:'Ваш номер хранится только как анонимный код для подсчёта штампов.',hhSub:'Все коктейли по 5 €',left:'осталось',min:'мин',h:'ч'}
 };
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -241,25 +280,27 @@ function render(){
   $('#hh').innerHTML=hh?`<div class="hh"><button data-act="boom"><b>${esc(tx('hhTitle'))} · 5 €</b><small>${esc(tx('hhSub'))} · ${esc(hh.hh.from)}–${esc(hh.hh.to)}${hhLeft(hh)}</small><span class="spark" aria-hidden="true">🎆</span></button></div>`:'';
   $('#cats').hidden=false;
   const lk=c=>look(c,menu.cats.indexOf(c));
-  $('#catbtns').innerHTML=cats.map((c,i)=>`<button data-act="jump" data-c="${esc(c.id)}" aria-current="${i===0}" style="--acc:${lk(c)[1]}">${lk(c)[0]} ${esc(cname(c))}</button>`).join('');
-  $('#main').innerHTML=cats.map(c=>`<section class="cat" id="cat-${esc(c.id)}" style="--acc:${lk(c)[1]}"><h2><i aria-hidden="true">${lk(c)[0]}</i>${esc(cname(c))}</h2>${c.items.map(it=>{
-    return`<div class="it" data-it="${esc(it.id)}"><div class="nm">${esc(iname(c,it))}</div>
+  const evs=(menu.events||[]).filter(e=>e.on!==false&&e.title);
+  $('#loyb span').textContent=tx('loy');
+  $('#catbtns').innerHTML=(evs.length?`<button data-act="jump" data-c="events" style="--acc:#b07cff">🎉 ${esc(tx('events'))}</button>`:'')+cats.map((c,i)=>`<button data-act="jump" data-c="${esc(c.id)}" aria-current="${i===0&&!evs.length}" style="--acc:${lk(c)[1]}">${lk(c)[0]} ${esc(cname(c))}</button>`).join('');
+  $('#main').innerHTML=(evs.length?`<section class="cat" id="cat-events" style="--acc:#b07cff"><h2><i aria-hidden="true">🎉</i>${esc(tx('events'))}</h2><div class="evs">${evs.map(e=>`<div class="ev"><div class="ee">${esc(e.emoji||'✨')}</div><div><b>${esc(e.title)}</b>${e.when?`<span class="ew">${esc(e.when)}</span>`:''}${e.desc?`<p>${esc(e.desc)}</p>`:''}</div></div>`).join('')}</div></section>`:'')+cats.map(c=>`<section class="cat" id="cat-${esc(c.id)}" style="--acc:${lk(c)[1]}"><h2><i aria-hidden="true">${lk(c)[0]}</i>${esc(cname(c))}</h2>${c.items.map(it=>{
+    return`<div class="it${it.out?' out':''}" data-it="${esc(it.id)}"><div class="nm">${esc(iname(c,it))}${it.out?` <em class="sold">${esc(tx('sold'))}</em>`:''}</div>
       ${it.v.map(v=>{const k=ckey(it.id,v.l),q=cart[k]||0,vl=c.hh?'':vlabel(v.l);return`<div class="vr"><div class="vp">${vl?`<b>${esc(vl)}</b>`:''}<span>${eur(cents(v.p))}</span></div>
-        <div class="stp"><button data-act="sub" data-k="${esc(k)}" aria-label="−" ${q?'':'disabled'}>−</button><span class="cn${q?'':' z'}">${q}</span><button class="add" data-act="add" data-k="${esc(k)}" aria-label="+">+</button></div></div>`}).join('')}
-    </div>`}).join('')}</section>`).join('');
+        <div class="stp"><button data-act="sub" data-k="${esc(k)}" aria-label="−" ${q?'':'disabled'}>−</button><span class="cn${q?'':' z'}">${q}</span><button class="add" data-act="add" data-k="${esc(k)}" aria-label="+" ${it.out?'disabled':''}>+</button></div></div>`}).join('')}
+    </div>`}).join('')}</section>`).join('')+footHtml();
   if(!table)$('#main').insertAdjacentHTML('afterbegin',`<p class="center" style="padding:20px 0 0">${esc(tx('noTable'))}</p>`);
   renderBar();spy();
 }
 function renderBar(){
   const n=Object.values(cart).reduce((s,q)=>s+q,0);
   $('#bar').hidden=!(n&&table);
-  $('#barbtn').innerHTML=`<span>${esc(tx('order'))} · ${n} ${esc(tx('items'))}</span><span>${eur(cartTotal())}</span>`;
+  $('#barbtn').innerHTML=`<span>${esc(tx('order'))} · ${n} ${esc(lang==='en'&&n===1?'item':tx('items'))}</span><span>${eur(cartTotal())}</span>`;
   document.querySelectorAll('.it').forEach(el=>{const has=[...el.querySelectorAll('[data-act=add]')].some(b=>cart[b.dataset.k]);el.classList.toggle('has',has)});
 }
 function bump(k,d){
   const q=Math.max(0,Math.min(20,(cart[k]||0)+d));if(q)cart[k]=q;else delete cart[k];saveCart();
   document.querySelectorAll(`[data-k="${CSS.escape(k)}"]`).forEach(b=>{const r=b.closest('.stp');if(!r)return;r.querySelector('.cn').textContent=q;r.querySelector('.cn').classList.toggle('z',!q);r.querySelector('[data-act=sub]').disabled=!q;const cn=r.querySelector('.cn');cn.classList.remove('pop');void cn.offsetWidth;cn.classList.add('pop')});
-  renderBar();if(d>0){const bb=$('#barbtn');bb.classList.remove('bump');void bb.offsetWidth;bb.classList.add('bump')}
+  renderBar();if(d>0&&!$('#sheet').innerHTML)suggest(k);if(d>0){const bb=$('#barbtn');bb.classList.remove('bump');void bb.offsetWidth;bb.classList.add('bump')}
 }
 function openCart(msg){
   const ls=cartLines();
@@ -270,6 +311,7 @@ function openCart(msg){
       <div class="stp"><button data-act="csub" data-k="${esc(x.k)}">−</button><span class="cn">${x.q}</span><button class="add" data-act="cadd" data-k="${esc(x.k)}">+</button></div>
       <div class="p">${eur(cents(x.v.p)*x.q)}</div></div>`}).join('')}
     <div class="tot"><span>${esc(tx('total'))}</span><b>${eur(cartTotal())}</b></div>
+    <label class="nl">${esc(tx('noteL'))}<textarea class="tx" id="note" rows="2" maxlength="200" placeholder="${esc(tx('noteP'))}">${esc(note)}</textarea></label>
     <p class="err" id="serr"></p>
     <button class="btn primary" data-act="send" ${ls.length&&!sending?'':'disabled'}>${esc(sending?tx('sending'):tx('send'))}</button>
     <button class="btn" data-act="close">${esc(tx('close'))}</button>
@@ -278,23 +320,67 @@ function openCart(msg){
 function closeSheet(){$('#sheet').innerHTML=''}
 async function send(){
   if(sending)return;
+  const ne=$('#note');if(ne)note=ne.value.trim().slice(0,200);
+  try{const cfg=await window.FBC.getConfig();if(cfg&&cfg.menu&&cfg.menu.cats)menu=cfg.menu}catch(e){}
+  const sold=cartLines().filter(x=>x.it.out);
+  for(const k of Object.keys(cart))if(!findLine(k))delete cart[k];
+  if(sold.length){sold.forEach(x=>delete cart[x.k]);saveCart();render();if(cartLines().length)openCart(tx('soldGone'));else{closeSheet();alert(tx('soldGone'))}return}
   const gone=cartLines().filter(x=>!catVisible(x.c));
   if(gone.length){gone.forEach(x=>delete cart[x.k]);saveCart();render();if(cartLines().length)openCart(tx('hhGone'));else{closeSheet();alert(tx('hhGone'))}return}
   const ls=cartLines();if(!ls.length)return;
   sending=true;openCart();
-  const order={table,lang,lines:ls.map(x=>({id:x.it.id,l:x.v.l,q:x.q}))};
+  const order={table,lang,lines:ls.map(x=>({id:x.it.id,l:x.v.l,q:x.q}))};if(note)order.note=note;
   try{
     await window.FBC.sendOrder(order);
-    if(menu.notifyUrl)fetch(menu.notifyUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({table,total:eur(cartTotal()),lines:ls.map(x=>({name:x.it.name,l:x.v.l,q:x.q}))})}).catch(()=>{});
+    if(menu.notifyUrl)fetch(menu.notifyUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({table,note,total:eur(cartTotal()),lines:ls.map(x=>({name:x.it.name,l:x.v.l,q:x.q}))})}).catch(()=>{});
     const summary=ls.map(x=>`${x.q}× ${esc(iname(x.c,x.it))}`).join('<br>');
-    cart={};saveCart();sending=false;
+    cart={};note='';saveCart();sending=false;
     $('#sheet').innerHTML=`<div class="sheet"><div class="in" role="dialog" aria-modal="true" style="text-align:center">
       <div class="ok">🎉</div><h3>${esc(tx('sent'))}</h3><p class="sub">${esc(tx('sentSub'))}</p><p style="line-height:1.5">${summary}</p>
-      <button class="btn primary" data-act="close">${esc(tx('more'))}</button></div></div>`;
+      <button class="btn primary" data-act="close">${esc(tx('more'))}</button>
+      <a class="btn rv" href="${GOOGLE}" target="_blank" rel="noopener">⭐ ${esc(tx('review'))}</a>
+      <a class="btn ig" href="${INSTA}" target="_blank" rel="noopener">📸 ${esc(tx('insta'))}</a></div></div>`;
     render();fireworks(1600,true);
   }catch(e){sending=false;openCart();$('#serr').textContent=tx('err')}
 }
 
+const GOOGLE='https://search.google.com/local/writereview?placeid=ChIJoSodNQDP7kYREsAOIEC1ruw',INSTA='https://www.instagram.com/thesnuggest/';
+function footHtml(){return`<footer class="ft">
+  <a class="fl g" href="${GOOGLE}" target="_blank" rel="noopener">⭐ ${esc(tx('review'))}</a>
+  <a class="fl i" href="${INSTA}" target="_blank" rel="noopener">📸 ${esc(tx('insta'))} · @thesnuggest</a>
+  <button class="fl l" data-act="loy">🎟️ ${esc(tx('loy'))}</button></footer>`}
+let note='',sugShown=new Set();
+function suggest(k){
+  const f=findLine(k);if(!f||!f.c.sug)return;const sid=f.c.sug;
+  if(sugShown.has(sid))return;
+  let it=null,c=null;for(const x of menu.cats){const y=x.items.find(i=>i.id===sid);if(y){it=y;c=x;break}}
+  if(!it||it.out||!catVisible(c)||!it.v.length)return;
+  if(it.v.some(v=>cart[ckey(it.id,v.l)]))return;
+  sugShown.add(sid);
+  const v=it.v[0],el=$('#sug');
+  el.innerHTML=`<div class="sg" style="--acc:${look(c,menu.cats.indexOf(c))[1]}"><span class="se">${look(c,menu.cats.indexOf(c))[0]}</span><div class="st"><small>${esc(tx('tryT'))}</small><b>${esc(it.name)}${v.l?' · '+esc(v.l):''}</b><span>${eur(cents(v.p))}</span></div>
+    <button class="sa" data-act="sugadd" data-k="${esc(ckey(it.id,v.l))}">+ ${esc(tx('addB'))}</button><button class="sx" data-act="sugx" aria-label="${esc(tx('later'))}">✕</button></div>`;
+  el.hidden=false;clearTimeout(suggest.t);suggest.t=setTimeout(()=>{el.hidden=true},9000);
+}
+async function sha(phone){let d=String(phone||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);if(d.length===8)d='371'+d;if(d.length<8||d.length>15||!crypto.subtle)return null;
+  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('snuggest:'+d));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function loySheet(res){
+  let ph='';try{ph=localStorage.getItem('snug.phone')||''}catch(e){}
+  const dots=res&&!res.err?Array.from({length:10},(_,i)=>`<span class="dot${i<res.stamps?' on':''}">${i<res.stamps?'🍸':''}</span>`).join(''):'';
+  $('#sheet').innerHTML=`<div class="sheet" data-act="shut"><div class="in" role="dialog" aria-modal="true">
+    <h3>🎟️ ${esc(tx('loyT'))}</h3><p class="sub">${esc(tx('loyRule'))}</p>
+    <label class="nl">${esc(tx('loyPh'))}<input class="tx" id="lyp" inputmode="tel" autocomplete="tel" value="${esc(ph)}" placeholder="+371 2xxxxxxx"></label>
+    <button class="btn primary" data-act="loygo">${esc(tx('loyCheck'))}</button>
+    ${res?res.err?`<p class="err">${esc(res.err)}</p>`:`<div class="card"><div class="dots">${dots}</div><p><b>${res.stamps}/10</b>${res.free?` · <b class="fr">🎁 ${res.free} ${esc(tx('loyFree'))}</b>`:''}</p>${!res.stamps&&!res.free?`<p class="sub">${esc(tx('loyNone'))}</p>`:''}</div>`:''}
+    <p class="sub" style="font-size:13px;margin-top:12px">${esc(tx('loyPriv'))}</p>
+    <button class="btn" data-act="close">${esc(tx('close'))}</button></div></div>`;
+}
+async function loyGo(){
+  const ph=$('#lyp').value.trim();const id=await sha(ph);
+  if(!id){loySheet({err:tx('loyErr')});return}
+  try{localStorage.setItem('snug.phone',ph)}catch(e){}
+  try{const d=await window.FBC.getLoyalty(id);loySheet({stamps:(d&&d.stamps)||0,free:(d&&d.free)||0})}catch(e){loySheet({err:tx('loadErr')})}
+}
 function hhLeft(c){
   const now=new Date(),t=now.getHours()*60+now.getMinutes(),e=toMin(c.hh.to);let m=e-t;if(m<=0)m+=1440;
   if(!(m>0&&m<1440))return'';const h=Math.floor(m/60),mm=m%60;
@@ -361,15 +447,19 @@ document.addEventListener('click',e=>{
   if(a==='shut'){if(e.target===b)closeSheet();return}
   if(a==='add')bump(k,1);
   else if(a==='sub')bump(k,-1);
-  else if(a==='cadd'||a==='csub'){bump(k,a==='cadd'?1:-1);if(cartLines().length)openCart();else closeSheet()}
+  else if(a==='cadd'||a==='csub'){const ne=$('#note');if(ne)note=ne.value;bump(k,a==='cadd'?1:-1);if(cartLines().length)openCart();else closeSheet()}
   else if(a==='cart')openCart();
   else if(a==='close')closeSheet();
   else if(a==='send')send();
   else if(a==='retry')load();
   else if(a==='boom')celebrate();
+  else if(a==='loy')loySheet(null);
+  else if(a==='loygo')loyGo();
+  else if(a==='sugadd'){$('#sug').hidden=true;bump(k,1)}
+  else if(a==='sugx')$('#sug').hidden=true;
   else if(a==='jump'){const s=document.getElementById('cat-'+b.dataset.c);if(s)s.scrollIntoView({behavior:'smooth'})}
 });
-$('#langs').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(!b)return;lang=b.dataset.lang;try{localStorage.setItem('snug.lang',lang)}catch(x){}const y=scrollY;render();scrollTo(0,y);if($('#sheet .ln'))openCart()});
+$('#langs').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(!b)return;lang=b.dataset.lang;try{localStorage.setItem('snug.lang',lang)}catch(x){}const ne=$('#note');if(ne)note=ne.value;const y=scrollY;render();scrollTo(0,y);if($('#sheet .ln'))openCart()});
 let spyT=0;
 function spy(){
   const secs=[...document.querySelectorAll('section.cat')];if(!secs.length)return;
