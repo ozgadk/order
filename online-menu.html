@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="The Snuggest, Zirgu iela 3, Vecrīga: ēdienkarte, kokteiļi un Kokteiļu stunda 18:00–22:00 / Menu, cocktails and Cocktail Hour.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+<title>The Snuggest Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: one narrow column like a printed bar card, sticky section tabs, live Cocktail Hour card on top */
+:root{
+  --bg:#0F3324; --deep:#0A241A; --panel:#133D2B; --line:rgba(217,174,85,.28);
+  --gold:#D9AE55; --orange:#EC7A2C; --cream:#F4ECD9; --dim:#B9B29E;
+  --serif:'Gloock', Georgia, 'Times New Roman', serif;
+  --sans:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(64px + env(safe-area-inset-top,0px))}
+body{background:var(--bg);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.45;
+  background-image:radial-gradient(ellipse 700px 420px at 50% -60px,rgba(217,174,85,.16),transparent 70%);background-repeat:no-repeat}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--deep)}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* header */
+.mast{display:flex;align-items:center;gap:14px;padding-block:28px 22px}
+.mast svg{width:64px;height:64px;flex:none}
+.mast .th{font-size:11px;letter-spacing:4px;color:var(--gold);font-weight:600}
+.mast h1{font-family:var(--serif);font-weight:400;font-size:40px;line-height:1;margin:2px 0 0}
+.mast p{margin:6px 0 0;color:var(--dim);font-size:14px}
+
+/* cocktail hour card */
+.hh{background:var(--orange);color:var(--deep);border-radius:22px;padding:20px 20px 18px;display:grid;grid-template-columns:1fr auto;gap:6px 16px;align-items:center}
+.hh .t{font-family:var(--serif);font-size:30px;line-height:1.05;text-wrap:balance}
+.hh .t small{display:block;font-family:var(--sans);font-size:15px;font-weight:600;margin-top:4px}
+.hh .big{font-family:var(--serif);font-size:72px;line-height:.85;grid-row:span 2;text-align:right}
+.hh .big small{display:block;font-family:var(--sans);font-size:12px;font-weight:700;line-height:1.2;margin-top:6px}
+.hh .when{font-weight:700;font-size:15px}
+.hh .bar{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:10px;padding-top:12px;border-top:1px solid rgba(10,36,26,.25)}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--deep);color:var(--orange);font-weight:700;font-size:14px;border-radius:30px;padding:6px 14px}
+.pill i{width:9px;height:9px;border-radius:50%;background:currentColor}
+body.on .pill i{animation:pulse 1.4s ease-in-out infinite}
+.hh a{font-weight:700;font-size:14px;text-underline-offset:3px}
+@keyframes pulse{50%{opacity:.25}}
+
+/* quick jump */
+.jump{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.jump a{text-decoration:none;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 8px;text-align:center;display:grid;gap:2px}
+.jump a b{font-family:var(--serif);font-weight:400;font-size:21px;color:var(--gold)}
+.jump a span{font-size:13px;color:var(--dim)}
+.jump a:hover{border-color:var(--gold)}
+nav a.food:not(.act){color:var(--cream);border-color:var(--line)}
+
+/* tabs */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--deep);border-bottom:1px solid var(--line);margin-top:22px}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:10px}
+nav .wrap::-webkit-scrollbar{display:none}
+nav a{flex:none;text-decoration:none;font-size:14px;font-weight:600;color:var(--dim);padding:8px 14px;border-radius:30px;border:1px solid transparent}
+nav a.act{color:var(--deep);background:var(--gold)}
+
+/* sections */
+main{padding-block:8px 40px}
+.part{padding-top:30px}
+.part>h2{font-family:var(--serif);font-weight:400;font-size:34px;margin:0;line-height:1.05}
+.part>h2 small{display:block;font-family:var(--sans);font-size:14px;color:var(--dim);margin-top:4px}
+.grp{margin-top:24px}
+.grp h3{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-family:var(--serif);font-weight:400;font-size:24px;color:var(--gold);margin:0 0 6px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.grp h3 small{font-family:var(--sans);font-size:13px;color:var(--dim);text-align:right}
+.it{display:grid;grid-template-columns:1fr auto;gap:1px 14px;padding-block:9px;border-bottom:1px solid rgba(217,174,85,.1)}
+.it:last-child{border-bottom:0}
+.nm{grid-column:1;grid-row:1;font-weight:600;font-size:17px;min-width:0}
+.nm .en{font-weight:400;color:var(--dim);font-size:15px}
+.ds{grid-column:1/-1;color:var(--dim);font-size:14px;font-style:italic;min-width:0}
+.pr{font-family:var(--serif);font-size:19px;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;grid-column:2;grid-row:1}
+.pr .old{display:none;color:var(--dim);font-size:15px;text-decoration:line-through;text-decoration-color:var(--orange);text-decoration-thickness:2px;margin-right:6px}
+body.on .hhi .pr .old{display:inline}
+body.on .hhi .pr .now{color:var(--orange)}
+.meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tag{font-size:11px;font-weight:700;border-radius:20px;padding:2px 9px;background:var(--gold);color:var(--deep)}
+.tag.hot{background:var(--orange)}
+.tag.hh5{background:transparent;color:var(--orange);border:1px solid var(--orange)}
+.al{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-variant-numeric:tabular-nums}
+.two .it{grid-template-columns:1fr auto}
+.note{color:var(--dim);font-size:14px;font-style:italic;margin:10px 0 0}
+
+/* happy hour list */
+.hhbox{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 18px 14px}
+.hhbox .grp:first-child{margin-top:14px}
+.hhbox .pr{color:var(--orange)}
+
+/* footer */
+footer{background:var(--deep);border-top:1px solid var(--line)}
+footer .wrap{padding-block:28px 34px;display:grid;gap:18px}
+.legend{font-size:13px;color:var(--dim);display:flex;flex-wrap:wrap;gap:6px 14px}
+.legend b{color:var(--cream);font-weight:600}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links a{text-decoration:none;font-weight:600;font-size:14px;border:1px solid var(--line);border-radius:30px;padding:9px 16px}
+.links a:hover{border-color:var(--gold)}
+.addr{font-size:14px;color:var(--dim)}
+.addr b{color:var(--cream);font-family:var(--serif);font-weight:400;font-size:20px;display:block}
+
+.blink{transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}html{scroll-behavior:auto}}
+@media (max-width:380px){.hh .big{font-size:58px}.mast h1{font-size:34px}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">  <symbol id="miniPanda" viewBox="0 0 120 120">
+    <circle cx="60" cy="60" r="58" fill="#0A241A" stroke="#D9AE55" stroke-width="3"/>
+    <circle cx="32" cy="34" r="14" fill="#2A2A2A" stroke="#D9AE55" stroke-width="1.5"/><circle cx="88" cy="34" r="14" fill="#2A2A2A" stroke="#D9AE55" stroke-width="1.5"/>
+    <ellipse cx="60" cy="66" rx="38" ry="34" fill="#F4ECD9"/>
+    <ellipse cx="45" cy="62" rx="10" ry="13" transform="rotate(-25 45 62)" fill="#1A1A1A"/>
+    <ellipse cx="75" cy="62" rx="10" ry="13" transform="rotate(25 75 62)" fill="#1A1A1A"/>
+    <circle class="blink" cx="46" cy="62" r="3.5" fill="#F4ECD9"/><circle class="blink" cx="74" cy="62" r="3.5" fill="#F4ECD9"/>
+    <ellipse cx="60" cy="78" rx="6" ry="4.5" fill="#1A1A1A"/>
+    <path d="M54 86 q6 6 12 0" stroke="#1A1A1A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<header class="wrap">
+  <div class="mast">
+    <svg aria-hidden="true"><use href="#miniPanda"/></svg>
+    <div>
+      <div class="th">THE</div>
+      <h1>Snuggest</h1>
+      <p>Bārs &amp; virtuve · Zirgu iela 3, Vecrīga</p>
+    </div>
+  </div>
+
+  <section class="hh" aria-label="Cocktail Hour">
+    <div class="t">Kokteiļu stunda<small>Cocktail Hour · 21 kokteilis / 21 cocktails</small></div>
+    <div class="big">5€<small>par glāzi<br>per glass</small></div>
+    <div class="when">Katru dienu 18:00–22:00 · Every day</div>
+    <div class="bar">
+      <span class="pill"><i></i><span id="status">…</span></span>
+      <a href="#hh">Skatīt sarakstu / See the list</a>
+    </div>
+  </section>
+
+  <div class="jump">
+    <a href="#kokteili"><b>Kokteiļi</b><span>Cocktails</span></a>
+    <a href="#virtuve"><b>Ēdieni</b><span>Food</span></a>
+    <a href="#dzerieni"><b>Dzērieni</b><span>Drinks</span></a>
+  </div>
+</header>
+
+<nav aria-label="Menu sections">
+  <div class="wrap" id="tabs">
+    <a href="#hh">5€ Cocktail Hour</a>
+    <a href="#kokteili">Kokteiļi · Cocktails</a>
+    <a href="#virtuve" class="food">Ēdieni · Food</a>
+    <a href="#dzerieni">Dzērieni · Drinks</a>
+  </div>
+</nav>
+
+<main class="wrap" id="menu"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="legend" aria-label="Allergens">
+      <span><b>Alergēni / Allergens:</b></span>
+      <span>A01 lipeklis / gluten</span><span>A03 olas / eggs</span><span>A05 zemesrieksti / peanuts</span>
+      <span>A07 piens / milk</span><span>A08 rieksti / nuts</span><span>A11 sezams / sesame</span>
+      <span>A12 sulfīti / sulphites</span><span>A14 gliemji / molluscs</span>
+    </div>
+    <p class="note" style="margin:0">Lūdzu, informējiet personālu par alerģijām. Please tell our staff about any allergies.</p>
+    <div class="links">
+      <a href="https://www.instagram.com/thesnuggest/" target="_blank" rel="noopener">Instagram @thesnuggest</a>
+      <a href="https://g.page/r/CRLADiBAta7sEAE/review" target="_blank" rel="noopener">Google ★ Novērtē mūs</a>
+      <a href="https://wolt.com/en/lva/riga/restaurant/the-snuggest-barcafe" target="_blank" rel="noopener">Wolt</a>
+      <a href="https://food.bolt.eu/lv-lv/3-riga/p/131314-the-snuggest-kitchen/" target="_blank" rel="noopener">Bolt Food</a>
+    </div>
+    <div class="addr"><b>The Snuggest</b>Zirgu iela 3, Vecrīga, Rīga</div>
+  </div>
+</footer>
+
+<script>
+const S = {
+ classics:{lv:"Klasiskie kokteiļi",en:"Classic cocktails",items:[
+  {n:"Cuba Libre",d:"White rum, cola, lemon juice",p:"8.00",ck:1},
+  {n:"Tom Collins",d:"Gin, lemon juice, soda, simple syrup",p:"8.00",ck:1},
+  {hh:1,n:"Classic Mojito",d:"Rum, fresh lime, mint, sugar, soda",p:"8.00",ck:1},
+  {hh:1,n:"Moscow Mule",d:"Vodka, lime juice, ginger beer, mint",p:"9.00",ck:1},
+  {n:"Long Island Iced Tea",d:"Tequila, vodka, gin, white rum, orange liqueur, cola",p:"10.00",ck:1},
+  {n:"Hemingway Special",d:"White rum, grapefruit, cherry liqueur, lemon juice",p:"9.00",ck:1},
+  {n:"Blue Lady Sour",al:"A03",d:"Gin, blue curaçao, lime, simple syrup, egg white",p:"9.00",ck:1},
+  {hh:1,n:"Aperol Spritz",d:"Prosecco, Aperol, tonic",p:"8.00",ck:1},
+  {hh:1,n:"Hugo Spritz",d:"Prosecco, elderflower syrup, soda, mint, lime",p:"8.00",ck:1},
+ ]},
+ house:{lv:"Mājas favorīti",en:"House favourites",items:[
+  {hh:1,n:"Tequila Sunrise",d:"Tequila, orange juice, grenadine",p:"8.00",ck:1},
+  {hh:1,n:"Espresso Martini",d:"Vodka, coffee liqueur, simple syrup, espresso",p:"9.00",ck:1},
+  {n:"Amaretto Sour",al:"A03 A08",d:"Amaretto, bourbon, lemon juice, simple syrup, egg white",p:"9.00",ck:1},
+  {n:"Gin Fizz",al:"A03",d:"Gin, lime juice, tonic, sugar, egg white",p:"8.00",ck:1},
+  {n:"Mystery of the Pomegranate",d:"Vodka, pomegranate sauce & juice, blackberry syrup",p:"9.00",ck:1},
+  {n:"Mancolada",d:"Captain Morgan, coconut cream, pineapple, lemon juice",p:"9.00",ck:1},
+  {hh:1,n:"Bramble",d:"Pink gin, lemon juice, blackberry syrup, tonic",p:"9.00",ck:1},
+  {n:"Pistāciju Sapnis",al:"A07 A08",en:"Pistachio Dream",d:"Pistachio, vodka, milk, vanilla",p:"9.50",ck:1},
+  {hh:1,n:"Snug Persiku Džins",en:"Snug Peach Gin",d:"Peach liqueur, gin, tonic",p:"8.50",ck:1,tag:"Autordzēriens",hot:1},
+ ]},
+ beer:{lv:"Alus kokteiļi",en:"Beer cocktails",items:[
+  {hh:1,n:"Istanbul City",al:"A01 A08",d:"Beer, amaretto, orange liqueur",p:"8.00",ck:1},
+  {hh:1,n:"Antalya Sun",al:"A01",d:"Beer, tequila, Malibu, simple syrup",p:"8.00",ck:1},
+  {hh:1,n:"Anatolian",al:"A01",d:"Beer, cherry liqueur, peppermint syrup",p:"8.00",ck:1},
+  {hh:1,n:"Troia",al:"A01",d:"Beer, Ouzo, Jägermeister, lemon",p:"8.00",ck:1},
+  {hh:1,n:"Mexican",al:"A01",d:"Beer, tequila, lemon juice, salt",p:"8.00",ck:1},
+ ]},
+ virgin:{lv:"Bezalkoholiskie kokteiļi",en:"Non-alcoholic",items:[
+  {hh:1,n:"Virgin Mojito",d:"Lime, mint, brown sugar, soda",p:"6.00",ck:1},
+  {hh:1,n:"Piña Colada",d:"Pineapple juice, coconut milk, lemon juice, sugar syrup",p:"6.00",ck:1},
+  {hh:1,n:"Sunset Cooler",d:"Orange juice, grenadine, lemon juice, soda",p:"6.00",ck:1},
+  {hh:1,n:"Green Apple Spritz",d:"Apple juice, lime, sugar syrup, soda",p:"6.00",ck:1},
+ ]},
+ burgers:{lv:"Burgeri",en:"Burgers · ar frī / with fries",items:[
+  {n:"Snug Smash Burger",al:"A01 A03 A07",d:"2× smash beef patty, tomato, iceberg, onion, pickles, ketchup, mayo",p:"10.00"},
+  {n:"Snug Smash Cheeseburger",al:"A01 A03 A07",d:"2× smash beef patty, cheese, tomato, iceberg, onion, pickles",p:"11.00"},
+  {n:"Snuggest XL Chicken Burger",al:"A01 A03 A07",d:"Crispy fried chicken, special yoghurt sauce, pickles, lettuce",p:"9.50"},
+ ]},
+ mains:{lv:"Galvenie ēdieni",en:"Mains",items:[
+  {n:"Turku Kofta & Rīsi",al:"A01",en:"Turkish Kofta & Rice",d:"Beef kofta, white rice, bean salad (piyaz)",p:"10.90"},
+  {n:"Lahmacun",d:"Thin Turkish flatbread with spiced minced meat",p:"10.00",tag:"2 gab. / 2 pcs",hot:1},
+  {n:"Šnicele",al:"A01 A03",en:"Schnitzel",d:"With lemon slice and cold potato salad",p:"10.90"},
+  {n:"Snug Grill Chicken Wings XL",al:"A01",d:"500 g grilled wings, fresh salad, bread",p:"13.00"},
+  {n:"Snug Chicken Shashlik Wrap",al:"A01",d:"Chicken shashlik, pickles, fresh salad, fries, wrapped",p:"9.50"},
+ ]},
+ soup:{lv:"Zupas",en:"Soups",items:[
+  {n:"Lēcu Zupa",al:"A01",en:"Lentil Soup",d:"Warm lentil soup, crispy bread, lemon",p:"5.50",tag:"vegetarian"},
+ ]},
+ snacks:{lv:"Uzkodas",en:"Snacks",items:[
+  {n:"Turku Pupiņu Salāti",en:"Turkish Bean Salad",d:"White beans, olive oil, parsley, onion, tomato, sumac",p:"5.50",tag:"vegan"},
+  {n:"Çiğköfte",al:"A01",d:"100 g / 200 g, spiced bulgur, olive oil, mint",p:"5.00 / 10.00",tag:"vegan"},
+  {n:"Frī Kartupeļi",en:"French Fries",d:"250 g, with sauce",p:"4.50"},
+  {n:"The Snuggest Fries",al:"A01 A03 A07 A14",d:"Fries, crispy chicken, calamari, cheese balls, sausage",p:"10.50",tag:"2–3 pers.",hot:1},
+ ]},
+ dessert:{lv:"Deserti",en:"Desserts",items:[
+  {n:"Snug Browni",al:"A01 A03 A07 A08",en:"Snug Brownie",d:"Homemade chocolate brownie, warm and fudgy",p:"5.50"},
+ ]},
+ spirits:{lv:"Stiprie",en:"Spirits · 25 ml / 50 ml",items:[
+  {n:"Vodka",p:"3.00 / 5.00"},{n:"Gin",p:"3.00 / 5.00"},{n:"Tequila",p:"3.00 / 5.00"},
+  {n:"Rum",p:"3.00 / 5.00"},{n:"Jack Daniel's",p:"3.50 / 6.00"},{n:"Jim Beam",p:"3.50 / 6.00"},
+  {n:"Tullamore Dew",p:"3.50 / 6.00"},{n:"Ararat 5*",p:"4.50 / 7.50"},{n:"Courvoisier VS",p:"4.50 / 7.50"},
+ ]},
+ liqueurs:{lv:"Likieri",en:"Liqueurs · 25 ml / 50 ml",items:[
+  {n:"Amaretto",al:"A08",p:"2.50 / 4.50"},{n:"Baileys",al:"A07",p:"2.50 / 4.50"},{n:"Xuxu Coffee",p:"2.50 / 4.50"},
+  {n:"Cream Liqueur",al:"A07",p:"2.50 / 4.50"},{n:"Lychee",p:"2.50 / 4.50"},{n:"Pistachio Cream",al:"A08",p:"2.50 / 4.50"},
+  {n:"Aperol",p:"3.00 / 4.00"},{n:"Martini Extra Dry",p:"3.00 / 4.00"},{n:"Jägermeister",p:"3.00 / 5.00"},
+  {n:"Black Balsam",p:"3.00 / 4.50"},
+ ]},
+ shots:{lv:"Shot kokteiļi",en:"Shots · 3.00 €",items:[
+  {n:"The Snuggest",d:"Vodka, Malibu, blackberry syrup",p:"3.00"},
+  {n:"Mexican Strawberry",d:"Tequila, strawberry liqueur, mint syrup",p:"3.00"},
+  {n:"Black Angel",al:"A07",d:"Black Balsam, cream liqueur, coffee liqueur",p:"3.00"},
+  {n:"Midnight Tropic",d:"Banana liqueur, coffee liqueur, Blue Curaçao",p:"3.00"},
+  {n:"Metru Kokteilis ×8",en:"Meter Cocktail",p:"20.00",tag:"×8",hot:1},
+ ]},
+ wine:{lv:"Vīns",en:"Wine · 150 ml / 750 ml",items:[
+  {n:"Sarkanvīns",al:"A12",en:"Red",p:"6.00 / 27.00"},{n:"Baltvīns",al:"A12",en:"White",p:"6.00 / 27.00"},
+  {n:"Rozā vīns",al:"A12",en:"Rosé",p:"6.00 / 27.00"},{n:"Prosecco",al:"A12",p:"6.00 / 27.00"},
+ ]},
+ softs:{lv:"Bezalkoholiskie",en:"Softs",items:[
+  {n:"Augļu sula",en:"Fruit juice",p:"3.00"},{n:"Coca-Cola, Zero, Fanta, Sprite",p:"3.00"},
+  {n:"Mangali",en:"still / sparkling",p:"2.00"},{n:"Enerģijas dzēriens",en:"Energy drink",p:"3.50"},
+ ]},
+ hot:{lv:"Karstie",en:"Hot drinks",items:[
+  {n:"Dubultais espresso",en:"Double espresso",p:"3.50"},{n:"Cappuccino",al:"A07",p:"3.50"},
+  {n:"Turku melnā tēja",en:"Turkish black tea",p:"3.00"},
+  {n:"Turkish Coffee",d:"Līdz 19:00 / Until 7 PM",p:"3.50"},
+ ]},
+};
+
+const HHMENU = {
+ cocktails:[["Džins ar tonisko ūdeni","Gin Tonic"],["Aperol Spritz"],["Rums ar kolu","Rum & Cola"],["Viskijs ar kolu","Whisky & Cola"],
+  ["Klasiskais mohito","Classic Mojito"],["Hugo Spritz"],["Espresso Martini"],["Bramble"],["Tekila Sunrise","Tequila Sunrise"],
+  ["Pinjakolada","Piña Colada"],["Maskavas mūlis","Moscow Mule"],["Snuggest Peach","House pick",1]],
+ beer:[["Istanbul City","Beer, Amaretto, Orange Liqueur"],["Antalya Sun","Beer, Tequila, Malibu"],["Anatolian","Beer, Cherry Liqueur, Peppermint Liqueur"],
+  ["Troja","Ouzo, Jägermeister, Lemon Juice"],["Mexican","Beer, Tequila, Salt, Lemon Juice"]],
+ virgin:[["Mohito Virgin","Virgin Mojito"],["Pinjakolada Virgin","Piña Colada Virgin"],["Sunset Cooler Virgin"],["Green Apple Spritz Virgin"]],
+};
+
+const HH = { start: 18, end: 22, price: "5" };
+const e = s => String(s ?? "").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function item(i){
+  const meta = [];
+  if(i.hh) meta.push(`<span class="tag hh5">5€ 18–22</span>`);
+  if(i.tag) meta.push(`<span class="tag ${i.hot?'hot':''}">${e(i.tag)}</span>`);
+  if(i.al) i.al.split(" ").forEach(a=>meta.push(`<span class="al" title="Alergēns / Allergen">${a}</span>`));
+  const pr = i.hh ? `<span class="old">${e(i.p)}</span><span class="now" data-p="${e(i.p)}">${e(i.p)}</span> €` : `${e(i.p)} €`;
+  return `<div class="it ${i.hh?'hhi':''}">
+    <div class="nm">${e(i.n)}${i.en?` <span class="en">${e(i.en)}</span>`:""}</div>
+    <div class="pr">${pr}</div>
+    ${i.d?`<div class="ds">${e(i.d)}</div>`:""}
+    ${meta.length?`<div class="meta">${meta.join("")}</div>`:""}
+  </div>`;
+}
+const grp = k => `<div class="grp"><h3>${e(S[k].lv)} <small>${e(S[k].en)}</small></h3>${S[k].items.map(item).join("")}</div>`;
+const hhItem = ([n,en,star]) => item({n, d:en, p:HH.price, tag:star?"Autordzēriens":"", hot:1});
+
+document.getElementById("menu").innerHTML = `
+ <section class="part" id="hh">
+  <h2>Kokteiļu stunda<small>Cocktail Hour · katru dienu 18:00–22:00 · ${HH.price} € par glāzi / per glass</small></h2>
+  <div class="hhbox">
+   <div class="grp"><h3>Kokteiļi <small>Cocktails</small></h3>${HHMENU.cocktails.map(hhItem).join("")}</div>
+   <div class="grp"><h3>Alus kokteiļi <small>Beer cocktails</small></h3>${HHMENU.beer.map(hhItem).join("")}</div>
+   <div class="grp"><h3>Bezalkoholiskie <small>Virgin</small></h3>${HHMENU.virgin.map(hhItem).join("")}</div>
+  </div>
+  <p class="note">Piedāvājums spēkā tikai bārā. Offer valid in the bar only.</p>
+ </section>
+ <section class="part" id="kokteili">
+  <h2>Kokteiļi<small>Cocktails</small></h2>
+  ${["classics","house","beer","virgin"].map(grp).join("")}
+ </section>
+ <section class="part" id="virtuve">
+  <h2>Ēdieni<small>Food · Virtuve / Kitchen</small></h2>
+  ${["burgers","mains","soup","snacks","dessert"].map(grp).join("")}
+  <div class="grp"><h3>Mērces <small>Sauces · 1.00 €</small></h3>
+   <p class="note" style="font-style:normal">Snuggest jogurta mērce <span class="al">A07</span>, majonēze <span class="al">A03 A07</span>, kečups, sinepes, BBQ, ķiploku mērce <span class="al">A03 A07</span><br>
+   <span style="font-style:italic">Special yoghurt, mayonnaise, ketchup, mustard, barbecue, garlic</span></p></div>
+ </section>
+ <section class="part" id="dzerieni">
+  <h2>Dzērieni<small>Drinks</small></h2>
+  <div class="grp"><h3>Alus <small>Beer</small></h3><p class="note">Mūsu alus izvēle regulāri mainās, jautājiet bārmenim. Our beer selection changes regularly, ask your bartender.</p></div>
+  ${["spirits","liqueurs","shots","wine","softs","hot"].map(grp).join("")}
+ </section>`;
+
+/* Cocktail Hour status, always on Riga time */
+function rigaNow(){
+  const p = new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Riga",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date());
+  const g = t => +p.find(x=>x.type===t).value;
+  return (g("hour")%24) + g("minute")/60;
+}
+function tick(){
+  const h = rigaNow(), on = h>=HH.start && h<HH.end;
+  let txt;
+  if(on){ const m=Math.round((HH.end-h)*60); txt=`Tagad! / Now · vēl ${Math.floor(m/60)} h ${m%60} min`; }
+  else { const m=Math.round(((HH.start-h)+(h>=HH.end?24:0))*60); txt=`Sākas pēc / Starts in ${Math.floor(m/60)} h ${m%60} min`; }
+  document.body.classList.toggle("on",on);
+  document.getElementById("status").textContent = txt;
+  document.querySelectorAll(".hhi .now").forEach(x=>x.textContent = on ? HH.price : x.dataset.p);
+}
+tick(); setInterval(tick,30000);
+
+/* jump links: scroll in script so it works inside any viewer */
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",ev=>{
+  const t=document.getElementById(a.getAttribute("href").slice(1)); if(!t) return;
+  ev.preventDefault();
+  const off=document.querySelector("nav").offsetHeight+8;
+  window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-off,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+}));
+/* highlight the current tab */
+const tabs=[...document.querySelectorAll("#tabs a")];
+const io=new IntersectionObserver(es=>{es.forEach(en=>{ if(en.isIntersecting){
+  tabs.forEach(a=>a.classList.toggle("act",a.getAttribute("href")==="#"+en.target.id));
+  const a=tabs.find(a=>a.classList.contains("act")); if(a){const w=a.parentElement; w.scrollLeft=a.offsetLeft-(w.clientWidth-a.offsetWidth)/2;}
+}})},{rootMargin:"-40% 0px -55% 0px"});
+document.querySelectorAll(".part").forEach(s=>io.observe(s));
+tabs[0].classList.add("act");
+</script>
+
+</body>
+</html>
