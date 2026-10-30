@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="The Snuggest, Zirgu iela 3, Vecrīga: ēdienkarte, kokteiļi un Kokteiļu stunda 18:00–22:00 / Menu, cocktails and Cocktail Hour.">
+<meta name="description" content="The Snuggest, Zirgu iela 3, Vecrīga: ēdienkarte, kokteiļi un Kokteiļu stunda 18:00–21:00 / Menu, cocktails and Cocktail Hour.">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
 <title>The Snuggest Menu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -137,7 +137,7 @@ footer .wrap{padding-block:28px 34px;display:grid;gap:18px}
   <section class="hh" aria-label="Cocktail Hour">
     <div class="t">Kokteiļu stunda<small>Cocktail Hour · 21 kokteilis / 21 cocktails</small></div>
     <div class="big">5€<small>par glāzi<br>per glass</small></div>
-    <div class="when">Katru dienu 18:00–22:00 · Every day</div>
+    <div class="when">Katru dienu 18:00–21:00 · Every day</div>
     <div class="bar">
       <span class="pill"><i></i><span id="status">…</span></span>
       <a href="#hh">Skatīt sarakstu / See the list</a>
@@ -284,12 +284,12 @@ const HHMENU = {
  virgin:[["Mohito Virgin","Virgin Mojito"],["Pinjakolada Virgin","Piña Colada Virgin"],["Sunset Cooler Virgin"],["Green Apple Spritz Virgin"]],
 };
 
-const HH = { start: 18, end: 22, price: "5" };
+const HH = { start: 18, end: 21, price: "5" };
 const e = s => String(s ?? "").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 function item(i){
   const meta = [];
-  if(i.hh) meta.push(`<span class="tag hh5">5€ 18–22</span>`);
+  if(i.hh) meta.push(`<span class="tag hh5">5€ 18–21</span>`);
   if(i.tag) meta.push(`<span class="tag ${i.hot?'hot':''}">${e(i.tag)}</span>`);
   if(i.al) i.al.split(" ").forEach(a=>meta.push(`<span class="al" title="Alergēns / Allergen">${a}</span>`));
   const pr = i.hh ? `<span class="old">${e(i.p)}</span><span class="now" data-p="${e(i.p)}">${e(i.p)}</span> €` : `${e(i.p)} €`;
@@ -305,7 +305,7 @@ const hhItem = ([n,en,star]) => item({n, d:en, p:HH.price, tag:star?"Autordzēri
 
 document.getElementById("menu").innerHTML = `
  <section class="part" id="hh">
-  <h2>Kokteiļu stunda<small>Cocktail Hour · katru dienu 18:00–22:00 · ${HH.price} € par glāzi / per glass</small></h2>
+  <h2>Kokteiļu stunda<small>Cocktail Hour · katru dienu 18:00–21:00 · ${HH.price} € par glāzi / per glass</small></h2>
   <div class="hhbox">
    <div class="grp"><h3>Kokteiļi <small>Cocktails</small></h3>${HHMENU.cocktails.map(hhItem).join("")}</div>
    <div class="grp"><h3>Alus kokteiļi <small>Beer cocktails</small></h3>${HHMENU.beer.map(hhItem).join("")}</div>
