@@ -151,6 +151,20 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .note span{flex:1;min-width:0;overflow-wrap:anywhere}
 .note button{width:28px;height:28px;border-radius:8px;background:var(--panel);flex:none}
 .li.gift .nm{color:var(--ok)}.li.gift .lt{color:var(--ok)}
+.ppl{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);align-items:center;scrollbar-width:none}
+.ppl::-webkit-scrollbar{display:none}
+.ppl .lb{color:var(--muted);font-size:14px;flex:none}
+.ppl button{flex:none;padding:8px 12px;border-radius:999px;background:var(--panel2);font-weight:600;font-size:15px;border:2px solid transparent;white-space:nowrap}
+.ppl button[aria-pressed="true"]{border-color:var(--gold);background:var(--goldbg)}
+.ppl .ad{border:2px dashed var(--line);background:none}
+.gh{display:flex;align-items:center;gap:8px;padding:12px 6px 4px;border-bottom:2px solid var(--gold);font-weight:700}
+.gh b{margin-right:auto}.gh .s{color:var(--muted);font-weight:600}
+.gh button{padding:6px 12px;border-radius:9px;background:var(--panel2);font-weight:700}
+.qty .wb{width:auto;padding:0 10px;font-size:14px;font-weight:600;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sl .w{color:var(--gold);font-size:13px;font-weight:700}
+.wpick{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.wpick .btn{flex:none}
+.wpick .btn.on{border-color:var(--gold);background:var(--goldbg)}
 .loy{display:grid;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg)}
 .loy label{font-size:14px;color:var(--muted)}
 .loy p{margin:0;color:var(--ink)}
@@ -460,17 +474,19 @@ function startOrders(){
 function buildFromOrder(o){
   return cur=>{
     const t=cur&&cur.lines&&cur.lines.length?clone(cur):{lines:[],openedAt:o.t};
-    let added=0;const at=new Date(o.t);
+    let added=0;const at=new Date(o.t);const who=cleanWho(o.who);
     (Array.isArray(o.lines)?o.lines:[]).slice(0,40).forEach(x=>{
       let it=null,cat=null;for(const c of menu.cats){const f=c.items.find(i=>i.id===x.id);if(f){it=f;cat=c;break}}
       if(!it||it.out||!catVisible(cat,at))return;
       const v=it.v.find(v=>v.l===x.l);if(!v)return;
       const q=Math.max(1,Math.min(20,parseInt(x.q,10)||1));
-      addLine(t,{key:it.id+'|'+v.l+'|'+cents(v.p),name:it.name,l:v.l,p:cents(v.p),q});added+=q;
+      const ln={key:wkey(it.id+'|'+v.l+'|'+cents(v.p),who),name:it.name,l:v.l,p:cents(v.p),q};if(who)ln.who=who;
+      addLine(t,ln);added+=q;
     });
+    if(added&&who){t.people=t.people||[];if(!t.people.includes(who))t.people.push(who)}
     flashKey=null;
     const nt=typeof o.note==='string'?o.note.trim().slice(0,200):'';
-    if(added&&nt){t.notes=t.notes||[];t.notes.push({t:o.t,text:nt,src:'qr'})}
+    if(added&&nt){t.notes=t.notes||[];t.notes.push({t:o.t,text:(who?who+': ':'')+nt,src:'qr'})}
     return added?t:null;
   };
 }
@@ -478,7 +494,7 @@ async function processOrder(o){
   if(busyOrders.has(o.id))return;busyOrders.add(o.id);
   const n=parseInt(o.table,10);
   const table=/^\d{1,3}$/.test(String(o.table))&&n>=1&&n<=menu.tableCount?String(n):null;
-  try{const r=await db.mergeOrder(o.id,table,buildFromOrder(o));if(r)toast('Masa '+table+': QR siparişi eklendi')}
+  try{const r=await db.mergeOrder(o.id,table,buildFromOrder(o));if(r)toast('Masa '+table+': QR siparişi eklendi'+(cleanWho(o.who)?' · 👤 '+cleanWho(o.who):''))}
   catch(e){busyOrders.delete(o.id);onDbErr(e);return}
   setTimeout(()=>busyOrders.delete(o.id),60000);
 }
@@ -566,15 +582,28 @@ function updateCounts(){
     tile.classList.toggle('has',any);
   });
 }
+function curWho(){const w=view.who||'';return w&&tPeople(view.table).includes(w)?w:''}
+function pplBar(n){const ps=tPeople(n),w=curWho();
+  return`<div class="ppl"><span class="lb">Kime:</span><button data-act="who" data-w="" aria-pressed="${!w}">🍽️ Masa</button>${ps.map(p=>`<button data-act="who" data-w="${esc(p)}" aria-pressed="${p===w}">👤 ${esc(p)}</button>`).join('')}<button class="ad" data-act="addwho">+ Kişi</button></div>`}
+function lineHtml(l,i,grouped){return`<div class="li${l.key===flashKey?' flash':''}${l.p<0?' gift':''}">
+      <span class="nm">${esc(l.name)}${l.l?` <span class="vl">${esc(l.l)}</span>`:''}</span><span class="lt">${eur(l.p*l.q)}</span>
+      <div class="qty">${l.p<0?`<button data-act="dec" data-i="${i}" aria-label="Kaldır">✕</button><span class="each">sadakat hediyesi</span>`:`<button data-act="dec" data-i="${i}" aria-label="Azalt">−</button><span>${l.q}</span><button data-act="inc" data-i="${i}" aria-label="Arttır">+</button><button class="wb" data-act="lwho" data-i="${i}" aria-label="Kişiyi değiştir">${l.who&&!grouped?'👤 '+esc(l.who):'👤'}</button><span class="each">${eur(l.p)} / adet</span>`}</div>
+    </div>`}
+function orderList(lines){
+  const idx=lines.map((l,i)=>i);
+  if(!lines.some(l=>l.who))return idx.map(i=>lineHtml(lines[i],i,false)).join('');
+  const groups=['',...tPeople(view.table)];
+  return groups.map(g=>{const ii=idx.filter(i=>(lines[i].who||'')===g);if(!ii.length)return'';
+    const sub=ii.reduce((s,i)=>s+lines[i].p*lines[i].q,0);
+    return`<div class="gh"><b>${g?'👤 '+esc(g):'🍽️ Masa (ortak)'}</b><span class="s">${eur(sub)}</span><button data-act="paywho" data-w="${esc(g)}">Öde</button></div>`+ii.map(i=>lineHtml(lines[i],i,true)).join('')}).join('');
+}
 function renderOrder(){
   const el=$('#order');if(!el)return;
   const n=view.table,t=tables[n],lines=t?t.lines:[];
   el.innerHTML=`<div class="oh"><h2>Masa ${esc(n)}</h2>${t&&lines.length?`<span class="since">${hm(t.openedAt)} · ${mins(t.openedAt)}</span>`:''}<button class="btn oclose" style="flex:none" data-act="hideorder">Menü</button></div>
     ${t&&t.notes&&t.notes.length?`<div class="notes">${t.notes.map((nt,i)=>`<div class="note"><span>📝 ${nt.src==='qr'?'<b>QR</b> ':''}${esc(nt.text)}</span><button data-act="delnote" data-i="${i}" aria-label="Notu sil">✕</button></div>`).join('')}</div>`:''}
-    <div class="ol">${lines.length?lines.map((l,i)=>`<div class="li${l.key===flashKey?' flash':''}${l.p<0?' gift':''}">
-      <span class="nm">${esc(l.name)}${l.l?` <span class="vl">${esc(l.l)}</span>`:''}</span><span class="lt">${eur(l.p*l.q)}</span>
-      <div class="qty">${l.p<0?`<button data-act="dec" data-i="${i}" aria-label="Kaldır">✕</button><span class="each">sadakat hediyesi</span>`:`<button data-act="dec" data-i="${i}" aria-label="Azalt">−</button><span>${l.q}</span><button data-act="inc" data-i="${i}" aria-label="Arttır">+</button><span class="each">${eur(l.p)} / adet</span>`}</div>
-    </div>`).join(''):'<p class="hint" style="padding:14px 6px">Henüz sipariş yok. Soldan ürün seçin.</p>'}</div>
+    ${pplBar(n)}
+    <div class="ol">${lines.length?orderList(lines):'<p class="hint" style="padding:14px 6px">Henüz sipariş yok. Soldan ürün seçin.</p>'}</div>
     <div class="of">
       <div class="total"><span>Toplam</span><b>${eur(tTotal(t))}</b></div>
       <div class="row"><button class="btn" data-act="custom">Özel ürün</button><button class="btn" data-act="addnote" ${lines.length?'':'disabled'}>Not ekle</button><button class="btn" data-act="move" ${lines.length?'':'disabled'}>Taşı</button></div>
@@ -599,7 +628,7 @@ async function renderDay(){
     <div class="dh"><h2>${off===0?'Bugün':`${d}.${mo}.${y}`}</h2><button class="btn csv" data-act="csv" hidden>CSV indir</button><button data-act="dayprev" aria-label="Önceki gün">‹</button><button data-act="daynext" aria-label="Sonraki gün" ${off>=0?'disabled':''}>›</button></div>
     <div class="sum"><div><span>Toplam</span><b>${eur(sum())}</b></div><div><span>Nakit</span><b>${eur(sum('cash'))}</b></div><div><span>Kart</span><b>${eur(sum('card'))}</b></div><div><span>Hesap</span><b>${bills.length}</b></div></div>
     ${off===0&&openT.length?`<p class="hint">Açık masalarda bekleyen: ${eur(openT.reduce((s,t)=>s+tTotal(t),0))} (${openT.length} masa)</p>`:''}
-    ${bills.length?bills.slice().reverse().map(b=>`<details class="bill"><summary><span>${hm(b.t)}</span><span>Masa ${esc(b.table)}</span><span class="m">${b.method==='card'?'Kart':'Nakit'}</span><b>${eur(b.total)}</b></summary>
+    ${bills.length?bills.slice().reverse().map(b=>`<details class="bill"><summary><span>${hm(b.t)}</span><span>Masa ${esc(b.table)}${b.who?' · '+esc(b.who):''}</span><span class="m">${b.method==='card'?'Kart':'Nakit'}</span><b>${eur(b.total)}</b></summary>
       <ul>${b.lines.map(l=>`<li><span>${l.q}× ${esc(l.name)}${l.l?' ('+esc(l.l)+')':''}</span><span>${eur(l.p*l.q)}</span></li>`).join('')}</ul></details>`).join('')
       :'<p class="hint">Bu gün için kapatılmış hesap yok.</p>'}
     ${bills.length?`<button class="btn" style="margin-top:12px;width:100%" data-act="dayreport">📨 Gün sonu raporunu Telegram'a gönder</button>`:''}
@@ -672,8 +701,10 @@ function closeHtml(){const t=tables[view.table];return`<h3>Masa ${esc(view.table
 function splitHtml(){
   const t=tables[view.table];const sel=split.sel;const tot=t.lines.reduce((s,l,i)=>s+l.p*(sel[i]||0),0);
   const ppl=split.ppl||2;
+  const ws=['',...tPeople(view.table)].filter(w=>t.lines.some(l=>(l.who||'')===w));
   return`<h3>Masa ${esc(view.table)} — hesabı böl</h3><p>Bu kişinin ödeyeceği ürünleri seçin, ödemeyi alın. Kalanlar masada kalır.</p>
-  <div class="spl">${t.lines.map((l,i)=>`<div class="sl${sel[i]?' on':''}"><span class="t">${esc(l.name)}${l.l?` <small>${esc(l.l)}</small>`:''}<small>${eur(l.p)} × ${l.q}</small></span>
+  ${ws.length>1||ws[0]?`<div class="wpick">${ws.map(w=>`<button class="btn${split.who===w?' on':''}" data-act="swho" data-w="${esc(w)}">${w?'👤 '+esc(w):'🍽️ Ortak'} · ${eur(t.lines.filter(l=>(l.who||'')===w).reduce((s,l)=>s+l.p*l.q,0))}</button>`).join('')}</div>`:''}
+  <div class="spl">${t.lines.map((l,i)=>`<div class="sl${sel[i]?' on':''}"><span class="t">${l.who?`<span class="w">👤 ${esc(l.who)}</span> `:''}${esc(l.name)}${l.l?` <small>${esc(l.l)}</small>`:''}<small>${eur(l.p)} × ${l.q}</small></span>
     <span class="qty"><button data-act="ssub" data-i="${i}" ${sel[i]?'':'disabled'}>−</button><span>${sel[i]||0}/${l.q}</span><button data-act="sadd" data-i="${i}" ${(sel[i]||0)<l.q?'':'disabled'}>+</button></span></div>`).join('')}</div>
   <div class="row"><button class="btn" data-act="sall">Hepsini seç</button><button class="btn" data-act="snone">Temizle</button></div>
   <div class="total"><span>Seçilen</span><b>${eur(tot)}</b></div>
@@ -687,13 +718,17 @@ function doPay(method,sel){
   if(!paid.length)return;
   const phone=readPhone(),stamps=stampCount(paid);
   const total=paid.reduce((s,l)=>s+l.p*l.q,0);
-  addBill({t:Date.now(),table:n,method,total,lines:paid.map(l=>({name:l.name,l:l.l,p:l.p,q:l.q}))});
+  const pw=[...new Set(paid.map(l=>l.who||''))];
+  const bill={t:Date.now(),table:n,method,total,lines:paid.map(l=>({name:l.name,l:l.l,p:l.p,q:l.q}))};if(pw.length===1&&pw[0])bill.who=pw[0];
+  addBill(bill);
   if(stamps&&normPhone(phone))addStamps(phone,stamps);
   if(sel){paid.forEach(pl=>{const x=t.lines.find(l=>l.key===pl.key);if(x)x.q-=pl.q});t.lines=t.lines.filter(l=>l.q>0);if(!t.lines.some(l=>l.p>0))t.lines=[]}
   else t.lines=[];
+  if(t.people){const left=new Set(t.lines.map(l=>l.who).filter(Boolean));t.people=t.people.filter(p=>left.has(p));if(!t.people.length)delete t.people}
+  if(!t.lines.length){delete extraPeople[n];delete t.people}
   pay={phone:'',info:null,redeemed:false};
   tables[n]=t;saveTable(n);
-  if(t.lines.length){split={sel:t.lines.map(()=>0),ppl:split?split.ppl:2};modal(splitHtml());toast('Ödeme alındı: '+eur(total));renderOrder()}
+  if(t.lines.length){split={sel:t.lines.map(()=>0),ppl:split?split.ppl:2,who:null};modal(splitHtml());toast('Ödeme alındı: '+eur(total));renderOrder()}
   else{split=null;closeModal();view.screen='tables';render();toast('Hesap kapandı: '+eur(total))}
 }
 async function redeemPick(i){
@@ -702,7 +737,7 @@ async function redeemPick(i){
   try{const r=await db.loyalty(id,d=>(!d||!(d.free>0))?null:{...d,free:d.free-1,used:(d.used||0)+1,last:Date.now()});
     if(!r){pay.info={err:'Bu kartta kullanılabilir hediye yok.'};modal(closeHtml());return}
     pay.redeemed=true;pay.info={...pay.info,free:r.free};
-    mutateTable(view.table,x=>x.lines.push({key:'gift|'+uid(),name:'🎁 Hediye: '+l.name,l:l.l,p:-l.p,q:1}));
+    mutateTable(view.table,x=>{const g={key:'gift|'+uid(),name:'🎁 Hediye: '+l.name,l:l.l,p:-l.p,q:1};if(l.who)g.who=l.who;x.lines.push(g)});
     modal(closeHtml());toast('🎁 Hediye uygulandı')}
   catch(e){pay.info={err:'Hediye uygulanamadı (bağlantı?).'};modal(closeHtml())}
 }
@@ -790,6 +825,23 @@ function mutateTable(n,fn){
   if(!t.lines.length)t.openedAt=Date.now();
   fn(t);tables[n]=t;saveTable(n);renderOrder();
 }
+/* ---------- people at a table ---------- */
+const cleanWho=s=>String(s||'').replace(/[|<>"]/g,'').replace(/\s+/g,' ').trim().slice(0,20);
+const baseKey=k=>String(k).replace(/\|@.*$/,'');
+const wkey=(base,who)=>who?base+'|@'+who:base;
+const extraPeople={};
+function tPeople(n){const t=tables[n],out=[];const add=p=>{if(p&&!out.includes(p))out.push(p)};
+  (extraPeople[n]||[]).forEach(add);if(t){(t.people||[]).forEach(add);t.lines.forEach(l=>add(l.who))}return out}
+function pruneExtra(n){const t=tables[n];if(!extraPeople[n])return;const used=new Set(t?[...(t.people||[]),...t.lines.map(l=>l.who)]:[]);extraPeople[n]=extraPeople[n].filter(p=>!used.has(p))}
+function setWho(t,i,who,one){
+  const l=t.lines[i];if(!l)return;who=cleanWho(who);if((l.who||'')===who)return;
+  const q=one&&l.q>1?1:l.q;
+  const moved={...l,q,who:who||undefined};if(!who)delete moved.who;
+  if(!l.key.startsWith('gift|'))moved.key=wkey(baseKey(l.key),who);
+  if(q<l.q)l.q-=q;else t.lines.splice(i,1);
+  const ex=t.lines.find(x=>x.key===moved.key);if(ex)ex.q+=q;else t.lines.push(moved);
+  if(who){t.people=t.people||[];if(!t.people.includes(who))t.people.push(who)}
+}
 function addLine(t,line){
   const ex=t.lines.find(l=>l.key===line.key);
   if(ex)ex.q+=line.q;else t.lines.push(line);
@@ -810,12 +862,12 @@ document.addEventListener('click',e=>{
   if(a==='lock')return;
   switch(a){
     case'go':goto(d.s);break;
-    case'open':{view.table=d.t;view.screen='table';const h=menu.cats.findIndex(c=>c.hh&&catVisible(c));if(h>=0)view.cat=h;render();break}
+    case'open':{view.table=d.t;view.who='';view.screen='table';const h=menu.cats.findIndex(c=>c.hh&&catVisible(c));if(h>=0)view.cat=h;render();break}
     case'cat':view.cat=+d.i;document.querySelectorAll('.cats button').forEach(x=>x.setAttribute('aria-current',String(+x.dataset.i===view.cat)));renderItems();$('#items').scrollTop=0;break;
     case'add':{const it=menu.cats[view.cat].items[+d.ii],v=it.v[+d.vi];
-      mutateTable(view.table,t=>addLine(t,{key:it.id+'|'+v.l+'|'+cents(v.p),name:it.name,l:v.l,p:cents(v.p),q:1}));break}
-    case'sub':{const it=menu.cats[view.cat].items[+d.ii],v=it.v[+d.vi],pre=it.id+'|'+v.l+'|',exact=pre+cents(v.p);
-      mutateTable(view.table,t=>{let i=t.lines.findIndex(l=>l.key===exact);if(i<0)i=t.lines.findIndex(l=>l.key.startsWith(pre));if(i<0)return;
+      const w=curWho();mutateTable(view.table,t=>{const ln={key:wkey(it.id+'|'+v.l+'|'+cents(v.p),w),name:it.name,l:v.l,p:cents(v.p),q:1};if(w){ln.who=w;t.people=t.people||[];if(!t.people.includes(w))t.people.push(w)}addLine(t,ln)});break}
+    case'sub':{const it=menu.cats[view.cat].items[+d.ii],v=it.v[+d.vi],pre=it.id+'|'+v.l+'|',w=curWho(),exact=wkey(pre+cents(v.p),w);
+      mutateTable(view.table,t=>{let i=t.lines.findIndex(l=>l.key===exact);if(i<0)i=t.lines.findIndex(l=>l.key.startsWith(pre)&&(l.who||'')===w);if(i<0)i=t.lines.findIndex(l=>l.key.startsWith(pre));if(i<0)return;
         if(t.lines[i].q>1)t.lines[i].q--;else t.lines.splice(i,1)});break}
     case'inc':mutateTable(view.table,t=>{t.lines[+d.i].q++});break;
     case'dec':mutateTable(view.table,t=>{const l=t.lines[+d.i];if(l.q>1)l.q--;else t.lines.splice(+d.i,1)});break;
@@ -828,23 +880,39 @@ document.addEventListener('click',e=>{
       <div class="row"><button class="btn" data-act="mclose">İptal</button><button class="btn primary" data-act="customok">Masaya ekle</button></div>`);break;
     case'customok':{const n=$('#cn').value.trim(),p=num($('#cp').value);
       if(!n||!(p>=0)){$('#cerr').textContent='Bir ad ve geçerli bir fiyat girin.';return}
-      closeModal();mutateTable(view.table,t=>addLine(t,{key:'x|'+n+'|'+cents(p),name:n,l:'',p:cents(p),q:1}));break}
+      closeModal();const w=curWho();mutateTable(view.table,t=>{const ln={key:wkey('x|'+n.replace(/\|/g,'/')+'|'+cents(p),w),name:n,l:'',p:cents(p),q:1};if(w)ln.who=w;addLine(t,ln)});break}
     case'move':modal(`<h3>Masa ${esc(view.table)} → hangi masa?</h3><p>Dolu bir masa seçerseniz siparişler birleştirilir.</p>
       <div class="pick">${tableIds().map(id=>`<button data-act="moveto" data-t="${id}" class="${tables[id]&&tables[id].lines.length?'busy':''}" ${id===view.table?'disabled':''}>${esc(id)}</button>`).join('')}</div>
       <button class="btn" data-act="mclose">İptal</button>`);break;
     case'moveto':{const from=view.table,to=d.t,src=clone(tables[from]);
       const dst=tables[to]&&tables[to].lines.length?clone(tables[to]):{lines:[],openedAt:src.openedAt};
       src.lines.forEach(l=>addLine(dst,l));dst.openedAt=Math.min(dst.openedAt,src.openedAt);
+      dst.people=[...new Set([...(dst.people||[]),...(src.people||[]),...(extraPeople[from]||[])])];if(!dst.people.length)delete dst.people;delete extraPeople[from];
       tables[to]=dst;saveTable(to);delete tables[from];saveTable(from);
       closeModal();view.table=to;render();break}
     case'close':{if(!tables[view.table])return;readPhone();split=null;modal(closeHtml());break}
     case'pay':doPay(d.m,null);break;
-    case'split':{const t=tables[view.table];if(!t)return;readPhone();split={sel:t.lines.map(()=>0),ppl:split?split.ppl:2};modal(splitHtml());break}
+    case'split':{const t=tables[view.table];if(!t)return;readPhone();split={sel:t.lines.map(()=>0),ppl:split?split.ppl:2,who:null};modal(splitHtml());break}
     case'sadd':case'ssub':{readPhone();const i=+d.i,l=tables[view.table].lines[i];split.sel[i]=Math.max(0,Math.min(l.q,(split.sel[i]||0)+(a==='sadd'?1:-1)));modal(splitHtml());break}
-    case'sall':readPhone();split.sel=tables[view.table].lines.map(l=>l.q);modal(splitHtml());break;
-    case'snone':readPhone();split.sel=split.sel.map(()=>0);modal(splitHtml());break;
+    case'sall':readPhone();split.who=null;split.sel=tables[view.table].lines.map(l=>l.q);modal(splitHtml());break;
+    case'snone':readPhone();split.who=null;split.sel=split.sel.map(()=>0);modal(splitHtml());break;
     case'pplp':case'pplm':readPhone();split.ppl=Math.max(2,Math.min(20,(split.ppl||2)+(a==='pplp'?1:-1)));modal(splitHtml());break;
     case'spay':doPay(d.m,split.sel);break;
+    case'swho':{readPhone();const t=tables[view.table],w=d.w||'';split.who=w;split.sel=t.lines.map(l=>(l.who||'')===w?l.q:0);modal(splitHtml());break}
+    case'paywho':{const t=tables[view.table];if(!t)return;const w=d.w||'';pay={phone:'',info:null,redeemed:false};split={sel:t.lines.map(l=>(l.who||'')===w?l.q:0),ppl:2,who:w};modal(splitHtml());break}
+    case'who':view.who=d.w||'';renderOrder();break;
+    case'addwho':{const ps=tPeople(view.table);let k=ps.length+1;while(ps.includes('K'+k))k++;
+      modal(`<h3>Masa ${esc(view.table)} — yeni kişi</h3><p>İsim yazın ya da boş bırakın (otomatik <b>K${k}</b> olur). Bundan sonra eklediğiniz ürünler bu kişiye yazılır.</p>
+      <label>İsim<input class="tx" id="wn" maxlength="20" placeholder="K${k}" autocomplete="off"></label>
+      <div class="row"><button class="btn" data-act="mclose">İptal</button><button class="btn primary" data-act="addwhook" data-k="K${k}">Ekle</button></div>`);break}
+    case'addwhook':{const w=cleanWho($('#wn').value)||d.k;const n=view.table;extraPeople[n]=extraPeople[n]||[];if(!tPeople(n).includes(w))extraPeople[n].push(w);view.who=w;closeModal();renderOrder();break}
+    case'lwho':{const t=tables[view.table],i=+d.i,l=t&&t.lines[i];if(!l)return;const ps=tPeople(view.table);
+      modal(`<h3>${esc(l.name)}${l.l?' · '+esc(l.l):''} kimin?</h3>${l.q>1?`<label class="ck"><input type="checkbox" id="w1"> Sadece 1 adet taşı (${l.q} adetten)</label>`:''}
+      <div class="wpick"><button class="btn${!l.who?' on':''}" data-act="lwhook" data-i="${i}" data-w="">🍽️ Masa (ortak)</button>${ps.map(p=>`<button class="btn${l.who===p?' on':''}" data-act="lwhook" data-i="${i}" data-w="${esc(p)}">👤 ${esc(p)}</button>`).join('')}</div>
+      <div class="row"><input class="tx" id="wn" maxlength="20" placeholder="Yeni kişi adı" autocomplete="off"><button class="btn" data-act="lwhook" data-i="${i}" data-new="1" style="flex:none">Ekle</button></div>
+      <button class="btn" data-act="mclose">İptal</button>`);break}
+    case'lwhook':{const w=d.new?cleanWho($('#wn').value):(d.w||'');if(d.new&&!w)return;const one=!!($('#w1')&&$('#w1').checked);
+      closeModal();mutateTable(view.table,t=>setWho(t,+d.i,w,one));pruneExtra(view.table);renderOrder();break}
     case'loycheck':loyCheck();break;
     case'redeem':{readPhone();const t=tables[view.table];const ls=t.lines.map((l,i)=>[l,i]).filter(([l])=>l.p>0&&stampCount([l]));
       if(!ls.length){pay.info={...pay.info,err:'Bu hesapta sadakat kartına uygun kokteyl yok.'};modal(closeHtml());break}
