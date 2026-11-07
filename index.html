@@ -687,6 +687,7 @@ async function loyCheck(){
   try{const id=await loyId(ph);const sn=await db.doc('loyalty/'+id).get();const d=sn.exists?sn.data():{};
     pay.info={stamps:d.stamps||0,free:d.free||0,isNew:!sn.exists}}catch(e){pay.info={err:'Kart okunamadı (bağlantı?).'}}
   const el=$('#loyinfo');if(el)el.innerHTML=loyInfo();
+  if($('#modal [data-act="pay"], #modal [data-act="spay"]'))displayBill();
 }
 async function addStamps(phone,n){
   if(!n||!normPhone(phone)||!db||!db.loyalty)return;
@@ -721,6 +722,7 @@ function doPay(method,sel){
   const pw=[...new Set(paid.map(l=>l.who||''))];
   const bill={t:Date.now(),table:n,method,total,lines:paid.map(l=>({name:l.name,l:l.l,p:l.p,q:l.q}))};if(pw.length===1&&pw[0])bill.who=pw[0];
   addBill(bill);
+  pushDisplay({mode:'thanks',total,method});dispHold=Date.now()+7000;
   if(stamps&&normPhone(phone))addStamps(phone,stamps);
   if(sel){paid.forEach(pl=>{const x=t.lines.find(l=>l.key===pl.key);if(x)x.q-=pl.q});t.lines=t.lines.filter(l=>l.q>0);if(!t.lines.some(l=>l.p>0))t.lines=[]}
   else t.lines=[];
@@ -816,8 +818,30 @@ function eventsEditor(){
   <button class="btn" data-act="addev">+ Etkinlik ekle</button>`;
 }
 /* ---------- modal ---------- */
-function modal(html){$('#modal').innerHTML=`<div class="ov" data-act="ovclose"><div class="md" role="dialog" aria-modal="true">${html}</div></div>`;const f=$('#modal input');if(f)f.focus()}
-function closeModal(){$('#modal').innerHTML=''}
+function modal(html){$('#modal').innerHTML=`<div class="ov" data-act="ovclose"><div class="md" role="dialog" aria-modal="true">${html}</div></div>`;const f=$('#modal input');if(f)f.focus();
+  if($('#modal [data-act="pay"], #modal [data-act="spay"]'))displayBill();else if(dispActive&&!$('#modal [data-act="redeemon"]'))pushDisplay({mode:'idle'})}
+function closeModal(){$('#modal').innerHTML='';if(dispActive)pushDisplay({mode:'idle'})}
+
+/* ---------- customer display (ekran.html) ---------- */
+let dispActive=false,dispLast='',dispTimer=0,dispHold=0;
+function pushDisplay(d){
+  if(!db)return;dispActive=d.mode==='bill';
+  const s=JSON.stringify(d);if(s===dispLast)return;dispLast=s;
+  clearTimeout(dispTimer);
+  const put=()=>db.doc('display/current').set({...d,at:Date.now()}).catch(()=>{});
+  if(d.mode==='thanks'){put();return}
+  dispTimer=setTimeout(put,Math.max(250,dispHold-Date.now()));
+}
+function displayBill(){
+  const n=view.table,t=tables[n];if(!t||!t.lines.length)return;
+  const useSel=split&&split.sel&&split.sel.some(x=>x>0);
+  const lines=t.lines.map((l,i)=>({name:l.name,l:l.l||'',p:l.p,q:useSel?Math.min(split.sel[i]||0,l.q):l.q})).filter(l=>l.q>0);
+  const i=pay.info&&!pay.info.err?pay.info:null;
+  const d={mode:'bill',table:n,lines,total:lines.reduce((s,l)=>s+l.p*l.q,0),part:!!(split)};
+  if(split&&split.who)d.who=split.who;
+  if(i)d.loy={stamps:i.stamps||0,free:i.free||0};
+  pushDisplay(d);
+}
 
 /* ---------- actions ---------- */
 function mutateTable(n,fn){

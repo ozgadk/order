@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Snuggest — Ekrāns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#0F3324; --deep:#0A241A; --gold:#D9AE55; --gold-soft:#B8924A;
+  --orange:#EC7A2C; --cream:#F4ECD9; --dim:#BDB5A0;
+  --serif:'Gloock', Georgia, 'Times New Roman', serif;
+  --sans:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden;cursor:none}
+body{display:flex;align-items:center;justify-content:center;font-family:var(--sans);color:var(--cream)}
+
+#stage{width:1080px;height:1920px;flex:none;position:relative;overflow:hidden;transform-origin:center;
+  background:radial-gradient(ellipse 1000px 700px at 50% -8%,rgba(217,174,85,.13),transparent 70%),var(--forest)}
+
+/* ---------- slides ---------- */
+.slide{position:absolute;left:0;right:0;top:0;height:1790px;padding:56px 70px 0;
+  opacity:0;transform:translateY(30px);transition:opacity .9s ease,transform .9s ease;pointer-events:none}
+.slide.show{opacity:1;transform:none}
+
+.top{display:flex;align-items:center;gap:22px;padding-bottom:26px;border-bottom:2px solid var(--gold-soft);margin-bottom:38px}
+.top .logo{width:92px;height:92px;flex:none}
+.top .b{flex:1}
+.top .b .s{font-size:20px;letter-spacing:4px;color:var(--gold)}
+.top .b .n{font-family:var(--serif);font-size:54px;line-height:1}
+.top .ttl{text-align:right}
+.top .ttl .lv{font-family:var(--serif);font-size:46px;color:var(--gold);line-height:1.05}
+.top .ttl .en{font-size:22px;color:var(--dim);margin-top:4px}
+
+h3{font-family:var(--serif);font-weight:400;font-size:40px;color:var(--gold);margin:6px 0 20px;
+  display:flex;justify-content:space-between;align-items:baseline;gap:20px}
+h3 small{font-family:var(--sans);font-size:21px;color:var(--dim);font-weight:500}
+.sec+.sec{margin-top:34px}
+
+.it{display:flex;gap:18px;align-items:baseline;margin-bottom:20px}
+.it .t{flex:1;min-width:0}
+.it .nm{font-size:30px;font-weight:600;line-height:1.15}
+.it .nm .en{font-weight:400;color:var(--dim);font-size:24px}
+.it .tag{display:inline-block;font-size:17px;font-weight:600;color:var(--forest);background:var(--gold);
+  border-radius:20px;padding:2px 11px;margin-left:10px;vertical-align:4px}
+.it .tag.hot{background:var(--orange);color:var(--deep)}
+.it .ds{font-size:21px;color:var(--dim);margin-top:4px;line-height:1.3;font-style:italic}
+.it .pr{font-family:var(--serif);font-size:36px;white-space:nowrap;text-align:right}
+.it .pr .old{display:none;font-size:26px;color:var(--dim);text-decoration:line-through;text-decoration-color:var(--orange);text-decoration-thickness:3px;margin-right:12px}
+body.hh .it.hhi .pr .old{display:inline}
+body.hh .it.hhi .pr .now{color:var(--orange)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;column-gap:56px}
+.cmp .it{margin-bottom:13px}
+.cmp .it .nm{font-size:26px}
+.cmp .it .pr{font-size:28px}
+.note{font-size:24px;color:var(--dim);font-style:italic;margin:-6px 0 8px}
+.sauce{font-size:23px;color:var(--dim);line-height:1.5}
+
+/* hh ribbon on cocktail slides */
+.rib{display:none;margin:-14px 0 26px;padding:14px 24px;background:var(--orange);color:var(--deep);
+  font-weight:700;font-size:26px;border-radius:12px;justify-content:space-between}
+body.hh .rib{display:flex}
+body.fpon footer{background:#1A0836}
+
+/* ---------- HH menu ---------- */
+.hhbar{display:flex;justify-content:space-between;align-items:center;background:var(--orange);color:var(--deep);
+  border-radius:18px;padding:18px 28px;margin:-10px 0 30px}
+.hhbar b{display:block;font-size:34px}.hhbar span{font-size:22px;font-weight:600}
+.hhp5{font-family:var(--serif);font-size:84px;line-height:.9;display:flex;align-items:center;gap:12px}
+.hhp5 small{font-family:var(--sans);font-size:18px;font-weight:700;line-height:1.2;text-align:left}
+.hhg .it{margin-bottom:16px}
+.hhp{color:var(--orange)}
+
+/* ---------- ambient animations ---------- */
+#fx{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+#slides{position:relative;z-index:1}
+.bub{position:absolute;bottom:-30px;border-radius:50%;border:2px solid rgba(217,174,85,.35);animation:rise linear infinite}
+.tw{position:absolute;color:var(--gold);animation:spark 3s ease-in-out infinite}
+.top{background:linear-gradient(90deg,transparent,rgba(217,174,85,.08),transparent) no-repeat;background-size:40% 100%;animation:sweep 6s ease-in-out infinite}
+.top .ttl .lv{display:inline-block;animation:float 4s ease-in-out infinite}
+@keyframes rise{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:.8}100%{transform:translateY(-1950px) translateX(30px);opacity:0}}
+@keyframes sweep{0%{background-position:-60% 0}60%,100%{background-position:170% 0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* ---------- hero ---------- */
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:1730px}
+.hero .kick{font-size:28px;letter-spacing:5px;color:var(--gold)}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:140px;line-height:.95;margin-top:18px}
+.hero h2{font-family:var(--serif);font-weight:400;font-size:64px;color:var(--gold);margin-top:10px}
+.heroRow{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:30px;width:100%}
+.bigpanda{width:600px;height:646px;flex:none}
+.badge{width:330px;height:330px;position:relative;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.badge .ring{position:absolute;inset:0;border:4px dashed var(--gold);border-radius:50%;animation:spin 30s linear infinite}
+.badge .disc{position:absolute;inset:22px;background:var(--orange);border-radius:50%;animation:beat 2.4s ease-in-out infinite}
+.badge .v{position:relative;font-family:var(--serif);font-size:170px;line-height:.9;color:var(--deep)}
+.badge .v small{font-size:80px}
+.badge .l{position:relative;font-size:23px;font-weight:700;color:var(--deep);margin-top:6px}
+.when{margin-top:34px;font-size:40px;font-weight:600}
+.when span{display:block;font-size:28px;color:var(--dim);font-weight:400;margin-top:6px}
+.status{margin-top:34px;display:inline-flex;align-items:center;gap:14px;font-size:34px;font-weight:700;
+  padding:16px 34px;border-radius:60px;border:3px solid var(--gold);color:var(--gold)}
+body.hh .status{background:var(--orange);border-color:var(--orange);color:var(--deep)}
+.status .dot{width:18px;height:18px;border-radius:50%;background:currentColor}
+body.hh .status .dot{animation:pulse 1.4s ease-in-out infinite}
+.fine{margin-top:26px;font-size:24px;color:var(--dim)}
+
+/* ---------- footer ---------- */
+footer{transition:background .9s;position:absolute;left:0;right:0;bottom:0;height:130px;background:var(--deep);
+  display:flex;align-items:center;justify-content:space-between;padding:0 60px}
+#clock{font-family:var(--serif);font-size:58px;line-height:1}
+.dots{display:flex;gap:10px}
+.dots i{width:13px;height:13px;border-radius:50%;background:rgba(217,174,85,.3)}
+.dots i.on{background:var(--gold)}
+.addr{font-size:22px;color:var(--dim);line-height:1.35}
+.addr b{color:var(--cream);font-weight:600}
+
+/* ---------- Falcı Panda slide ---------- */
+.fp{position:absolute;inset:0;background:radial-gradient(ellipse 900px 700px at 50% 38%,#5B2A9A 0%,#3A1670 45%,#200B40 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;text-align:center;padding:30px 70px 20px;color:#F4ECD9;overflow:hidden}
+.fp>*{margin-top:0!important}
+.fp .rb{position:absolute;left:0;right:0;top:0;height:10px;background:linear-gradient(90deg,#8BD450,#3FC9B0,#4FB7F5,#A78BFA,#F0567A,#F6B04A)}
+.fp .k{font-size:26px;letter-spacing:9px;color:#F6C453;font-weight:600}
+.fp h1{font-family:var(--serif);font-weight:400;font-size:112px;line-height:1;margin-top:16px;
+  background:linear-gradient(90deg,#FFD27A,#F7A1B5,#E2A6F2);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fp h2{font-family:var(--serif);font-weight:400;font-size:50px;color:#E7D6FF;margin-top:6px}
+.fp .sub{font-size:30px;color:#E7D6FF;margin-top:16px}
+.fp .scene{position:relative;width:940px;height:600px;margin-top:20px}
+.fp .card{position:absolute;top:70px;width:230px;height:360px;border-radius:20px;background:#2E1260;border:3px solid #F6C453;
+  box-shadow:0 0 40px rgba(167,139,250,.45);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:22px 14px}
+.fp .card .rn{font-family:var(--serif);font-size:34px;color:#F6C453}
+.fp .card .ic{font-size:110px;line-height:1;color:#FFE9A8}
+.fp .card .nm{font-family:var(--serif);font-size:24px;background:#1A0836;border:1px solid #F6C453;border-radius:8px;padding:4px 14px;color:#F4ECD9}
+.fp .c1{left:20px;transform:rotate(-14deg);animation:cardL 5s ease-in-out infinite}
+.fp .c2{right:20px;transform:rotate(14deg);animation:cardR 5s ease-in-out infinite}
+.fp .fpanda{position:absolute;left:50%;top:0;width:440px;height:600px;margin-left:-220px}
+.fp .orb{transform-box:fill-box;transform-origin:center;animation:orb 3s ease-in-out infinite}
+.fp .swirl{transform-box:fill-box;transform-origin:center;animation:spin 9s linear infinite}
+.fp .pill{margin-top:14px;background:linear-gradient(90deg,#FFD27A,#F7A1B5);color:#2A0E52;font-weight:700;font-size:38px;
+  border-radius:60px;padding:18px 44px;animation:beat 2.4s ease-in-out infinite}
+.fp .pill span{display:block;font-size:24px;font-weight:600;margin-top:2px}
+.fp .steps{width:100%;margin-top:34px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;text-align:left}
+.fp .st{background:rgba(255,255,255,.06);border:1px solid rgba(246,196,83,.35);border-radius:22px;padding:22px 20px}
+.fp .st .n{width:58px;height:58px;border-radius:50%;border:3px solid #F6C453;color:#F6C453;font-family:var(--serif);font-size:32px;
+  display:flex;align-items:center;justify-content:center}
+.fp .st b{display:block;font-family:var(--serif);font-weight:400;font-size:30px;color:#FFE3A0;margin-top:14px;line-height:1.1}
+.fp .st i{display:block;font-style:normal;font-size:21px;color:#D9C8F5;margin-top:8px;line-height:1.3}
+.fp .fine2{margin-top:26px;font-size:22px;color:#BFA9E6;font-style:italic}
+.fp .langs{display:inline-block;margin-top:14px;border:2px solid #F6C453;border-radius:40px;padding:6px 26px;color:#F6C453;font-size:24px;font-weight:600}
+.fp .st2{position:absolute;z-index:0;color:#F6C453;animation:spark 3s ease-in-out infinite}
+@keyframes cardL{0%,100%{transform:rotate(-14deg) translateY(0)}50%{transform:rotate(-11deg) translateY(-16px)}}
+@keyframes cardR{0%,100%{transform:rotate(14deg) translateY(-10px)}50%{transform:rotate(11deg) translateY(8px)}}
+@keyframes orb{0%,100%{filter:drop-shadow(0 0 10px #A78BFA)}50%{filter:drop-shadow(0 0 34px #D8B4FE)}}
+
+/* ---------- QR slide ---------- */
+.qrs{height:1720px;display:flex;flex-direction:column;align-items:center;padding-top:10px}
+.qrs .hd{text-align:center}
+.qrs .hd h1{font-family:var(--serif);font-weight:400;font-size:104px;line-height:1}
+.qrs .hd h2{font-family:var(--serif);font-weight:400;font-size:48px;color:var(--gold);margin-top:10px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:40px;width:100%;margin-top:46px}
+.card{position:relative;border-radius:34px;padding:6px;animation:glow 2.6s ease-in-out infinite}
+.card.ig{background:linear-gradient(135deg,#FEDA75,#FA7E1E,#D62976,#962FBF,#4F5BD5)}
+.card.gg{background:linear-gradient(135deg,#D9AE55,#F4ECD9,#D9AE55);animation-delay:1.3s}
+.card .in{background:var(--deep);border-radius:29px;padding:34px 28px 30px;text-align:center;height:100%}
+.card .code{background:#fff;border-radius:22px;padding:18px;width:390px;height:390px;margin:0 auto}
+.card .code svg{width:100%;height:100%;display:block}
+.card .big{font-family:var(--serif);font-size:52px;margin-top:24px;line-height:1.05}
+.card .sm{font-size:25px;color:var(--dim);margin-top:8px}
+.stars{font-size:46px;color:var(--gold);letter-spacing:6px;margin-top:14px}
+.stars span{display:inline-block;animation:star 2.2s ease-in-out infinite}
+.stars span:nth-child(2){animation-delay:.15s}.stars span:nth-child(3){animation-delay:.3s}
+.stars span:nth-child(4){animation-delay:.45s}.stars span:nth-child(5){animation-delay:.6s}
+.handle{display:inline-block;margin-top:14px;font-size:34px;font-weight:700;color:#fff;
+  background:linear-gradient(90deg,#FA7E1E,#D62976,#962FBF);padding:8px 22px;border-radius:40px}
+.deliv{width:100%;margin-top:54px;border-top:2px solid var(--gold-soft);padding-top:34px}
+.deliv .t{display:flex;justify-content:space-between;align-items:baseline}
+.deliv .t b{font-family:var(--serif);font-weight:400;font-size:46px;color:var(--gold)}
+.deliv .t span{font-size:24px;color:var(--dim)}
+.drow{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:26px}
+.dq{display:flex;align-items:center;gap:22px;background:rgba(244,236,217,.06);border-radius:24px;padding:20px}
+.dq .code{width:200px;height:200px;background:#fff;border-radius:16px;padding:10px;flex:none}
+.dq .code svg{width:100%;height:100%;display:block}
+.dq .nm{font-family:var(--serif);font-size:44px}
+.dq .s{font-size:22px;color:var(--dim);margin-top:6px}
+.dq.wolt .nm{color:#4FC3F7}.dq.bolt .nm{color:#34D186}
+.thanks{display:flex;align-items:center;gap:30px;margin-top:auto;margin-bottom:40px}
+.qpanda{width:240px;height:264px}
+.thanks .a{font-family:var(--serif);font-size:56px}
+.thanks .b{font-size:28px;color:var(--gold);margin-top:6px}
+@keyframes glow{0%,100%{box-shadow:0 0 0 rgba(217,174,85,0)}50%{box-shadow:0 0 50px rgba(236,122,44,.55)}}
+@keyframes star{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+
+/* ---------- peeking panda ---------- */
+#peek{position:absolute;right:-50px;bottom:120px;width:160px;height:176px;transform:translateX(220px);
+  transition:transform 1s cubic-bezier(.3,1.4,.5,1);z-index:5}
+#peek.in{transform:translateX(0) rotate(-8deg)}
+
+/* ---------- panda animation ---------- */
+.blink{transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
+.head{transform-box:view-box;transform-origin:260px 330px;animation:bob 3s ease-in-out infinite}
+.arm{transform-box:view-box;transform-origin:380px 410px;animation:cheers 3s ease-in-out infinite}
+.wave{transform-box:view-box;transform-origin:150px 190px;animation:wave 1.2s ease-in-out infinite}
+.spark{transform-box:fill-box;transform-origin:center;animation:spark 2s ease-in-out infinite}
+.spark.s2{animation-delay:.7s}.spark.s3{animation-delay:1.3s}
+
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes bob{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes cheers{0%,100%{transform:rotate(0)}40%,60%{transform:rotate(-18deg)}}
+@keyframes wave{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(22deg)}}
+@keyframes spark{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes pulse{50%{opacity:.25}}
+
+/* ---------- live menu sync ---------- */
+.it.sold{opacity:.4}
+.it.sold .pr{text-decoration:line-through;text-decoration-color:var(--orange)}
+.tag.so{background:var(--dim);color:var(--deep)}
+
+/* ---------- payment screen (from order app) ---------- */
+#pay{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;padding:56px 70px 60px;
+  background:radial-gradient(ellipse 1000px 700px at 50% -8%,rgba(217,174,85,.16),transparent 70%),var(--forest);
+  opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;pointer-events:none}
+#pay.on{opacity:1;transform:none}
+#pay .top{margin-bottom:28px}
+.pmeta{font-size:30px;color:var(--dim);margin-bottom:22px}
+.pmeta b{color:var(--cream);font-weight:600}
+.pmeta em{font-style:normal;color:var(--gold);font-weight:600}
+.plist{flex:1;min-height:0;overflow:hidden;border-top:2px solid rgba(217,174,85,.35)}
+.prow{display:grid;grid-template-columns:90px 1fr auto;gap:18px;align-items:baseline;padding:20px 0;border-bottom:1px solid rgba(217,174,85,.2);
+  animation:rowin .45s ease both}
+.prow .q{font-family:var(--serif);font-size:38px;color:var(--gold)}
+.prow .n{font-size:36px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow .n small{font-size:26px;color:var(--dim);font-weight:400;margin-left:10px}
+.prow .p{font-family:var(--serif);font-size:38px;white-space:nowrap}
+.prow.gift .n,.prow.gift .p{color:#9BD04F}
+.pmore{font-size:28px;color:var(--dim);padding-top:14px}
+@keyframes rowin{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+.ptot{margin-top:30px;display:flex;justify-content:space-between;align-items:center;background:var(--deep);border:3px solid var(--gold);
+  border-radius:34px;padding:34px 44px}
+.ptot .l{font-family:var(--serif);font-size:54px;line-height:1}
+.ptot .l small{display:block;font-family:var(--sans);font-size:28px;color:var(--dim);margin-top:6px}
+.ptot .v{font-family:var(--serif);font-size:150px;line-height:.9;color:var(--gold)}
+.ploy{margin-top:26px;border-radius:30px;padding:28px 40px;background:rgba(155,208,79,.1);border:2px solid rgba(155,208,79,.4);font-size:30px}
+.ploy b{font-family:var(--serif);font-weight:400;font-size:40px;color:var(--gold)}
+.pst{display:flex;gap:16px;margin-top:18px}
+.pst i{width:72px;height:72px;border-radius:50%;border:3px solid rgba(244,236,217,.3);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:38px}
+.pst i.on{background:#9BD04F;border-color:#9BD04F}
+.pgift{margin-top:14px;color:#9BD04F;font-weight:700}
+.phint{margin-top:26px;font-size:27px;color:var(--dim);line-height:1.45;text-align:center}
+.pthx{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.pthx .qpanda{width:330px;height:363px}
+.pthx h1{font-family:var(--serif);font-weight:400;font-size:150px;line-height:.95;margin-top:20px}
+.pthx h2{font-family:var(--serif);font-weight:400;font-size:70px;color:var(--gold);margin-top:10px}
+.pthx .amt{font-size:40px;color:var(--dim);margin-top:24px}
+.pthx .gq{display:flex;align-items:center;gap:34px;margin-top:60px;text-align:left}
+.pthx .gq .code{width:300px;height:300px;background:#fff;border-radius:24px;padding:16px;flex:none}
+.pthx .gq .code svg{width:100%;height:100%;display:block}
+.pthx .gq b{display:block;font-family:var(--serif);font-weight:400;font-size:52px}
+.pthx .gq .rv{display:block;font-size:28px;color:var(--dim);margin-top:8px}
+.pthx .gq .stars{font-size:44px}
+#cf{position:absolute;inset:0;z-index:21;pointer-events:none}
+/* login (shown once on the display computer) */
+.login{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.9);z-index:50;cursor:auto;font-size:18px}
+.login form{background:var(--deep);border:1px solid var(--gold-soft);border-radius:20px;padding:28px;width:min(420px,92vw);display:grid;gap:12px}
+.login h2{font-family:var(--serif);font-weight:400;color:var(--gold)}
+.login p{color:var(--dim);font-size:15px;line-height:1.4}
+.login input{font:inherit;color:var(--cream);background:rgba(255,255,255,.08);border:1px solid var(--gold-soft);border-radius:12px;padding:12px}
+.login button{font:inherit;font-weight:700;background:var(--gold);color:var(--deep);border:0;border-radius:12px;padding:14px;cursor:pointer}
+.login .err{color:#ffab91}
+.login[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="fx"></div>
+  <div id="slides"></div>
+
+  <svg id="peek" viewBox="0 0 300 330" aria-hidden="true">
+    <g class="wave"><ellipse cx="80" cy="150" rx="34" ry="52" fill="#1A1A1A"/></g>
+    <rect x="70" y="200" width="200" height="160" rx="90" fill="#F4ECD9"/>
+    <g class="head">
+      <circle cx="105" cy="70" r="34" fill="#1A1A1A"/><circle cx="245" cy="70" r="34" fill="#1A1A1A"/>
+      <ellipse cx="175" cy="140" rx="98" ry="88" fill="#F4ECD9"/>
+      <ellipse cx="138" cy="135" rx="24" ry="32" transform="rotate(-25 138 135)" fill="#1A1A1A"/>
+      <ellipse cx="212" cy="135" rx="24" ry="32" transform="rotate(25 212 135)" fill="#1A1A1A"/>
+      <circle class="blink" cx="140" cy="133" r="8" fill="#F4ECD9"/><circle class="blink" cx="210" cy="133" r="8" fill="#F4ECD9"/>
+      <ellipse cx="175" cy="172" rx="14" ry="10" fill="#1A1A1A"/>
+      <path d="M160 190 q15 14 30 0" stroke="#1A1A1A" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <circle cx="110" cy="175" r="12" fill="#EC7A2C" opacity=".5"/><circle cx="240" cy="175" r="12" fill="#EC7A2C" opacity=".5"/>
+    </g>
+  </svg>
+
+  <div id="pay" aria-live="polite"></div>
+  <canvas id="cf" width="1080" height="1920"></canvas>
+
+  <footer>
+    <div class="addr"><b>The Snuggest</b><br>Zirgu iela 3, Vecrīga</div>
+    <div id="clock"></div>
+  </footer>
+</div>
+
+<div class="login" id="login" hidden><form id="lf">
+  <h2>Müşteri ekranı · giriş</h2>
+  <p>Sipariş uygulamasının e-posta ve şifresiyle bir kez giriş yapın. Bu bilgisayar girişi hatırlar.</p>
+  <input id="le" type="email" placeholder="E-posta" autocomplete="username" required>
+  <input id="lp" type="password" placeholder="Şifre" autocomplete="current-password" required>
+  <p class="err" id="lerr"></p>
+  <button>Giriş yap</button>
+</form></div>
+
+<!-- reusable panda symbols -->
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="miniPanda" viewBox="0 0 120 120">
+    <circle cx="60" cy="60" r="58" fill="#0A241A" stroke="#D9AE55" stroke-width="3"/>
+    <circle cx="32" cy="34" r="14" fill="#2A2A2A" stroke="#D9AE55" stroke-width="1.5"/><circle cx="88" cy="34" r="14" fill="#2A2A2A" stroke="#D9AE55" stroke-width="1.5"/>
+    <ellipse cx="60" cy="66" rx="38" ry="34" fill="#F4ECD9"/>
+    <ellipse cx="45" cy="62" rx="10" ry="13" transform="rotate(-25 45 62)" fill="#1A1A1A"/>
+    <ellipse cx="75" cy="62" rx="10" ry="13" transform="rotate(25 75 62)" fill="#1A1A1A"/>
+    <circle class="blink" cx="46" cy="62" r="3.5" fill="#F4ECD9"/><circle class="blink" cx="74" cy="62" r="3.5" fill="#F4ECD9"/>
+    <ellipse cx="60" cy="78" rx="6" ry="4.5" fill="#1A1A1A"/>
+    <path d="M54 86 q6 6 12 0" stroke="#1A1A1A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<script>
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+const HH = { start: 18, end: 21, endFriSat: 20, price: "5" };  // Sun–Thu until 21:00, Fri & Sat until 20:00
+const hhEnd = day => (day===5||day===6) ? HH.endFriSat : HH.end;
+const SLIDE_SECONDS = 13, HERO_SECONDS = 9;
+
+/* =========================================================
+   MENU  (ck:true = cocktail → 5€ during Cocktail Hour)
+   p = price, d = description, tag = small label
+   ========================================================= */
+const S = {
+ classics:{lv:"Klasiskie kokteiļi",en:"Classic cocktails",items:[
+  {n:"Cuba Libre",d:"White rum, cola, lemon juice",p:"8.00",ck:1},
+  {n:"Tom Collins",d:"Gin, lemon juice, soda, simple syrup",p:"8.00",ck:1},
+  {hh:1,n:"Classic Mojito",d:"Rum, fresh lime, mint, sugar, soda",p:"8.00",ck:1},
+  {hh:1,n:"Moscow Mule",d:"Vodka, lime juice, ginger beer, mint",p:"9.00",ck:1},
+  {n:"Long Island Iced Tea",d:"Tequila, vodka, gin, white rum, orange liqueur, cola",p:"10.00",ck:1},
+  {n:"Hemingway Special",d:"White rum, grapefruit, cherry liqueur, lemon juice",p:"9.00",ck:1},
+  {n:"Blue Lady Sour",d:"Gin, blue curaçao, lime, simple syrup, egg white",p:"9.00",ck:1},
+  {hh:1,n:"Aperol Spritz",d:"Prosecco, Aperol, tonic",p:"8.00",ck:1},
+  {hh:1,n:"Hugo Spritz",d:"Prosecco, elderflower syrup, soda, mint, lime",p:"8.00",ck:1},
+ ]},
+ house:{lv:"Mājas favorīti",en:"House favourites",items:[
+  {hh:1,n:"Tequila Sunrise",d:"Tequila, orange juice, grenadine",p:"8.00",ck:1},
+  {hh:1,n:"Espresso Martini",d:"Vodka, coffee liqueur, simple syrup, espresso",p:"9.00",ck:1},
+  {n:"Amaretto Sour",d:"Amaretto, bourbon, lemon juice, simple syrup, egg white",p:"9.00",ck:1},
+  {n:"Gin Fizz",d:"Gin, lime juice, tonic, sugar, egg white",p:"8.00",ck:1},
+  {n:"Mystery of the Pomegranate",d:"Vodka, pomegranate sauce & juice, blackberry syrup",p:"9.00",ck:1},
+  {n:"Mancolada",d:"Captain Morgan, coconut cream, pineapple, lemon juice",p:"9.00",ck:1},
+  {hh:1,n:"Bramble",d:"Pink gin, lemon juice, blackberry syrup, tonic",p:"9.00",ck:1},
+  {n:"Pistāciju Sapnis",en:"Pistachio Dream",d:"Pistachio, vodka, milk, vanilla",p:"9.50",ck:1},
+  {hh:1,n:"Snug Persiku Džins",en:"Snug Peach Gin",d:"Peach liqueur, gin, tonic",p:"8.50",ck:1,tag:"Autordzēriens",hot:1},
+ ]},
+ beer:{lv:"Alus kokteiļi",en:"Beer cocktails",items:[
+  {hh:1,n:"Istanbul City",d:"Beer, amaretto, orange liqueur",p:"8.00",ck:1},
+  {hh:1,n:"Antalya Sun",d:"Beer, tequila, Malibu, simple syrup",p:"8.00",ck:1},
+  {hh:1,n:"Anatolian",d:"Beer, cherry liqueur, peppermint syrup",p:"8.00",ck:1},
+  {hh:1,n:"Troia",d:"Beer, Ouzo, Jägermeister, lemon",p:"8.00",ck:1},
+  {hh:1,n:"Mexican",d:"Beer, tequila, lemon juice, salt",p:"8.00",ck:1},
+ ]},
+ virgin:{lv:"Bezalkoholiskie kokteiļi",en:"Non-alcoholic",items:[
+  {hh:1,n:"Virgin Mojito",d:"Lime, mint, brown sugar, soda",p:"6.00",ck:1},
+  {hh:1,n:"Piña Colada",d:"Pineapple juice, coconut milk, lemon juice, sugar syrup",p:"6.00",ck:1},
+  {hh:1,n:"Sunset Cooler",d:"Orange juice, grenadine, lemon juice, soda",p:"6.00",ck:1},
+  {hh:1,n:"Green Apple Spritz",d:"Apple juice, lime, sugar syrup, soda",p:"6.00",ck:1},
+ ]},
+ burgers:{lv:"Burgeri",en:"Burgers · ar frī / with fries",items:[
+  {n:"Snug Smash Burger",d:"2× smash beef patty, tomato, iceberg, onion, pickles, ketchup, mayo",p:"10.00"},
+  {n:"Snug Smash Cheeseburger",d:"2× smash beef patty, cheese, tomato, iceberg, onion, pickles",p:"11.00"},
+  {n:"Snuggest XL Chicken Burger",d:"Crispy fried chicken, special yoghurt sauce, pickles, lettuce",p:"9.50"},
+ ]},
+ mains:{lv:"Galvenie ēdieni",en:"Mains",items:[
+  {n:"Turku Kofta & Rīsi",en:"Turkish Kofta & Rice",d:"Beef kofta, white rice, bean salad (piyaz)",p:"10.90"},
+  {n:"Lahmacun",d:"Thin Turkish flatbread with spiced minced meat",p:"10.00",tag:"2 gab. / 2 pcs",hot:1},
+  {n:"Šnicele",en:"Schnitzel",d:"With lemon slice and cold potato salad",p:"10.90"},
+  {n:"Snug Grill Chicken Wings XL",d:"500 g grilled wings, fresh salad, bread",p:"13.00"},
+  {n:"Snug Chicken Shashlik Wrap",d:"Chicken shashlik, pickles, fresh salad, fries, wrapped",p:"9.50"},
+ ]},
+ soup:{lv:"Zupas",en:"Soups",items:[
+  {n:"Lēcu Zupa",en:"Lentil Soup",d:"Warm lentil soup, crispy bread, lemon",p:"5.50",tag:"vegetarian"},
+ ]},
+ snacks:{lv:"Uzkodas",en:"Snacks",items:[
+  {n:"Turku Pupiņu Salāti",en:"Turkish Bean Salad",d:"White beans, olive oil, parsley, onion, tomato, sumac",p:"5.50",tag:"vegan"},
+  {n:"Çiğköfte",d:"100 g / 200 g, spiced bulgur, olive oil, mint",p:"5.00 / 10.00",tag:"vegan"},
+  {n:"Frī Kartupeļi",en:"French Fries",d:"250 g, with sauce",p:"4.50"},
+  {n:"The Snuggest Fries",d:"Fries, crispy chicken, calamari, cheese balls, sausage",p:"10.50",tag:"2–3 pers.",hot:1},
+ ]},
+ dessert:{lv:"Deserti",en:"Desserts",items:[
+  {n:"Snug Browni",en:"Snug Brownie",d:"Homemade chocolate brownie, warm and fudgy",p:"5.50"},
+ ]},
+ spirits:{lv:"Stiprie",en:"Spirits · 25 ml / 50 ml",items:[
+  {n:"Vodka",p:"3.00 / 5.00"},{n:"Gin",p:"3.00 / 5.00"},{n:"Tequila",p:"3.00 / 5.00"},
+  {n:"Rum",p:"3.00 / 5.00"},{n:"Jack Daniel's",p:"3.50 / 6.00"},{n:"Jim Beam",p:"3.50 / 6.00"},
+  {n:"Tullamore Dew",p:"3.50 / 6.00"},{n:"Ararat 5*",p:"4.50 / 7.50"},{n:"Courvoisier VS",p:"4.50 / 7.50"},
+ ]},
+ liqueurs:{lv:"Likieri",en:"Liqueurs · 25 ml / 50 ml",items:[
+  {n:"Amaretto",p:"2.50 / 4.50"},{n:"Baileys",p:"2.50 / 4.50"},{n:"Xuxu Coffee",p:"2.50 / 4.50"},
+  {n:"Cream Liqueur",p:"2.50 / 4.50"},{n:"Lychee",p:"2.50 / 4.50"},{n:"Pistachio Cream",p:"2.50 / 4.50"},
+  {n:"Aperol",p:"3.00 / 4.00"},{n:"Martini Extra Dry",p:"3.00 / 4.00"},{n:"Jägermeister",p:"3.00 / 5.00"},
+  {n:"Black Balsam",p:"3.00 / 4.50"},
+ ]},
+ shots:{lv:"Shot kokteiļi",en:"Shots · 3.00 €",items:[
+  {n:"The Snuggest",d:"Vodka, Malibu, blackberry syrup",p:"3.00"},
+  {n:"Mexican Strawberry",d:"Tequila, strawberry liqueur, mint syrup",p:"3.00"},
+  {n:"Black Angel",d:"Black Balsam, cream liqueur, coffee liqueur",p:"3.00"},
+  {n:"Midnight Tropic",d:"Banana liqueur, coffee liqueur, Blue Curaçao",p:"3.00"},
+  {n:"Metru Kokteilis ×8",en:"Meter Cocktail",p:"20.00",tag:"×8",hot:1},
+ ]},
+ wine:{lv:"Vīns",en:"Wine · 150 ml / 750 ml",items:[
+  {n:"Sarkanvīns",en:"Red",p:"6.00 / 27.00"},{n:"Baltvīns",en:"White",p:"6.00 / 27.00"},
+  {n:"Rozā vīns",en:"Rosé",p:"6.00 / 27.00"},{n:"Prosecco",p:"6.00 / 27.00"},
+ ]},
+ softs:{lv:"Bezalkoholiskie",en:"Softs",items:[
+  {n:"Augļu sula",en:"Fruit juice",p:"3.00"},{n:"Coca-Cola, Zero, Fanta, Sprite",p:"3.00"},
+  {n:"Mangali",en:"still / sparkling",p:"2.00"},{n:"Enerģijas dzēriens",en:"Energy drink",p:"3.50"},
+ ]},
+ hot:{lv:"Karstie",en:"Hot drinks",items:[
+  {n:"Dubultais espresso",en:"Double espresso",p:"3.50"},{n:"Cappuccino",p:"3.50"},
+  {n:"Turku melnā tēja",en:"Turkish black tea",p:"3.00"},
+  {n:"Turkish Coffee",d:"Līdz 19:00 / Until 7 PM",p:"3.50"},
+ ]},
+};
+
+const HHMENU = {
+ cocktails:[["Džins ar tonisko ūdeni","Gin Tonic"],["Aperol Spritz"],["Rums ar kolu","Rum & Cola"],["Viskijs ar kolu","Whisky & Cola"],
+  ["Klasiskais mohito","Classic Mojito"],["Hugo Spritz"],["Espresso Martini"],["Bramble"],["Tekila Sunrise","Tequila Sunrise"],
+  ["Pinjakolada","Piña Colada"],["Maskavas mūlis","Moscow Mule"],["Snuggest Peach","House pick",1]],
+ beer:[["Istanbul City","Beer, Amaretto, Orange Liqueur"],["Antalya Sun","Beer, Tequila, Malibu"],["Anatolian","Beer, Cherry Liqueur, Peppermint Liqueur"],
+  ["Troja","Ouzo, Jägermeister, Lemon Juice"],["Mexican","Beer, Tequila, Salt, Lemon Juice"]],
+ virgin:[["Mohito Virgin","Virgin Mojito"],["Pinjakolada Virgin","Piña Colada Virgin"],["Sunset Cooler Virgin"],["Green Apple Spritz Virgin"]],
+};
+const hhItem = ([n,en,star])=>`<div class="it"><div class="t"><div class="nm">${e(n)}${star?'<span class="tag hot">Autordzēriens</span>':''}</div>${en?`<div class="ds">${e(en)}</div>`:""}</div><div class="pr"><span class="now hhp">${HH.price}</span> €</div></div>`;
+const hhMenuHTML = () => `${header("Kokteiļu stunda","Cocktail Hour")}
+ <div class="body">
+  <div class="hhbar"><div><b>Sv–C 18:00–21:00 · Pk–S 18:00–20:00</b><span>Sun–Thu 6–9 PM · Fri–Sat 6–8 PM</span></div><div class="hhp5">${HH.price}€<small>par glāzi<br>per glass</small></div></div>
+  <div class="grid2 hhg">
+   <div class="sec"><h3>Kokteiļi <small>Cocktails</small></h3>${HHMENU.cocktails.map(hhItem).join("")}</div>
+   <div><div class="sec"><h3>Alus kokteiļi <small>Beer</small></h3>${HHMENU.beer.map(hhItem).join("")}</div>
+   <div class="sec"><h3>Bezalkoholiskie <small>Virgin</small></h3>${HHMENU.virgin.map(hhItem).join("")}</div></div>
+  </div>
+  <div class="note" style="margin-top:14px;font-size:20px">Piedāvājums spēkā tikai bārā / In-bar only</div>
+ </div>`;
+
+/* slide order + seconds on screen. Cocktail Hour ad (hero) shown after every page */
+const H = {hero:1, sec:8};
+const PAGES = [
+ {hhmenu:1, sec:22},
+ {lv:"Kokteiļi",en:"Cocktails",ck:1,blocks:[["classics"]], sec:18},
+ {lv:"Kokteiļi",en:"Cocktails",ck:1,blocks:[["house"]], sec:18},
+ {lv:"Kokteiļi",en:"Cocktails",ck:1,blocks:[["beer"],["virgin"]], sec:18},
+ {lv:"Virtuve",en:"Kitchen",blocks:[["burgers"],["mains"]], sec:20},
+ {lv:"Virtuve",en:"Kitchen",blocks:[["soup"],["snacks"],["dessert"]],sauces:1, sec:18},
+ {fp:1, sec:18},
+ {qr:1, sec:22},
+ {lv:"Dzērieni",en:"Drinks",blocks:[["spirits","cmp"],["liqueurs","cmp"],["shots"]], sec:11},
+ {lv:"Dzērieni",en:"Drinks",blocks:[["wine","cmp"],["softs","cmp"],["hot","cmp"]],beer:1, sec:11},
+ {fp:1, sec:18},
+ {qr:1, sec:22},
+];
+const PLAN = PAGES.flatMap(p=>[H,p]);
+
+/* ---------- render ---------- */
+const e = s => String(s ?? "").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* live prices / sold-out from the order app (matched by item name) */
+let LIVE=null;
+const nkey=s=>String(s||"").toLowerCase().replace(/[^a-z0-9āčēģīķļņšūž]+/g,"");
+function liveFor(i){if(!LIVE)return null;return LIVE.get(nkey(i.en))||LIVE.get(nkey(i.n))||null}
+function item(i){
+  const lv=liveFor(i);let p=i.p;
+  if(lv){const parts=String(i.p).split("/");if(lv.ps.length===parts.length&&lv.ps.every(x=>x>0))p=lv.ps.map(x=>x.toFixed(2)).join(" / ")}
+  const sold=!!(lv&&lv.out);
+  const tag = (i.tag ? `<span class="tag ${i.hot?'hot':''}">${e(i.tag)}</span>` : "") + (sold?`<span class="tag so">Izpārdots · Sold out</span>`:"");
+  const en = i.en ? ` <span class="en">${e(i.en)}</span>` : "";
+  const pr = i.hh ? `<span class="old">${e(p)}</span><span class="now" data-p="${e(p)}">${e(p)}</span> €`
+                  : `<span class="now">${e(p)}</span> €`;
+  return `<div class="it ${i.hh?'hhi':''}${sold?' sold':''}"><div class="t"><div class="nm">${e(i.n)}${en}${tag}</div>${i.d?`<div class="ds">${e(i.d)}</div>`:""}</div><div class="pr">${pr}</div></div>`;
+}
+function section([key,mode]){
+  const s=S[key];
+  const body = mode==="cmp" ? `<div class="grid2 cmp">${s.items.map(item).join("")}</div>` : s.items.map(item).join("");
+  return `<div class="sec"><h3>${e(s.lv)} <small>${e(s.en)}</small></h3>${body}</div>`;
+}
+const header = (lv,en)=>`<div class="top"><svg class="logo"><use href="#miniPanda"/></svg>
+  <div class="b"><div class="s">THE</div><div class="n">Snuggest</div></div>
+  <div class="ttl"><div class="lv">${e(lv)}</div><div class="en">${e(en)}</div></div></div>`;
+
+const heroHTML = `
+ <div class="hero">
+    <h1>Kokteiļu stunda</h1>
+  <h2>Cocktail Hour</h2>
+  <div class="heroRow">
+   <svg class="bigpanda" viewBox="0 0 520 560" aria-hidden="true">
+    <ellipse cx="260" cy="540" rx="170" ry="16" fill="#000" opacity=".25"/>
+    <ellipse cx="260" cy="430" rx="150" ry="125" fill="#F4ECD9"/>
+    <ellipse cx="170" cy="505" rx="55" ry="38" fill="#1A1A1A"/><ellipse cx="350" cy="505" rx="55" ry="38" fill="#1A1A1A"/>
+    <ellipse cx="150" cy="410" rx="40" ry="70" transform="rotate(20 150 410)" fill="#1A1A1A"/>
+    <g class="head">
+     <circle cx="150" cy="120" r="52" fill="#1A1A1A"/><circle cx="370" cy="120" r="52" fill="#1A1A1A"/>
+     <ellipse cx="260" cy="225" rx="150" ry="135" fill="#F4ECD9"/>
+     <ellipse cx="200" cy="215" rx="36" ry="50" transform="rotate(-25 200 215)" fill="#1A1A1A"/>
+     <ellipse cx="320" cy="215" rx="36" ry="50" transform="rotate(25 320 215)" fill="#1A1A1A"/>
+     <circle class="blink" cx="204" cy="212" r="13" fill="#F4ECD9"/><circle class="blink" cx="316" cy="212" r="13" fill="#F4ECD9"/>
+     <ellipse cx="260" cy="270" rx="22" ry="15" fill="#1A1A1A"/>
+     <path d="M235 296 q25 24 50 0" stroke="#1A1A1A" stroke-width="8" fill="none" stroke-linecap="round"/>
+     <circle cx="160" cy="275" r="20" fill="#EC7A2C" opacity=".5"/><circle cx="360" cy="275" r="20" fill="#EC7A2C" opacity=".5"/>
+    </g>
+    <g class="arm">
+     <ellipse cx="410" cy="365" rx="40" ry="75" transform="rotate(-30 410 365)" fill="#1A1A1A"/>
+     <g transform="translate(415 150)">
+      <path d="M0 0 L110 0 L55 75 Z" fill="#EC7A2C" opacity=".9"/>
+      <path d="M0 0 L110 0 L55 75 Z" fill="none" stroke="#F4ECD9" stroke-width="5"/>
+      <rect x="51" y="75" width="8" height="70" fill="#F4ECD9"/>
+      <rect x="25" y="143" width="60" height="8" rx="4" fill="#F4ECD9"/>
+      <circle cx="88" cy="-6" r="13" fill="#D9AE55"/>
+     </g>
+    </g>
+    <path class="spark" d="M460 120 l8 22 22 8 -22 8 -8 22 -8 -22 -22 -8 22 -8z" fill="#D9AE55"/>
+    <path class="spark s2" d="M60 230 l6 16 16 6 -16 6 -6 16 -6 -16 -16 -6 16 -6z" fill="#D9AE55"/>
+    <path class="spark s3" d="M470 300 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5z" fill="#EC7A2C"/>
+   </svg>
+   <div class="badge"><div class="ring"></div><div class="disc"></div>
+    <div class="v">${HH.price}<small>€</small></div><div class="l">PAR GLĀZI<br>PER GLASS</div></div>
+  </div>
+  <div class="when">Sv–C 18:00–21:00 · Pk–S 18:00–20:00<span>Sun–Thu 6–9 PM · Fri–Sat 6–8 PM</span></div>
+  <div class="status"><span class="dot"></span><span class="stx"></span></div>
+  <div class="fine">21 izvēlēts kokteilis / 21 selected cocktails<br>Piedāvājums spēkā tikai bārā / In-bar only</div>
+ </div>`;
+
+const fpHTML = `<div class="fp"><div class="rb"></div>
+ ${[[2.5,9,30],[95,12,24],[2,40,20],[96,46,30],[2.5,90,24],[95.5,86,20]].map(([x,y,s],k)=>`<span class="st2" style="left:${x}%;top:${y}%;font-size:${s}px;animation-delay:${k*.4}s">✦</span>`).join("")}
+ <div class="k">JAUNUMS · NEW</div>
+ <h1>Panda Zīlniece</h1>
+ <h2>Panda the Fortune Teller</h2>
+ <div class="sub">Taro un kafijas biezumi · Tarot &amp; Turkish coffee</div>
+ <div class="scene">
+  <div class="card c1"><div class="rn">XVII</div><div class="ic">✶</div><div class="nm">Zvaigzne · Star</div></div>
+  <div class="card c2"><div class="rn">XVIII</div><div class="ic">☾</div><div class="nm">Mēness · Moon</div></div>
+  <svg class="fpanda" viewBox="0 0 440 600" aria-hidden="true">
+   <path d="M90 300 Q70 470 120 560 L320 560 Q370 470 350 300Z" fill="#C2185B"/>
+   <ellipse cx="220" cy="560" rx="200" ry="40" fill="#4A1F8A"/>
+   <g class="head">
+    <circle cx="120" cy="150" r="40" fill="#1A1A1A"/><circle cx="320" cy="150" r="40" fill="#1A1A1A"/>
+    <ellipse cx="220" cy="250" rx="140" ry="125" fill="#FBF6EE"/>
+    <path d="M70 200 Q80 90 220 80 Q360 90 370 200 Q300 175 220 178 Q140 175 70 200Z" fill="#D81B60"/>
+    <path d="M70 200 Q140 172 220 175 Q300 172 370 200 L366 222 Q300 196 220 198 Q140 196 74 222Z" fill="#F6C453"/>
+    <path d="M220 20 Q262 60 236 128 Q214 92 220 20Z" fill="#F8BBD0"/>
+    <path d="M220 104 l18 22 -18 22 -18 -22z" fill="#26A69A" stroke="#F6C453" stroke-width="5"/>
+    ${[120,145,170,195,245,270,295,320].map(x=>`<circle cx="${x}" cy="${218+Math.abs(220-x)*0.06}" r="7" fill="#F6C453"/>`).join("")}
+    <ellipse cx="170" cy="262" rx="34" ry="42" transform="rotate(-20 170 262)" fill="#1A1A1A"/>
+    <ellipse cx="270" cy="262" rx="34" ry="42" transform="rotate(20 270 262)" fill="#1A1A1A"/>
+    <circle class="blink" cx="172" cy="262" r="14" fill="#7E57C2"/><circle class="blink" cx="268" cy="262" r="14" fill="#7E57C2"/>
+    <circle cx="176" cy="257" r="5" fill="#fff"/><circle cx="272" cy="257" r="5" fill="#fff"/>
+    <path d="M208 306 h24 l-12 12z" fill="#1A1A1A"/>
+    <path d="M204 326 q8 8 16 0 q8 8 16 0" stroke="#1A1A1A" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="130" cy="310" r="18" fill="#F48FB1" opacity=".55"/><circle cx="310" cy="310" r="18" fill="#F48FB1" opacity=".55"/>
+    <circle cx="96" cy="296" r="16" fill="none" stroke="#F6C453" stroke-width="5"/>
+   </g>
+   <ellipse cx="130" cy="430" rx="40" ry="30" fill="#1A1A1A"/><ellipse cx="310" cy="430" rx="40" ry="30" fill="#1A1A1A"/>
+   <g class="orb"><circle cx="220" cy="440" r="88" fill="#8E5CE0"/>
+    <g class="swirl"><path d="M160 430 q60 -40 120 0 M168 462 q52 -30 104 0" stroke="#D8C2FF" stroke-width="8" fill="none" stroke-linecap="round" opacity=".8"/></g>
+    <ellipse cx="190" cy="400" rx="26" ry="14" fill="#fff" opacity=".45"/></g>
+   <path d="M150 520 h140 l20 34 h-180z" fill="#F6C453"/>
+  </svg>
+ </div>
+ <div class="pill">🔮 Bez maksas pie kokteiļa vai turku kafijas<span>Free with a cocktail or Turkish coffee</span></div>
+ <div class="steps">
+  <div class="st"><div class="n">1</div><b>Pasūti kokteili vai turku kafiju</b><i>Order a cocktail or Turkish coffee, get your one-time QR</i></div>
+  <div class="st"><div class="n">2</div><b>Izvelc kārtis vai nofotografē tasi</b><i>Draw 3 or 10 tarot cards, or snap your coffee cup</i></div>
+  <div class="st"><div class="n">3</div><b>Panda zīlē</b><i>Your reading, a matching drink and images for your story</i></div>
+ </div>
+ <div class="langs">LV · EN · RU · TR</div>
+ <div class="fine2">Katru dienu · palūdz bārmenim savu QR kodu / Every day · ask the bartender for your QR</div>
+</div>`;
+const qrHTML = `
+ <div class="qrs">
+  <div class="hd"><h1>Seko &amp; novērtē</h1><h2>Follow us &amp; leave a review</h2></div>
+  <div class="cards">
+   <div class="card ig"><div class="in"><div class="code"><svg viewBox="0 0 29 29" shape-rendering="crispEdges"><path d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM11 0h1v1h-1zM14 0h1v1h-1zM16 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM25 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM11 1h1v1h-1zM16 1h1v1h-1zM20 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM13 2h1v1h-1zM15 2h1v1h-1zM16 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM15 3h1v1h-1zM16 3h1v1h-1zM17 3h1v1h-1zM19 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM9 4h1v1h-1zM11 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM16 4h1v1h-1zM19 4h1v1h-1zM20 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM10 5h1v1h-1zM14 5h1v1h-1zM17 5h1v1h-1zM18 5h1v1h-1zM19 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM25 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM16 7h1v1h-1zM17 7h1v1h-1zM18 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM16 8h1v1h-1zM17 8h1v1h-1zM18 8h1v1h-1zM22 8h1v1h-1zM25 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM8 9h1v1h-1zM10 9h1v1h-1zM13 9h1v1h-1zM16 9h1v1h-1zM17 9h1v1h-1zM18 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM24 9h1v1h-1zM28 9h1v1h-1zM1 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM13 10h1v1h-1zM16 10h1v1h-1zM17 10h1v1h-1zM18 10h1v1h-1zM22 10h1v1h-1zM23 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM27 10h1v1h-1zM0 11h1v1h-1zM4 11h1v1h-1zM7 11h1v1h-1zM9 11h1v1h-1zM15 11h1v1h-1zM18 11h1v1h-1zM19 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM28 11h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM6 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1zM14 12h1v1h-1zM15 12h1v1h-1zM17 12h1v1h-1zM18 12h1v1h-1zM25 12h1v1h-1zM26 12h1v1h-1zM1 13h1v1h-1zM2 13h1v1h-1zM3 13h1v1h-1zM4 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM14 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM19 13h1v1h-1zM22 13h1v1h-1zM23 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM28 13h1v1h-1zM0 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM9 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM13 14h1v1h-1zM17 14h1v1h-1zM18 14h1v1h-1zM19 14h1v1h-1zM21 14h1v1h-1zM23 14h1v1h-1zM24 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM1 15h1v1h-1zM2 15h1v1h-1zM3 15h1v1h-1zM4 15h1v1h-1zM5 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM10 15h1v1h-1zM11 15h1v1h-1zM12 15h1v1h-1zM14 15h1v1h-1zM16 15h1v1h-1zM19 15h1v1h-1zM21 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM27 15h1v1h-1zM0 16h1v1h-1zM4 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM12 16h1v1h-1zM14 16h1v1h-1zM18 16h1v1h-1zM21 16h1v1h-1zM24 16h1v1h-1zM25 16h1v1h-1zM27 16h1v1h-1zM1 17h1v1h-1zM2 17h1v1h-1zM3 17h1v1h-1zM5 17h1v1h-1zM9 17h1v1h-1zM12 17h1v1h-1zM14 17h1v1h-1zM15 17h1v1h-1zM18 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM23 17h1v1h-1zM25 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM0 18h1v1h-1zM3 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM9 18h1v1h-1zM10 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM16 18h1v1h-1zM20 18h1v1h-1zM21 18h1v1h-1zM23 18h1v1h-1zM26 18h1v1h-1zM2 19h1v1h-1zM3 19h1v1h-1zM4 19h1v1h-1zM9 19h1v1h-1zM11 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM17 19h1v1h-1zM19 19h1v1h-1zM21 19h1v1h-1zM22 19h1v1h-1zM26 19h1v1h-1zM1 20h1v1h-1zM2 20h1v1h-1zM4 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM17 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM26 20h1v1h-1zM8 21h1v1h-1zM10 21h1v1h-1zM12 21h1v1h-1zM16 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM20 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM0 22h1v1h-1zM1 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM10 22h1v1h-1zM11 22h1v1h-1zM14 22h1v1h-1zM17 22h1v1h-1zM19 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM25 22h1v1h-1zM27 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM8 23h1v1h-1zM9 23h1v1h-1zM10 23h1v1h-1zM12 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM15 23h1v1h-1zM20 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM12 24h1v1h-1zM17 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM26 24h1v1h-1zM0 25h1v1h-1zM2 25h1v1h-1zM3 25h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM8 25h1v1h-1zM9 25h1v1h-1zM11 25h1v1h-1zM12 25h1v1h-1zM13 25h1v1h-1zM15 25h1v1h-1zM16 25h1v1h-1zM17 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM24 25h1v1h-1zM25 25h1v1h-1zM28 25h1v1h-1zM0 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM6 26h1v1h-1zM8 26h1v1h-1zM10 26h1v1h-1zM11 26h1v1h-1zM14 26h1v1h-1zM18 26h1v1h-1zM19 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM9 27h1v1h-1zM12 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM20 27h1v1h-1zM23 27h1v1h-1zM25 27h1v1h-1zM27 27h1v1h-1zM0 28h1v1h-1zM1 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM10 28h1v1h-1zM14 28h1v1h-1zM16 28h1v1h-1zM18 28h1v1h-1zM19 28h1v1h-1zM20 28h1v1h-1zM25 28h1v1h-1zM27 28h1v1h-1z" fill="#0A241A"/></svg></div>
+     <div class="big">Instagram</div><div class="handle">@thesnuggest</div>
+     <div class="sm">Seko mums / Follow us</div></div></div>
+   <div class="card gg"><div class="in"><div class="code"><svg viewBox="0 0 29 29" shape-rendering="crispEdges"><path d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM11 0h1v1h-1zM12 0h1v1h-1zM14 0h1v1h-1zM18 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM25 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM12 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM17 2h1v1h-1zM19 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM18 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM11 5h1v1h-1zM14 5h1v1h-1zM16 5h1v1h-1zM17 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM25 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM16 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM17 8h1v1h-1zM19 8h1v1h-1zM20 8h1v1h-1zM23 8h1v1h-1zM26 8h1v1h-1zM28 8h1v1h-1zM0 9h1v1h-1zM2 9h1v1h-1zM5 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1zM16 9h1v1h-1zM20 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM27 9h1v1h-1zM28 9h1v1h-1zM0 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM11 10h1v1h-1zM15 10h1v1h-1zM16 10h1v1h-1zM17 10h1v1h-1zM18 10h1v1h-1zM19 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM25 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM1 11h1v1h-1zM2 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM18 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM25 11h1v1h-1zM0 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM8 12h1v1h-1zM10 12h1v1h-1zM13 12h1v1h-1zM14 12h1v1h-1zM15 12h1v1h-1zM20 12h1v1h-1zM22 12h1v1h-1zM23 12h1v1h-1zM28 12h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM12 13h1v1h-1zM13 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM18 13h1v1h-1zM20 13h1v1h-1zM22 13h1v1h-1zM23 13h1v1h-1zM27 13h1v1h-1zM28 13h1v1h-1zM0 14h1v1h-1zM1 14h1v1h-1zM3 14h1v1h-1zM6 14h1v1h-1zM8 14h1v1h-1zM9 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM15 14h1v1h-1zM17 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM22 14h1v1h-1zM23 14h1v1h-1zM24 14h1v1h-1zM28 14h1v1h-1zM1 15h1v1h-1zM2 15h1v1h-1zM5 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM9 15h1v1h-1zM11 15h1v1h-1zM12 15h1v1h-1zM13 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM19 15h1v1h-1zM21 15h1v1h-1zM0 16h1v1h-1zM1 16h1v1h-1zM4 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM10 16h1v1h-1zM13 16h1v1h-1zM16 16h1v1h-1zM19 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM28 16h1v1h-1zM1 17h1v1h-1zM2 17h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM5 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM11 17h1v1h-1zM15 17h1v1h-1zM20 17h1v1h-1zM22 17h1v1h-1zM23 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM28 17h1v1h-1zM0 18h1v1h-1zM1 18h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM9 18h1v1h-1zM11 18h1v1h-1zM12 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM17 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM23 18h1v1h-1zM25 18h1v1h-1zM28 18h1v1h-1zM3 19h1v1h-1zM4 19h1v1h-1zM8 19h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM18 19h1v1h-1zM19 19h1v1h-1zM21 19h1v1h-1zM22 19h1v1h-1zM23 19h1v1h-1zM24 19h1v1h-1zM0 20h1v1h-1zM1 20h1v1h-1zM2 20h1v1h-1zM4 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM27 20h1v1h-1zM8 21h1v1h-1zM13 21h1v1h-1zM14 21h1v1h-1zM16 21h1v1h-1zM18 21h1v1h-1zM20 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM28 21h1v1h-1zM0 22h1v1h-1zM1 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM12 22h1v1h-1zM15 22h1v1h-1zM19 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM28 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM9 23h1v1h-1zM10 23h1v1h-1zM12 23h1v1h-1zM13 23h1v1h-1zM18 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM24 23h1v1h-1zM27 23h1v1h-1zM28 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM13 24h1v1h-1zM15 24h1v1h-1zM16 24h1v1h-1zM19 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM28 24h1v1h-1zM0 25h1v1h-1zM2 25h1v1h-1zM3 25h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM9 25h1v1h-1zM11 25h1v1h-1zM13 25h1v1h-1zM16 25h1v1h-1zM18 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM24 25h1v1h-1zM25 25h1v1h-1zM26 25h1v1h-1zM28 25h1v1h-1zM0 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM6 26h1v1h-1zM8 26h1v1h-1zM11 26h1v1h-1zM12 26h1v1h-1zM15 26h1v1h-1zM18 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM27 26h1v1h-1zM28 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM11 27h1v1h-1zM12 27h1v1h-1zM14 27h1v1h-1zM16 27h1v1h-1zM18 27h1v1h-1zM20 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM25 27h1v1h-1zM0 28h1v1h-1zM1 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM11 28h1v1h-1zM13 28h1v1h-1zM14 28h1v1h-1zM15 28h1v1h-1zM16 28h1v1h-1zM17 28h1v1h-1zM19 28h1v1h-1zM20 28h1v1h-1zM21 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM28 28h1v1h-1z" fill="#0A241A"/></svg></div>
+     <div class="big">Google</div><div class="stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+     <div class="sm">Novērtē mūs / Review us</div></div></div>
+  </div>
+  <div class="deliv">
+   <div class="t"><b>Pasūti mājās</b><span>Order to your door</span></div>
+   <div class="drow">
+    <div class="dq wolt"><div class="code"><svg viewBox="0 0 33 33" shape-rendering="crispEdges"><path d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM13 0h1v1h-1zM14 0h1v1h-1zM16 0h1v1h-1zM17 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM21 0h1v1h-1zM23 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM29 0h1v1h-1zM30 0h1v1h-1zM31 0h1v1h-1zM32 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM13 1h1v1h-1zM14 1h1v1h-1zM15 1h1v1h-1zM16 1h1v1h-1zM24 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM11 2h1v1h-1zM13 2h1v1h-1zM16 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM22 2h1v1h-1zM23 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM17 3h1v1h-1zM19 3h1v1h-1zM22 3h1v1h-1zM23 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM29 3h1v1h-1zM30 3h1v1h-1zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM15 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM21 4h1v1h-1zM23 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM17 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM8 7h1v1h-1zM12 7h1v1h-1zM15 7h1v1h-1zM16 7h1v1h-1zM18 7h1v1h-1zM20 7h1v1h-1zM21 7h1v1h-1zM22 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM17 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM24 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM0 9h1v1h-1zM4 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM18 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM23 9h1v1h-1zM24 9h1v1h-1zM26 9h1v1h-1zM27 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM32 9h1v1h-1zM1 10h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM9 10h1v1h-1zM11 10h1v1h-1zM15 10h1v1h-1zM16 10h1v1h-1zM17 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM25 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM1 11h1v1h-1zM2 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM18 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM30 11h1v1h-1zM0 12h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM15 12h1v1h-1zM17 12h1v1h-1zM19 12h1v1h-1zM20 12h1v1h-1zM22 12h1v1h-1zM24 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM31 12h1v1h-1zM0 13h1v1h-1zM1 13h1v1h-1zM2 13h1v1h-1zM7 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM16 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM20 13h1v1h-1zM22 13h1v1h-1zM23 13h1v1h-1zM24 13h1v1h-1zM26 13h1v1h-1zM30 13h1v1h-1zM31 13h1v1h-1zM32 13h1v1h-1zM1 14h1v1h-1zM3 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM9 14h1v1h-1zM11 14h1v1h-1zM13 14h1v1h-1zM15 14h1v1h-1zM18 14h1v1h-1zM20 14h1v1h-1zM22 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM29 14h1v1h-1zM30 14h1v1h-1zM31 14h1v1h-1zM0 15h1v1h-1zM1 15h1v1h-1zM3 15h1v1h-1zM4 15h1v1h-1zM7 15h1v1h-1zM9 15h1v1h-1zM10 15h1v1h-1zM12 15h1v1h-1zM14 15h1v1h-1zM16 15h1v1h-1zM19 15h1v1h-1zM21 15h1v1h-1zM22 15h1v1h-1zM25 15h1v1h-1zM26 15h1v1h-1zM28 15h1v1h-1zM29 15h1v1h-1zM30 15h1v1h-1zM1 16h1v1h-1zM4 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM12 16h1v1h-1zM15 16h1v1h-1zM17 16h1v1h-1zM18 16h1v1h-1zM22 16h1v1h-1zM25 16h1v1h-1zM27 16h1v1h-1zM28 16h1v1h-1zM29 16h1v1h-1zM32 16h1v1h-1zM0 17h1v1h-1zM1 17h1v1h-1zM2 17h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM9 17h1v1h-1zM10 17h1v1h-1zM12 17h1v1h-1zM14 17h1v1h-1zM16 17h1v1h-1zM18 17h1v1h-1zM19 17h1v1h-1zM21 17h1v1h-1zM23 17h1v1h-1zM25 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM29 17h1v1h-1zM30 17h1v1h-1zM31 17h1v1h-1zM32 17h1v1h-1zM0 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM11 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM21 18h1v1h-1zM22 18h1v1h-1zM24 18h1v1h-1zM25 18h1v1h-1zM26 18h1v1h-1zM27 18h1v1h-1zM28 18h1v1h-1zM30 18h1v1h-1zM31 18h1v1h-1zM0 19h1v1h-1zM2 19h1v1h-1zM4 19h1v1h-1zM9 19h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM21 19h1v1h-1zM22 19h1v1h-1zM25 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM28 19h1v1h-1zM29 19h1v1h-1zM30 19h1v1h-1zM31 19h1v1h-1zM32 19h1v1h-1zM0 20h1v1h-1zM1 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM10 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM17 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM27 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM0 21h1v1h-1zM2 21h1v1h-1zM4 21h1v1h-1zM5 21h1v1h-1zM10 21h1v1h-1zM14 21h1v1h-1zM16 21h1v1h-1zM17 21h1v1h-1zM19 21h1v1h-1zM20 21h1v1h-1zM23 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM29 21h1v1h-1zM30 21h1v1h-1zM32 21h1v1h-1zM0 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM12 22h1v1h-1zM14 22h1v1h-1zM15 22h1v1h-1zM16 22h1v1h-1zM17 22h1v1h-1zM20 22h1v1h-1zM21 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM25 22h1v1h-1zM29 22h1v1h-1zM30 22h1v1h-1zM31 22h1v1h-1zM0 23h1v1h-1zM4 23h1v1h-1zM5 23h1v1h-1zM7 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM15 23h1v1h-1zM20 23h1v1h-1zM21 23h1v1h-1zM22 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM27 23h1v1h-1zM29 23h1v1h-1zM30 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM6 24h1v1h-1zM7 24h1v1h-1zM8 24h1v1h-1zM12 24h1v1h-1zM14 24h1v1h-1zM15 24h1v1h-1zM17 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM29 24h1v1h-1zM31 24h1v1h-1zM32 24h1v1h-1zM8 25h1v1h-1zM11 25h1v1h-1zM16 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM31 25h1v1h-1zM32 25h1v1h-1zM0 26h1v1h-1zM1 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM9 26h1v1h-1zM12 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM17 26h1v1h-1zM18 26h1v1h-1zM20 26h1v1h-1zM22 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM31 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM11 27h1v1h-1zM13 27h1v1h-1zM15 27h1v1h-1zM18 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM29 27h1v1h-1zM30 27h1v1h-1zM31 27h1v1h-1zM0 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM11 28h1v1h-1zM12 28h1v1h-1zM17 28h1v1h-1zM22 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM31 28h1v1h-1zM0 29h1v1h-1zM2 29h1v1h-1zM3 29h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM8 29h1v1h-1zM9 29h1v1h-1zM16 29h1v1h-1zM18 29h1v1h-1zM19 29h1v1h-1zM20 29h1v1h-1zM23 29h1v1h-1zM25 29h1v1h-1zM28 29h1v1h-1zM30 29h1v1h-1zM31 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM8 30h1v1h-1zM10 30h1v1h-1zM13 30h1v1h-1zM14 30h1v1h-1zM15 30h1v1h-1zM16 30h1v1h-1zM17 30h1v1h-1zM18 30h1v1h-1zM20 30h1v1h-1zM22 30h1v1h-1zM23 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM14 31h1v1h-1zM18 31h1v1h-1zM19 31h1v1h-1zM20 31h1v1h-1zM21 31h1v1h-1zM22 31h1v1h-1zM25 31h1v1h-1zM28 31h1v1h-1zM29 31h1v1h-1zM30 31h1v1h-1zM0 32h1v1h-1zM1 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM9 32h1v1h-1zM11 32h1v1h-1zM15 32h1v1h-1zM17 32h1v1h-1zM22 32h1v1h-1zM23 32h1v1h-1zM24 32h1v1h-1zM27 32h1v1h-1zM31 32h1v1h-1z" fill="#0A241A"/></svg></div><div><div class="nm">Wolt</div><div class="s">Skenē un pasūti<br>Scan &amp; order</div></div></div>
+    <div class="dq bolt"><div class="code"><svg viewBox="0 0 37 37" shape-rendering="crispEdges"><path d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM12 0h1v1h-1zM14 0h1v1h-1zM15 0h1v1h-1zM16 0h1v1h-1zM17 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM21 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM30 0h1v1h-1zM31 0h1v1h-1zM32 0h1v1h-1zM33 0h1v1h-1zM34 0h1v1h-1zM35 0h1v1h-1zM36 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM11 1h1v1h-1zM17 1h1v1h-1zM19 1h1v1h-1zM22 1h1v1h-1zM23 1h1v1h-1zM24 1h1v1h-1zM25 1h1v1h-1zM28 1h1v1h-1zM30 1h1v1h-1zM36 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM9 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM15 2h1v1h-1zM16 2h1v1h-1zM17 2h1v1h-1zM18 2h1v1h-1zM21 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM27 2h1v1h-1zM28 2h1v1h-1zM30 2h1v1h-1zM32 2h1v1h-1zM33 2h1v1h-1zM34 2h1v1h-1zM36 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM18 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM30 3h1v1h-1zM32 3h1v1h-1zM33 3h1v1h-1zM34 3h1v1h-1zM36 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM16 4h1v1h-1zM17 4h1v1h-1zM20 4h1v1h-1zM22 4h1v1h-1zM23 4h1v1h-1zM25 4h1v1h-1zM27 4h1v1h-1zM28 4h1v1h-1zM30 4h1v1h-1zM32 4h1v1h-1zM33 4h1v1h-1zM34 4h1v1h-1zM36 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM12 5h1v1h-1zM13 5h1v1h-1zM17 5h1v1h-1zM19 5h1v1h-1zM25 5h1v1h-1zM28 5h1v1h-1zM30 5h1v1h-1zM36 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM28 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM33 6h1v1h-1zM34 6h1v1h-1zM35 6h1v1h-1zM36 6h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM21 7h1v1h-1zM23 7h1v1h-1zM24 7h1v1h-1zM0 8h1v1h-1zM4 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM10 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM19 8h1v1h-1zM20 8h1v1h-1zM23 8h1v1h-1zM27 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM31 8h1v1h-1zM32 8h1v1h-1zM33 8h1v1h-1zM36 8h1v1h-1zM2 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM14 9h1v1h-1zM18 9h1v1h-1zM19 9h1v1h-1zM22 9h1v1h-1zM24 9h1v1h-1zM25 9h1v1h-1zM26 9h1v1h-1zM27 9h1v1h-1zM28 9h1v1h-1zM32 9h1v1h-1zM34 9h1v1h-1zM35 9h1v1h-1zM1 10h1v1h-1zM2 10h1v1h-1zM4 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1zM17 10h1v1h-1zM19 10h1v1h-1zM23 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM27 10h1v1h-1zM31 10h1v1h-1zM32 10h1v1h-1zM33 10h1v1h-1zM34 10h1v1h-1zM0 11h1v1h-1zM1 11h1v1h-1zM5 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM16 11h1v1h-1zM17 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM30 11h1v1h-1zM31 11h1v1h-1zM34 11h1v1h-1zM35 11h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM12 12h1v1h-1zM14 12h1v1h-1zM16 12h1v1h-1zM17 12h1v1h-1zM18 12h1v1h-1zM20 12h1v1h-1zM21 12h1v1h-1zM24 12h1v1h-1zM26 12h1v1h-1zM27 12h1v1h-1zM29 12h1v1h-1zM30 12h1v1h-1zM31 12h1v1h-1zM34 12h1v1h-1zM35 12h1v1h-1zM36 12h1v1h-1zM2 13h1v1h-1zM3 13h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM9 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1zM14 13h1v1h-1zM15 13h1v1h-1zM18 13h1v1h-1zM21 13h1v1h-1zM23 13h1v1h-1zM24 13h1v1h-1zM25 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM28 13h1v1h-1zM32 13h1v1h-1zM33 13h1v1h-1zM0 14h1v1h-1zM1 14h1v1h-1zM3 14h1v1h-1zM4 14h1v1h-1zM6 14h1v1h-1zM7 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM13 14h1v1h-1zM14 14h1v1h-1zM15 14h1v1h-1zM17 14h1v1h-1zM20 14h1v1h-1zM23 14h1v1h-1zM25 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM31 14h1v1h-1zM32 14h1v1h-1zM33 14h1v1h-1zM34 14h1v1h-1zM1 15h1v1h-1zM2 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM10 15h1v1h-1zM13 15h1v1h-1zM14 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM17 15h1v1h-1zM18 15h1v1h-1zM19 15h1v1h-1zM20 15h1v1h-1zM22 15h1v1h-1zM24 15h1v1h-1zM26 15h1v1h-1zM28 15h1v1h-1zM30 15h1v1h-1zM31 15h1v1h-1zM32 15h1v1h-1zM34 15h1v1h-1zM35 15h1v1h-1zM1 16h1v1h-1zM2 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM12 16h1v1h-1zM13 16h1v1h-1zM14 16h1v1h-1zM18 16h1v1h-1zM19 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM29 16h1v1h-1zM30 16h1v1h-1zM31 16h1v1h-1zM33 16h1v1h-1zM34 16h1v1h-1zM35 16h1v1h-1zM36 16h1v1h-1zM1 17h1v1h-1zM3 17h1v1h-1zM5 17h1v1h-1zM8 17h1v1h-1zM9 17h1v1h-1zM11 17h1v1h-1zM12 17h1v1h-1zM13 17h1v1h-1zM14 17h1v1h-1zM16 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM28 17h1v1h-1zM32 17h1v1h-1zM33 17h1v1h-1zM35 17h1v1h-1zM0 18h1v1h-1zM3 18h1v1h-1zM4 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM10 18h1v1h-1zM11 18h1v1h-1zM13 18h1v1h-1zM14 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM20 18h1v1h-1zM25 18h1v1h-1zM26 18h1v1h-1zM27 18h1v1h-1zM30 18h1v1h-1zM31 18h1v1h-1zM34 18h1v1h-1zM1 19h1v1h-1zM2 19h1v1h-1zM8 19h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM21 19h1v1h-1zM24 19h1v1h-1zM27 19h1v1h-1zM30 19h1v1h-1zM31 19h1v1h-1zM33 19h1v1h-1zM34 19h1v1h-1zM35 19h1v1h-1zM4 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM7 20h1v1h-1zM9 20h1v1h-1zM11 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM23 20h1v1h-1zM27 20h1v1h-1zM29 20h1v1h-1zM30 20h1v1h-1zM31 20h1v1h-1zM34 20h1v1h-1zM0 21h1v1h-1zM1 21h1v1h-1zM3 21h1v1h-1zM4 21h1v1h-1zM12 21h1v1h-1zM13 21h1v1h-1zM14 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM22 21h1v1h-1zM23 21h1v1h-1zM26 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM31 21h1v1h-1zM32 21h1v1h-1zM35 21h1v1h-1zM2 22h1v1h-1zM6 22h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM13 22h1v1h-1zM15 22h1v1h-1zM18 22h1v1h-1zM20 22h1v1h-1zM21 22h1v1h-1zM22 22h1v1h-1zM23 22h1v1h-1zM27 22h1v1h-1zM28 22h1v1h-1zM31 22h1v1h-1zM32 22h1v1h-1zM33 22h1v1h-1zM34 22h1v1h-1zM0 23h1v1h-1zM2 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM14 23h1v1h-1zM16 23h1v1h-1zM21 23h1v1h-1zM23 23h1v1h-1zM24 23h1v1h-1zM31 23h1v1h-1zM32 23h1v1h-1zM34 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM5 24h1v1h-1zM6 24h1v1h-1zM11 24h1v1h-1zM12 24h1v1h-1zM14 24h1v1h-1zM16 24h1v1h-1zM20 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM27 24h1v1h-1zM29 24h1v1h-1zM30 24h1v1h-1zM33 24h1v1h-1zM34 24h1v1h-1zM35 24h1v1h-1zM0 25h1v1h-1zM1 25h1v1h-1zM3 25h1v1h-1zM8 25h1v1h-1zM9 25h1v1h-1zM10 25h1v1h-1zM11 25h1v1h-1zM14 25h1v1h-1zM18 25h1v1h-1zM19 25h1v1h-1zM22 25h1v1h-1zM24 25h1v1h-1zM25 25h1v1h-1zM26 25h1v1h-1zM27 25h1v1h-1zM29 25h1v1h-1zM32 25h1v1h-1zM33 25h1v1h-1zM34 25h1v1h-1zM2 26h1v1h-1zM4 26h1v1h-1zM6 26h1v1h-1zM8 26h1v1h-1zM10 26h1v1h-1zM11 26h1v1h-1zM12 26h1v1h-1zM15 26h1v1h-1zM17 26h1v1h-1zM19 26h1v1h-1zM22 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM27 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM32 26h1v1h-1zM34 26h1v1h-1zM2 27h1v1h-1zM3 27h1v1h-1zM5 27h1v1h-1zM7 27h1v1h-1zM9 27h1v1h-1zM12 27h1v1h-1zM15 27h1v1h-1zM16 27h1v1h-1zM17 27h1v1h-1zM18 27h1v1h-1zM19 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM24 27h1v1h-1zM26 27h1v1h-1zM27 27h1v1h-1zM30 27h1v1h-1zM31 27h1v1h-1zM32 27h1v1h-1zM34 27h1v1h-1zM35 27h1v1h-1zM0 28h1v1h-1zM1 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM11 28h1v1h-1zM12 28h1v1h-1zM16 28h1v1h-1zM17 28h1v1h-1zM18 28h1v1h-1zM20 28h1v1h-1zM21 28h1v1h-1zM23 28h1v1h-1zM24 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM30 28h1v1h-1zM31 28h1v1h-1zM32 28h1v1h-1zM33 28h1v1h-1zM34 28h1v1h-1zM36 28h1v1h-1zM8 29h1v1h-1zM12 29h1v1h-1zM13 29h1v1h-1zM15 29h1v1h-1zM21 29h1v1h-1zM23 29h1v1h-1zM25 29h1v1h-1zM28 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM1 30h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM5 30h1v1h-1zM6 30h1v1h-1zM8 30h1v1h-1zM10 30h1v1h-1zM12 30h1v1h-1zM14 30h1v1h-1zM15 30h1v1h-1zM17 30h1v1h-1zM23 30h1v1h-1zM24 30h1v1h-1zM26 30h1v1h-1zM28 30h1v1h-1zM30 30h1v1h-1zM32 30h1v1h-1zM35 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h1v1h-1zM10 31h1v1h-1zM14 31h1v1h-1zM15 31h1v1h-1zM16 31h1v1h-1zM17 31h1v1h-1zM18 31h1v1h-1zM19 31h1v1h-1zM22 31h1v1h-1zM24 31h1v1h-1zM26 31h1v1h-1zM27 31h1v1h-1zM28 31h1v1h-1zM32 31h1v1h-1zM33 31h1v1h-1zM34 31h1v1h-1zM35 31h1v1h-1zM0 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM11 32h1v1h-1zM13 32h1v1h-1zM18 32h1v1h-1zM19 32h1v1h-1zM22 32h1v1h-1zM23 32h1v1h-1zM24 32h1v1h-1zM28 32h1v1h-1zM29 32h1v1h-1zM30 32h1v1h-1zM31 32h1v1h-1zM32 32h1v1h-1zM33 32h1v1h-1zM34 32h1v1h-1zM35 32h1v1h-1zM36 32h1v1h-1zM0 33h1v1h-1zM2 33h1v1h-1zM3 33h1v1h-1zM4 33h1v1h-1zM6 33h1v1h-1zM10 33h1v1h-1zM12 33h1v1h-1zM13 33h1v1h-1zM16 33h1v1h-1zM19 33h1v1h-1zM20 33h1v1h-1zM21 33h1v1h-1zM23 33h1v1h-1zM24 33h1v1h-1zM25 33h1v1h-1zM26 33h1v1h-1zM29 33h1v1h-1zM30 33h1v1h-1zM31 33h1v1h-1zM36 33h1v1h-1zM0 34h1v1h-1zM2 34h1v1h-1zM3 34h1v1h-1zM4 34h1v1h-1zM6 34h1v1h-1zM9 34h1v1h-1zM10 34h1v1h-1zM11 34h1v1h-1zM13 34h1v1h-1zM16 34h1v1h-1zM20 34h1v1h-1zM21 34h1v1h-1zM23 34h1v1h-1zM26 34h1v1h-1zM28 34h1v1h-1zM29 34h1v1h-1zM30 34h1v1h-1zM0 35h1v1h-1zM6 35h1v1h-1zM9 35h1v1h-1zM10 35h1v1h-1zM11 35h1v1h-1zM17 35h1v1h-1zM18 35h1v1h-1zM21 35h1v1h-1zM24 35h1v1h-1zM26 35h1v1h-1zM29 35h1v1h-1zM32 35h1v1h-1zM34 35h1v1h-1zM35 35h1v1h-1zM0 36h1v1h-1zM1 36h1v1h-1zM2 36h1v1h-1zM3 36h1v1h-1zM4 36h1v1h-1zM5 36h1v1h-1zM6 36h1v1h-1zM8 36h1v1h-1zM9 36h1v1h-1zM13 36h1v1h-1zM15 36h1v1h-1zM16 36h1v1h-1zM17 36h1v1h-1zM18 36h1v1h-1zM19 36h1v1h-1zM21 36h1v1h-1zM22 36h1v1h-1zM23 36h1v1h-1zM24 36h1v1h-1zM26 36h1v1h-1zM27 36h1v1h-1zM29 36h1v1h-1zM31 36h1v1h-1zM34 36h1v1h-1zM35 36h1v1h-1zM36 36h1v1h-1z" fill="#0A241A"/></svg></div><div><div class="nm">Bolt Food</div><div class="s">Skenē un pasūti<br>Scan &amp; order</div></div></div>
+   </div>
+  </div>
+  <div class="thanks"><svg class="qpanda" viewBox="0 0 300 330" aria-hidden="true">
+    <g class="wave"><ellipse cx="80" cy="150" rx="34" ry="52" fill="#1A1A1A"/></g>
+    <rect x="70" y="200" width="200" height="160" rx="90" fill="#F4ECD9"/>
+    <g class="head">
+      <circle cx="105" cy="70" r="34" fill="#1A1A1A"/><circle cx="245" cy="70" r="34" fill="#1A1A1A"/>
+      <ellipse cx="175" cy="140" rx="98" ry="88" fill="#F4ECD9"/>
+      <ellipse cx="138" cy="135" rx="24" ry="32" transform="rotate(-25 138 135)" fill="#1A1A1A"/>
+      <ellipse cx="212" cy="135" rx="24" ry="32" transform="rotate(25 212 135)" fill="#1A1A1A"/>
+      <circle class="blink" cx="140" cy="133" r="8" fill="#F4ECD9"/><circle class="blink" cx="210" cy="133" r="8" fill="#F4ECD9"/>
+      <ellipse cx="175" cy="172" rx="14" ry="10" fill="#1A1A1A"/>
+      <path d="M160 190 q15 14 30 0" stroke="#1A1A1A" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <circle cx="110" cy="175" r="12" fill="#EC7A2C" opacity=".5"/><circle cx="240" cy="175" r="12" fill="#EC7A2C" opacity=".5"/>
+    </g>
+  </svg><div><div class="a">Paldies, ka esat šeit!</div><div class="b">Thanks for stopping by</div></div></div>
+ </div>`;
+const slidesEl=document.getElementById("slides");
+let slides=[];
+function buildSlides(){
+slidesEl.innerHTML = PLAN.map(p=>{
+  if(p.hero) return `<div class="slide hero-s">${heroHTML}</div>`;
+  if(p.qr) return `<div class="slide">${qrHTML}</div>`;
+  if(p.fp) return `<div class="slide">${fpHTML}</div>`;
+  if(p.hhmenu) return `<div class="slide hhs">${hhMenuHTML()}</div>`;
+  const rib = p.ck ? `<div class="rib"><span>Kokteiļu stunda tagad!</span><span>Cocktail Hour now!</span></div>` : "";
+  const extra = (p.sauces?`<div class="sec"><h3>Mērces <small>Sauces · 1.00 €</small></h3><div class="sauce">Snuggest jogurta mērce, majonēze, kečups, sinepes, BBQ, ķiploku mērce<br>Special yoghurt, mayo, ketchup, mustard, BBQ, garlic</div></div>`:"")
+    + (p.beer?`<div class="sec"><h3>Alus <small>Beer</small></h3><div class="note">Izvēle regulāri mainās, jautājiet bārmenim.<br>Our selection changes, ask the bartender.</div></div>`:"")
+    + `<div class="note" style="margin-top:22px;font-size:20px">Alergēni: jautājiet personālam / Ask staff about allergens</div>`;
+  return `<div class="slide">${header(p.lv,p.en)}<div class="body">${rib}${p.blocks.map(section).join("")}${extra}</div></div>`;
+}).join("");
+
+slides=[...document.querySelectorAll(".slide")];
+autoFit();
+}
+/* enlarge text to fill each slide */
+function autoFit(){document.querySelectorAll(".slide .body").forEach(b=>{
+  b.style.zoom=1; const avail=1790-b.offsetTop-30; const h=b.scrollHeight;
+  let z=Math.min(1.45,avail/h); b.style.zoom=z;
+  const s=b.parentElement; while(s.scrollHeight>1791 && z>0.7){z-=0.02; b.style.zoom=z;}});}
+buildSlides();
+document.fonts.ready.then(autoFit);
+
+
+/* ---------- cocktail hour state ---------- */
+function hhState(){
+  const d=new Date(), h=d.getHours()+d.getMinutes()/60;
+  const end = hhEnd(d.getDay()), on = h>=HH.start && h<end;
+  let txt;
+  if(on){
+    const left=Math.round((end-h)*60);
+    txt=`Tagad! / Now on! Vēl ${Math.floor(left/60)} h ${left%60} min`;
+  }else{
+    let mins=Math.round(((HH.start-h)+(h>=end?24:0))*60);
+    txt=`Sākas pēc / Starts in ${Math.floor(mins/60)} h ${mins%60} min`;
+  }
+  document.body.classList.toggle("hh",on);
+  document.querySelectorAll(".it.hhi .now").forEach(x=>x.textContent = on ? HH.price : x.dataset.p);
+  document.querySelectorAll(".stx").forEach(x=>x.textContent=txt);
+  document.getElementById("clock").textContent=d.toLocaleTimeString("lv-LV",{hour:"2-digit",minute:"2-digit"});
+}
+hhState(); setInterval(hhState,15000);
+
+/* ---------- rotation ---------- */
+const peek=document.getElementById("peek");
+let cur=0, timers=[];
+function show(i){
+  timers.forEach(clearTimeout); timers=[];
+  slides.forEach((s,k)=>s.classList.toggle("show",k===i));
+  
+  document.body.classList.toggle("fpon",!!PLAN[i].fp);
+  const isHero=!!PLAN[i].hero, isQR=!!(PLAN[i].qr||PLAN[i].fp);
+  const dur=(PLAN[i].sec||SLIDE_SECONDS)*1000;
+  peek.classList.remove("in");
+  if(!isHero && !isQR){ timers.push(setTimeout(()=>peek.classList.add("in"),4000), setTimeout(()=>peek.classList.remove("in"),8000)); }
+  timers.push(setTimeout(()=>{cur=(cur+1)%slides.length;show(cur)},dur));
+}
+show(0);
+
+/* ambient bubbles + twinkles (subtle, behind content) */
+(function(){const fx=document.getElementById("fx");let h="";
+ for(let k=0;k<16;k++){const s=8+Math.random()*16;h+=`<i class="bub" style="left:${Math.random()*100}%;width:${s}px;height:${s}px;animation-duration:${14+Math.random()*16}s;animation-delay:${-Math.random()*25}s"></i>`;}
+ [[2,6],[97,3],[1.5,52],[97.5,40],[97.5,72],[2,86]].forEach(([x,y],k)=>h+=`<span class="tw" style="left:${x}%;top:${y}%;font-size:${18+k%3*6}px;animation-delay:${k*.5}s">✦</span>`);
+ fx.innerHTML=h;})();
+/* fit stage to screen */
+const stage=document.getElementById("stage");
+function fit(){stage.style.transform=`scale(${Math.min(innerWidth/1080,innerHeight/1920)})`}
+addEventListener("resize",fit); fit();
+/* test: ?slide=3 freezes a slide, ?hh=1 forces cocktail hour */
+const q=new URLSearchParams(location.search);
+if(q.has("slide")){document.body.classList.toggle("fpon",!!PLAN[+q.get("slide")].fp);timers.forEach(clearTimeout);const n=+q.get("slide");slides.forEach((s,k)=>s.classList.toggle("show",k===n));}
+if(q.has("hh")){HH.start=0;HH.end=24;HH.endFriSat=24;hhState();}
+/* =========================================================
+   PAYMENT SCREEN — driven by the order app (display/current)
+   ========================================================= */
+const PAY=document.getElementById("pay");
+const eur=c=>(c/100).toFixed(2)+" €";
+let payState={mode:"idle"},payBack=0;
+function payOn(on){PAY.classList.toggle("on",on)}
+function renderBill(d){
+  const lines=Array.isArray(d.lines)?d.lines:[],max=13,st=d.loy?Math.min(10,d.loy.stamps||0):0;
+  PAY.innerHTML=`${header(d.part?"Jūsu daļa":"Rēķins",d.part?"Your part":"Your bill")}
+    <div class="pmeta">Galds · Table <b>${e(d.table)}</b>${d.who?` · <em>${e(d.who)}</em>`:""}</div>
+    <div class="plist">${lines.slice(0,max).map((l,k)=>`<div class="prow${l.p<0?" gift":""}" style="animation-delay:${k*60}ms"><span class="q">${l.q}×</span><span class="n">${e(String(l.name).replace(/^🎁\s*Hediye:\s*/,'🎁 Dāvana · Gift: '))}${l.l?`<small>${e(l.l)}</small>`:""}</span><span class="p">${eur(l.p*l.q)}</span></div>`).join("")}
+      ${lines.length>max?`<div class="pmore">+ ${lines.length-max} …</div>`:""}</div>
+    <div class="ptot"><div class="l">Kopā<small>Total</small></div><div class="v">${eur(d.total||0)}</div></div>
+    ${d.loy?`<div class="ploy"><b>🎟️ Lojalitātes karte</b> · Loyalty card — <b>${st}/10</b>
+        <div class="pst">${[...Array(10)].map((_,k)=>`<i class="${k<st?"on":""}">${k<st?"🍸":""}</i>`).join("")}</div>
+        ${d.loy.free?`<div class="pgift">🎁 ${d.loy.free} × bezmaksas kokteilis · free cocktail</div>`:""}</div>`
+      :`<div class="phint">🎟️ 10 kokteiļi = 1 bez maksas · 10 cocktails = 1 free<br>Nosauciet tālruņa numuru · Tell us your phone number</div>`}`;
+  payOn(true);
+}
+function renderThanks(d){
+  const qp=document.querySelector(".qrs .qpanda"),gq=document.querySelector(".card.gg .code");
+  PAY.innerHTML=`<div class="pthx">${qp?qp.outerHTML:""}
+    <h1>Paldies!</h1><h2>Thank you!</h2>
+    <div class="amt">${d.method==="card"?"💳":"💶"} ${eur(d.total||0)}</div>
+    ${gq?`<div class="gq"><div class="code">${gq.innerHTML}</div><div><b>Novērtē mūs</b><span class="rv">Review us on Google</span><div class="stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div></div></div>`:""}
+  </div>`;
+  payOn(true);confetti();
+}
+function applyPay(d){
+  clearTimeout(payBack);payState=d||{mode:"idle"};
+  const age=Date.now()-(payState.at||0);
+  if(payState.mode==="bill"&&age<20*60e3)renderBill(payState);
+  else if(payState.mode==="thanks"&&age<15e3){renderThanks(payState);payBack=setTimeout(()=>payOn(false),Math.max(3000,9000-age))}
+  else payOn(false);
+}
+setInterval(()=>{if(payState.mode==="bill"&&Date.now()-(payState.at||0)>20*60e3){payState={mode:"idle"};payOn(false)}},60e3);
+function confetti(){
+  const c=document.getElementById("cf"),x=c.getContext("2d");
+  const cols=["#D9AE55","#EC7A2C","#F4ECD9","#9BD04F","#F7A1B5","#4FC3F7"];
+  const ps=[...Array(180)].map(()=>({x:Math.random()*1080,y:-30-Math.random()*900,vx:(Math.random()-.5)*4,vy:4+Math.random()*7,r:10+Math.random()*12,a:Math.random()*6,c:cols[Math.random()*cols.length|0]}));
+  const t0=performance.now();
+  (function f(t){x.clearRect(0,0,1080,1920);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore()});
+    if(t-t0<4500)requestAnimationFrame(f);else x.clearRect(0,0,1080,1920)})(t0);
+}
+/* live menu from the order app */
+let liveSig="";
+function applyConfig(cfg){
+  const m=cfg&&cfg.menu;if(!m||!Array.isArray(m.cats))return;
+  const map=new Map();
+  m.cats.filter(c=>!c.hh).forEach(c=>(c.items||[]).forEach(it=>{const k=nkey(it.name);if(k&&!map.has(k))map.set(k,{ps:(it.v||[]).map(v=>Number(v.p)),out:!!it.out})}));
+  const sig=JSON.stringify([...map]);if(sig===liveSig)return;liveSig=sig;LIVE=map;
+  buildSlides();hhState();show(Math.min(cur,slides.length-1));
+}
+/* connect */
+let unsub=[];
+function startLive(){
+  const E=window.EK;
+  E.onAuth(u=>{
+    unsub.forEach(f=>{try{f()}catch(x){}});unsub=[];
+    if(!u){document.getElementById("login").hidden=false;return}
+    document.getElementById("login").hidden=true;
+    unsub.push(E.watch("bar/config",applyConfig,()=>{}));
+    unsub.push(E.watch("display/current",applyPay,()=>{}));
+  });
+}
+document.getElementById("lf").addEventListener("submit",async ev=>{ev.preventDefault();document.getElementById("lerr").textContent="";
+  try{await window.EK.login(document.getElementById("le").value.trim(),document.getElementById("lp").value)}
+  catch(x){document.getElementById("lerr").textContent="Giriş başarısız — e-posta veya şifreyi kontrol edin."}});
+async function wake(){try{if(navigator.wakeLock)await navigator.wakeLock.request("screen")}catch(x){}}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)wake()});wake();
+document.addEventListener("dblclick",()=>{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{})});
+if(window.EK)startLive();else addEventListener("ekready",startLive,{once:true});
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,doc,onSnapshot} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const app=initializeApp({
+  apiKey:"AIzaSyDGyXU05B0kApVv4mH9UEElnRFQCbBMxvc",
+  authDomain:"snuggest-order.firebaseapp.com",
+  projectId:"snuggest-order",
+  storageBucket:"snuggest-order.firebasestorage.app",
+  messagingSenderId:"95742498164",
+  appId:"1:95742498164:web:ccf507421e8f3b2927c821"
+});
+const auth=getAuth(app),fs=getFirestore(app);
+window.EK={
+  onAuth:cb=>onAuthStateChanged(auth,cb),
+  login:(e,p)=>signInWithEmailAndPassword(auth,e,p),
+  watch:(path,cb,err)=>onSnapshot(doc(fs,path),s=>cb(s.exists()?s.data():null),err)
+};
+dispatchEvent(new Event('ekready'));
+</script>
+</body>
+</html>
