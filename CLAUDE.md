@@ -11,13 +11,16 @@ Müşteriye görünen metinler LV / EN (+ çoğu yerde RU). Personel arayüzü T
 | `menu.html` | Müşteri QR menüsü, `menu.html?masa=N` | Müşteri telefonu — giriş yok |
 | `ekran.html` | Dikey (1080×1920) müşteri ekranı: menü slaytları + ödeme/teşekkür ekranı | Bara bağlı ekran — personel hesabıyla giriş |
 | `online-menu.html` | Bağımsız online menü sayfası (Gloock/Instrument Sans tasarımı) | Herkes |
-| `cloudflare/snuggest-notify-worker.js` | Cloudflare Worker `snuggest-notify`: QR sipariş + gün sonu raporu → Telegram | Cloudflare'de elle deploy edilir |
-| `firebase/firestore.rules` | Firestore güvenlik kuralları | Firebase Console → Rules'a elle yapıştırılır |
+| `cloudflare/snuggest-notify-worker.js` | Cloudflare Worker `snuggest-notify`: QR sipariş + gün sonu raporu → Telegram | GitHub Actions ile otomatik deploy |
+| `firebase/firestore.rules` | Firestore güvenlik kuralları | GitHub Actions ile otomatik deploy |
 | `qr/` | Masa QR kartları (PDF) ve tabela/sticker QR'ları | Baskı |
 
 Hepsi tek dosyalık HTML (CSS+JS içinde), build adımı yok. GitHub Pages: `https://ozgadk.github.io/order/` (main / root).
 `main`'e push edilen değişiklik 1–2 dakikada yayına çıkar — **canlı sistem, push etmeden önce kullanıcıya sor.**
-Worker ve rules dosyaları depoda sadece kayıt amaçlı; değişirse kullanıcı Cloudflare / Firebase'e elle yüklemeli, bunu ona söyle.
+Otomatik deploy (GitHub Actions, `.github/workflows/`):
+- `cloudflare/**` değişince → `wrangler deploy` (secret'lar: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`). Config: `cloudflare/wrangler.toml`.
+- `firebase/**` veya `firebase.json` değişince → `firebase deploy --only firestore:rules` (secret: `FIREBASE_SERVICE_ACCOUNT`, JSON).
+- Deploy sonucu GitHub → Actions sekmesinde görünür; hata olursa kullanıcıya söyle.
 
 ## Altyapı
 - **Firebase** projesi `snuggest-order` (Spark/ücretsiz plan). Firestore (`persistentLocalCache`) + E-posta/şifre Auth, kayıt (sign-up) kapalı. Config HTML'lerin içinde (public, gizli değil).

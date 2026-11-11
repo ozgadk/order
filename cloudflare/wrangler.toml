@@ -1,0 +1,6 @@
+# Cloudflare Worker "snuggest-notify" — GitHub Actions ile otomatik deploy edilir.
+# TG_TOKEN ve TG_CHAT secret'ları Cloudflare'de kalır; buraya yazılmaz, deploy onları silmez.
+name = "snuggest-notify"
+main = "snuggest-notify-worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
