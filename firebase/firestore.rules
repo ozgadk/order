@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Menü herkese açık (müşteri menüsü buradan okunur)
+    match /bar/config {
+      allow read: if true;
+    }
+
+    // Sadakat kartı: müşteri kendi kartını numarasıyla (anonim kod) okuyabilir, liste alamaz
+    match /loyalty/{id} {
+      allow get: if true;
+    }
+
+    // Müşteriler sadece yeni sipariş oluşturabilir, okuyamaz/değiştiremez
+    match /orders/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['table','lang','lines','status','t','note','who'])
+        && request.resource.data.table is string
+        && request.resource.data.table.size() <= 3
+        && request.resource.data.lines is list
+        && request.resource.data.lines.size() > 0
+        && request.resource.data.lines.size() <= 40
+        && request.resource.data.status == 'new'
+        && request.resource.data.t == request.time
+        && (!('note' in request.resource.data)
+            || (request.resource.data.note is string && request.resource.data.note.size() <= 200))
+        && (!('who' in request.resource.data)
+            || (request.resource.data.who is string && request.resource.data.who.size() <= 20));
+    }
+
+    // Geri kalan her şey sadece giriş yapmış personel için
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
