@@ -7,6 +7,11 @@ service cloud.firestore {
       allow read: if true;
     }
 
+    // Ürün fotoğrafları herkese açık (tek tek okunur, liste alınamaz)
+    match /photos/{id} {
+      allow get: if true;
+    }
+
     // Sadakat kartı: müşteri kendi kartını numarasıyla (anonim kod) okuyabilir, liste alamaz
     match /loyalty/{id} {
       allow get: if true;

@@ -251,6 +251,11 @@ details.bill summary::-webkit-details-marker{display:none}
 .ev .cur{color:var(--muted)}
 .x{width:40px;height:40px;border-radius:9px;background:var(--panel2);color:var(--danger);flex:none}
 .lnk{color:var(--gold);font-weight:500;padding:6px 0;text-align:left}
+.eph{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.eph .th{width:64px;height:64px;border-radius:10px;object-fit:cover;background:var(--panel2);border:1px solid var(--line);flex:none}
+.eph .pb{position:relative;overflow:hidden;cursor:pointer;display:inline-block}
+.eph .pb input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.eph .new{color:var(--gold);font-size:13px}
 @media (max-width:700px){.ed{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}.ecats{display:flex;border-right:0;border-bottom:1px solid var(--line)}.ecats button{width:auto;white-space:nowrap;flex:none}}
 </style>
 </head>
@@ -664,9 +669,49 @@ function renderEditor(){
           ${it.v.length>1?`<button class="x" data-act="delv" data-ii="${ii}" data-vi="${vi}" aria-label="Boyutu sil">✕</button>`:''}
         </div>`).join('')}
         <button class="lnk" data-act="addv" data-ii="${ii}">+ Boyut / seçenek ekle</button>
+        ${photoRow(it,ii)}
       </div>`).join('')}
       <button class="btn" data-act="additem">+ Ürün ekle</button>`:'<p class="hint">Kategori yok.</p>'}
     </section></div>`;
+  loadThumbs();
+}
+/* ---------- ürün fotoğrafları: photos/{itemId} {d: dataURL}; menüde it.ph = sürüm ---------- */
+const phCache={};
+function photoRow(it,ii){
+  const has=it._ph||(it.ph&&!it._phdel);
+  return`<div class="eph">${has?`<img class="th" data-th="${esc(it.id)}" alt="" ${it._ph?`src="${it._ph}"`:''}>`:''}
+    <label class="btn pb">📷 ${has?'Fotoğrafı değiştir':'Fotoğraf ekle'}<input type="file" accept="image/*" data-photo="${ii}"></label>
+    ${has?`<button class="lnk" style="color:var(--danger)" data-act="delph" data-ii="${ii}">Fotoğrafı kaldır</button>`:''}
+    ${it._ph?'<span class="new">kaydedince yayına çıkar</span>':it._phdel?'<span class="new">kaydedince silinir</span>':''}</div>`}
+async function loadThumbs(){
+  if(!db)return;
+  for(const im of document.querySelectorAll('img[data-th]:not([src])')){const id=im.dataset.th;
+    try{if(!(id in phCache)){const s=await db.doc('photos/'+id).get();phCache[id]=s.exists?s.data().d:''}if(phCache[id]&&im.isConnected)im.src=phCache[id]}catch(e){}}
+}
+function shrinkImage(file){return new Promise((ok,no)=>{
+  const u=URL.createObjectURL(file),im=new Image();
+  im.onload=()=>{URL.revokeObjectURL(u);let max=1000,q=.78,out='';
+    for(let i=0;i<6;i++){const r=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.round(im.naturalWidth*r),h=Math.round(im.naturalHeight*r);
+      const cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,w,h);g.drawImage(im,0,0,w,h);
+      out=cv.toDataURL('image/jpeg',q);if(out.length<300000)break;max=Math.round(max*.8);q=Math.max(.6,q-.05)}
+    ok(out)};
+  im.onerror=()=>{URL.revokeObjectURL(u);no(new Error('img'))};im.src=u})}
+document.addEventListener('change',async e=>{
+  const el=e.target;if(!el.dataset||el.dataset.photo==null||!draft)return;
+  const f=el.files&&el.files[0];if(!f)return;
+  if(!db){toast('Fotoğraf için internet bağlantısı ve giriş gerekli');return}
+  const ec=view.ecat,ii=+el.dataset.photo;
+  try{const d=await shrinkImage(f);const it=draft&&draft.cats[ec]&&draft.cats[ec].items[ii];if(!it)return;
+    it._ph=d;delete it._phdel;dirty=true;if(view.ecat===ec)renderEditor()}
+  catch(x){toast('Bu fotoğraf açılamadı. JPG veya PNG deneyin.')}
+});
+function savePhotos(oldMenu,m){
+  const keep=new Set();
+  m.cats.forEach(c=>c.items.forEach(it=>{
+    if(it._ph){if(db){db.doc('photos/'+it.id).set({d:it._ph}).catch(onDbErr);phCache[it.id]=it._ph;it.ph=Date.now()}}
+    else if(it._phdel){if(db)db.doc('photos/'+it.id).delete().catch(onDbErr);delete phCache[it.id];delete it.ph}
+    delete it._ph;delete it._phdel;if(it.ph)keep.add(it.id)}));
+  if(db&&oldMenu)oldMenu.cats.forEach(c=>c.items.forEach(it=>{if(it.ph&&!keep.has(it.id))db.doc('photos/'+it.id).delete().catch(onDbErr)}));
 }
 
 /* ---------- payment, split, loyalty ---------- */
@@ -978,6 +1023,7 @@ document.addEventListener('click',e=>{
     case'additem':draft.cats[view.ecat].items.push({id:uid(),name:'',v:[{l:'',p:0}]});dirty=true;renderEditor();{const r=document.querySelectorAll('.erow');const last=r[r.length-1];if(last){last.scrollIntoView({block:'center'});last.querySelector('input').focus()}}break;
     case'delitem':draft.cats[view.ecat].items.splice(+d.ii,1);dirty=true;renderEditor();break;
     case'addv':draft.cats[view.ecat].items[+d.ii].v.push({l:'',p:0});dirty=true;renderEditor();break;
+    case'delph':{const it=draft.cats[view.ecat].items[+d.ii];if(it._ph)delete it._ph;else it._phdel=true;dirty=true;renderEditor();break}
     case'delv':draft.cats[view.ecat].items[+d.ii].v.splice(+d.vi,1);dirty=true;renderEditor();break;
     case'edcancel':draft=null;dirty=false;closeModal();view.screen='tables';render();break;
     case'discard':draft=null;dirty=false;closeModal();view.screen=d.s;render();break;
@@ -993,7 +1039,7 @@ document.addEventListener('click',e=>{
       draft.notifyUrl=String(draft.notifyUrl||'').trim();
       draft.events=(draft.events||[]).filter(e=>String(e.title||'').trim()).map(e=>({...e,title:String(e.title).trim(),when:String(e.when||'').trim(),desc:String(e.desc||'').trim(),emoji:String(e.emoji||'').trim()}));
       draft.tableCount=tc;draft.cats.forEach(c=>{c.name=c.name.trim();c.items.forEach(it=>{it.name=it.name.trim();it.v.forEach(v=>{v.l=String(v.l).trim();v.p=Math.round(num(v.p)*100)/100})})});
-      menu=draft;draft=null;dirty=false;saveMenu();view.screen='tables';render();break}
+      savePhotos(menu,draft);menu=draft;draft=null;dirty=false;saveMenu();view.screen='tables';render();break}
   }
 });
 function onEdit(e){
