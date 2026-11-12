@@ -1,22 +1,30 @@
 name: Firestore rules deploy
+# Firebase Rules REST API ile doğrudan yükler (firebase-tools'un ekstra izin kontrolüne gerek kalmaz).
 on:
   push:
     branches: [main]
-    paths: ["firebase/**", "firebase.json"]
+    paths: ["firebase/**"]
   workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: google-github-actions/auth@v2
+        id: auth
         with:
-          node-version: 20
-      - name: Deploy rules
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          token_format: access_token
+      - name: Upload ruleset and release
         env:
-          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          TOKEN: ${{ steps.auth.outputs.access_token }}
+          PROJECT: snuggest-order
         run: |
-          echo "$SA" > "$RUNNER_TEMP/sa.json"
-          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
-          npx -y firebase-tools@latest deploy --only firestore:rules --project snuggest-order --non-interactive
-          rm -f "$RUNNER_TEMP/sa.json"
+          set -euo pipefail
+          API="https://firebaserules.googleapis.com/v1/projects/$PROJECT"
+          BODY=$(jq -n --rawfile c firebase/firestore.rules '{source:{files:[{name:"firestore.rules",content:$c}]}}')
+          RS=$(curl -sS --fail-with-body -X POST "$API/rulesets" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d "$BODY" | jq -r .name)
+          echo "Ruleset: $RS"
+          curl -sS --fail-with-body -X PATCH "$API/releases/cloud.firestore" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+            -d "$(jq -n --arg r "$RS" --arg n "projects/$PROJECT/releases/cloud.firestore" '{release:{name:$n,rulesetName:$r}}')"
+          echo "Firestore kuralları yayınlandı."
