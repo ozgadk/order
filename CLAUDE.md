@@ -19,7 +19,7 @@ Hepsi tek dosyalık HTML (CSS+JS içinde), build adımı yok. GitHub Pages: `htt
 `main`'e push edilen değişiklik 1–2 dakikada yayına çıkar — **canlı sistem, push etmeden önce kullanıcıya sor.**
 Otomatik deploy (GitHub Actions, `.github/workflows/`):
 - `cloudflare/**` değişince → `wrangler deploy` (secret'lar: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`). Config: `cloudflare/wrangler.toml`.
-- `firebase/**` veya `firebase.json` değişince → `firebase deploy --only firestore:rules` (secret: `FIREBASE_SERVICE_ACCOUNT`, JSON).
+- `firebase/**` değişince → Firebase Rules REST API ile yükleme (gcloud token; secret: `FIREBASE_SERVICE_ACCOUNT`, JSON). firebase-tools kullanma: servis hesabında serviceusage izni yok.
 - Deploy sonucu GitHub → Actions sekmesinde görünür; hata olursa kullanıcıya söyle.
 
 ## Altyapı
