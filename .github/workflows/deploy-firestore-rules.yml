@@ -10,17 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        id: auth
-        with:
-          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          token_format: access_token
       - name: Upload ruleset and release
         env:
-          TOKEN: ${{ steps.auth.outputs.access_token }}
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           PROJECT: snuggest-order
         run: |
           set -euo pipefail
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          gcloud auth activate-service-account --key-file="$RUNNER_TEMP/sa.json" --quiet
+          rm -f "$RUNNER_TEMP/sa.json"
+          TOKEN=$(gcloud auth print-access-token)
           API="https://firebaserules.googleapis.com/v1/projects/$PROJECT"
           BODY=$(jq -n --rawfile c firebase/firestore.rules '{source:{files:[{name:"firestore.rules",content:$c}]}}')
           RS=$(curl -sS --fail-with-body -X POST "$API/rulesets" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d "$BODY" | jq -r .name)
