@@ -676,9 +676,12 @@ function renderEditor(){
   loadThumbs();
 }
 /* ---------- ürün fotoğrafları: photos/{itemId} {d: dataURL}; menüde it.ph = sürüm ---------- */
-const phCache={};
+const phCache={};let FOTO={};
+fetch('foto/list.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(j=>{FOTO=j||{}}).catch(()=>{});
 function photoRow(it,ii){
   const has=it._ph||(it.ph&&!it._phdel);
+  if(!has&&FOTO[it.id])return`<div class="eph"><img class="th" alt="" src="foto/${esc(it.id)}.jpg?v=${FOTO[it.id]}">
+    <label class="btn pb">📷 Fotoğrafı değiştir<input type="file" accept="image/*" data-photo="${ii}"></label><span class="new">Wolt fotoğrafı (depoda)</span></div>`;
   return`<div class="eph">${has?`<img class="th" data-th="${esc(it.id)}" alt="" ${it._ph?`src="${it._ph}"`:''}>`:''}
     <label class="btn pb">📷 ${has?'Fotoğrafı değiştir':'Fotoğraf ekle'}<input type="file" accept="image/*" data-photo="${ii}"></label>
     ${has?`<button class="lnk" style="color:var(--danger)" data-act="delph" data-ii="${ii}">Fotoğrafı kaldır</button>`:''}

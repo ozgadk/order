@@ -35,6 +35,7 @@ Otomatik deploy (GitHub Actions, `.github/workflows/`):
   - `hh` kategorisi = Kokteyl saati (5 €), `{from, to, days[]}` ile görünür.
   - `migrate()` ile sürüm yükseltme (ver 2: hh kategorisi, ver 3: stamp/sug/events). Menü şeması değişirse yeni `ver` ekle, eskiyi bozma.
 - Ürün fotoğrafı: item'da `ph` (sürüm, Date.now) varsa foto `photos/{itemId}` `{d: JPEG dataURL ≤~300KB}` içinde (herkes `get` edebilir). Personel Menü düzenleyicisinden yükler (tarayıcıda küçültülür, kaydet'te yazılır); QR menüde 📷 / karta dokununca açılır. Firebase Storage yok (Spark plan).
+  - Ayrıca depoda `foto/{itemId}.jpg` + `foto/list.json` `{itemId: sürüm}` (Wolt mağazası `the-snuggest-barcafe`'den alınan kendi fotoğrafları, 1000px). Firestore fotoğrafı varsa o öncelikli.
 - `tables/{n}` `{lines[{key, name, l, p(cent), q, who?}], openedAt, notes[], people[]?}` — boş masa dokümanı silinir.
   - `key = itemId|varyant|cent` (+ `|@kişi` kişi etiketi varsa). Hediye satırı `gift|uid`, negatif fiyat.
 - `days/{YYYY-MM-DD}` `{bills[]}` — `arrayUnion`. **İş günü 06:00'da değişir.**

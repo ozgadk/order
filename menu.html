@@ -117,8 +117,8 @@ section.cat h2 i{display:inline-grid;place-items:center;width:40px;height:40px;b
 .it.out{opacity:.5}
 .it[data-ph]{cursor:pointer}
 .it .cam{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;margin-left:6px;vertical-align:-3px;font-size:16px;background:color-mix(in srgb,var(--acc) 18%,transparent);border:1px solid color-mix(in srgb,var(--acc) 45%,transparent)}
-.phx{position:relative;margin:-20px -16px 14px;aspect-ratio:4/3;background:var(--panel2);display:grid;place-items:center;overflow:hidden;border-radius:16px 16px 0 0}
-.phx img{width:100%;height:100%;object-fit:cover;display:block;animation:fade .3s ease}
+.phx{position:relative;margin:-20px -16px 14px;min-height:200px;background:var(--panel2);display:grid;place-items:center;overflow:hidden;border-radius:16px 16px 0 0}
+.phx img{width:100%;height:auto;max-height:60vh;object-fit:cover;display:block;animation:fade .3s ease}
 .phx .ld{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--gold);animation:spin .8s linear infinite}
 .phx p{color:var(--muted);padding:0 20px;text-align:center}
 .phx .xb{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;background:rgba(8,4,2,.6);color:#fff;font-size:18px}
@@ -377,7 +377,7 @@ function render(){
   $('#catbtns').innerHTML=(evs.length?`<button data-act="jump" data-c="events" style="--acc:#b07cff">🎉 ${esc(tx('events'))}</button>`:'')+cats.map((c,i)=>`<button data-act="jump" data-c="${esc(c.id)}" aria-current="${i===0&&!evs.length}" style="--acc:${lk(c)[1]}">${lk(c)[0]} ${esc(cname(c))}</button>`).join('');
   const fban=`<button class="fb" data-act="fortune"><span class="fmini" aria-hidden="true">${pandaSVG('fpm')}</span><span><b>🔮 ${esc(ft('banner'))}</b><small>${esc(ft('bsub'))}</small></span></button>`;
   $('#main').innerHTML=fban+(evs.length?`<section class="cat" id="cat-events" style="--acc:#b07cff"><h2><i aria-hidden="true">🎉</i>${esc(tx('events'))}</h2><div class="evs">${evs.map(e=>`<div class="ev"><div class="ee">${esc(e.emoji||'✨')}</div><div><b>${esc(e.title)}</b>${e.when?`<span class="ew">${esc(e.when)}</span>`:''}${e.desc?`<p>${esc(e.desc)}</p>`:''}</div></div>`).join('')}</div></section>`:'')+cats.map(c=>`<section class="cat" id="cat-${esc(c.id)}" style="--acc:${lk(c)[1]}"><h2><i aria-hidden="true">${lk(c)[0]}</i>${esc(cname(c))}</h2>${c.items.map(it=>{
-    return`<div class="it${it.out?' out':''}" data-it="${esc(it.id)}"${it.ph?' data-ph="1"':''}><div class="nm">${esc(iname(c,it))}${it.ph?`<button class="cam" data-act="photo" data-id="${esc(it.id)}" aria-label="${esc(tx('photo'))}">📷</button>`:''}${it.out?` <em class="sold">${esc(tx('sold'))}</em>`:''}</div>
+    return`<div class="it${it.out?' out':''}" data-it="${esc(it.id)}"${hasPh(it)?' data-ph="1"':''}><div class="nm">${esc(iname(c,it))}${hasPh(it)?`<button class="cam" data-act="photo" data-id="${esc(it.id)}" aria-label="${esc(tx('photo'))}">📷</button>`:''}${it.out?` <em class="sold">${esc(tx('sold'))}</em>`:''}</div>
       ${it.v.map(v=>{const k=ckey(it.id,v.l),q=cart[k]||0,vl=c.hh?'':vlabel(v.l);return`<div class="vr"><div class="vp">${vl?`<b>${esc(vl)}</b>`:''}<span>${eur(cents(v.p))}</span></div>
         <div class="stp"><button data-act="sub" data-k="${esc(k)}" aria-label="−" ${q?'':'disabled'}>−</button><span class="cn${q?'':' z'}">${q}</span><button class="add" data-act="add" data-k="${esc(k)}" aria-label="+" ${it.out?'disabled':''}>+</button></div></div>`}).join('')}
     </div>`}).join('')}</section>`).join('')+footHtml();
@@ -412,10 +412,14 @@ function openCart(msg){
   </div></div>`;
 }
 function closeSheet(){$('#sheet').innerHTML=''}
-const phCache={};
+/* foto: Firestore (it.ph, personel yükler) öncelikli; yoksa depodaki foto/{id}.jpg (foto/list.json) */
+const phCache={};let FOTO={};
+fetch('foto/list.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(j=>{FOTO=j||{};if(menu&&!$('#sheet').innerHTML){const y=scrollY;render();scrollTo(0,y)}}).catch(()=>{});
+const hasPh=it=>!!(it.ph||FOTO[it.id]);
 function findItem(id){for(const c of menu.cats)for(const it of c.items)if(it.id===id)return{c,it};return null}
 async function openPhoto(id){
-  const f=findItem(id);if(!f||!f.it.ph)return;const{c,it}=f,ck=id+'@'+it.ph;
+  const f=findItem(id);if(!f||!hasPh(f.it))return;const{c,it}=f,ck=id+'@'+(it.ph||'f');
+  if(!it.ph)phCache[ck]='foto/'+encodeURIComponent(id)+'.jpg?v='+FOTO[id];
   $('#sheet').innerHTML=`<div class="sheet" data-act="shut"><div class="in" role="dialog" aria-modal="true" data-phid="${esc(id)}" style="--acc:${look(c,menu.cats.indexOf(c))[1]}">
     <div class="phx">${phCache[ck]?`<img src="${phCache[ck]}" alt="${esc(iname(c,it))}">`:'<div class="ld"></div>'}<button class="xb" data-act="close" aria-label="${esc(tx('close'))}">✕</button></div>
     <h3>${esc(iname(c,it))}${it.out?` <em class="sold">${esc(tx('sold'))}</em>`:''}</h3>
@@ -425,6 +429,7 @@ async function openPhoto(id){
   </div></div>`;
   if(phCache[ck])return;
   let d='';try{d=await window.FBC.getPhoto(id)}catch(e){}
+  if(!d&&FOTO[id])d='foto/'+encodeURIComponent(id)+'.jpg?v='+FOTO[id];
   if(d)phCache[ck]=d;
   const box=$('#sheet [data-phid="'+CSS.escape(id)+'"] .phx');if(!box)return;
   box.querySelector('.ld')?.replaceWith(Object.assign(document.createElement(d?'img':'p'),d?{src:d,alt:iname(c,it)}:{textContent:tx('noPhoto')}));
