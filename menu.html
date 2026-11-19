@@ -113,7 +113,39 @@ section.cat h2 i{display:inline-grid;place-items:center;width:40px;height:40px;b
 .ok{font-size:56px;line-height:1;margin-bottom:8px}
 
 .hr{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-.loyb{font-size:13px;font-weight:700;color:#ffe2a8;background:rgba(241,185,74,.14);border:1px solid rgba(241,185,74,.45);border-radius:999px;padding:5px 10px;white-space:nowrap}
+.loyb{position:relative;overflow:hidden;font-size:14px;font-weight:800;color:#1a110b;background:linear-gradient(90deg,#f1b94a,#ffd166);border-radius:999px;padding:7px 12px;white-space:nowrap;box-shadow:0 4px 16px rgba(241,185,74,.45)}
+.loyb::after,.lban::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);animation:shine 3.6s ease-in-out infinite}
+@keyframes shine{0%,55%{left:-60%}100%{left:130%}}
+.lban{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;width:calc(100% - 32px);max-width:640px;margin:12px auto 0;padding:12px 14px;border-radius:16px;text-align:left;color:var(--ink);
+  background:linear-gradient(110deg,rgba(241,185,74,.24),rgba(255,93,115,.14));border:1.5px solid rgba(241,185,74,.7)}
+.lban .li{font-size:30px;line-height:1;flex:none}
+.lban b{display:block;font-family:var(--serif);font-size:20px;color:var(--gold);line-height:1.1}
+.lban small{display:block;color:var(--ink);opacity:.85;font-size:13.5px;margin-top:2px}
+.lban .md{display:flex;gap:3px;margin-left:auto;flex:none}
+.lban .md i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--gold)}
+.lban .md i.on{background:var(--gold)}
+.lban .md i.g{border-color:#ff5d73;background:#ff5d73}
+#loyintro{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:20px;background:rgba(8,4,2,.72);animation:fade .3s ease}
+#loyintro[hidden]{display:none}
+#loyintro .lc{position:relative;width:100%;max-width:380px;background:linear-gradient(160deg,#2b1d14,#1b120d);border:2px solid var(--gold);border-radius:22px;padding:22px 18px 18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(241,185,74,.25);animation:cardin .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes cardin{from{transform:translateY(40px) scale(.9);opacity:0}}
+#loyintro .lk{font-size:13px;letter-spacing:3px;color:var(--gold);font-weight:700}
+#loyintro h3{font-family:var(--serif);font-size:25px;line-height:1.15;margin:6px 0 14px;color:var(--ink)}
+#loyintro .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:290px;margin:0 auto 14px}
+#loyintro .st{aspect-ratio:1;border-radius:50%;border:2px dashed rgba(241,185,74,.5);display:grid;place-items:center;font-size:21px;position:relative}
+#loyintro .st span{opacity:0;transform:scale(2.4) rotate(-20deg);animation:stamp .35s cubic-bezier(.3,1.6,.5,1) forwards;animation-delay:var(--d)}
+#loyintro .st.on{animation:ring .35s ease forwards;animation-delay:var(--d)}
+#loyintro .st.gift{border:2px solid #ff5d73}
+#loyintro .st.gift span{font-size:24px}
+@keyframes stamp{to{opacity:1;transform:none}}
+@keyframes ring{to{border-style:solid;border-color:var(--gold);background:rgba(241,185,74,.16)}}
+#loyintro .fr{display:inline-block;font-weight:800;color:#1a110b;background:linear-gradient(90deg,#ff5d73,#ffb23f);border-radius:999px;padding:4px 14px;font-size:15px;opacity:0;animation:frin .5s ease forwards,pulse 1.4s ease-in-out infinite;animation-delay:2.2s,2.7s}
+@keyframes frin{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes pulse{50%{transform:scale(1.08)}}
+#loyintro p{margin:12px 0 0;line-height:1.4}
+#loyintro .s1{font-weight:700}
+#loyintro .s2{color:var(--muted);font-size:14.5px}
+#loyintro .btn{margin-top:14px}
 .it.out{opacity:.5}
 .it .ds,.sheet .ds{margin:4px 0 0;color:var(--muted);font-size:14.5px;line-height:1.35;font-style:italic}
 .it .al,.sheet .al{margin:3px 0 0;color:var(--muted);font-size:12.5px;opacity:.85}
@@ -281,13 +313,14 @@ body.noscroll{overflow:hidden}
   <div class="hr"><div class="langs" id="langs"><button data-lang="lv">LV</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div><button class="loyb" data-act="loy" id="loyb">🎟️ <span></span></button></div>
 </div></header>
 <div id="hh"></div>
+<div id="lban"></div>
 <nav class="cats" id="cats" hidden><div class="wrap" id="catbtns"></div></nav>
 <main id="main"><div class="center" id="loading">…</div></main>
 <div class="bar" id="bar" hidden><button data-act="cart" id="barbtn"></button></div>
 <div id="sheet"></div>
 <div id="sug" hidden></div>
 <div id="fortune" hidden></div>
-<canvas id="fw" hidden></canvas><div id="hhpop" hidden></div>
+<div id="loyintro" hidden></div><canvas id="fw" hidden></canvas><div id="hhpop" hidden></div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -315,15 +348,15 @@ const T={
  en:{table:'Table',order:'View order',cart:'Your order',total:'Total',send:'Send order',sending:'Sending…',sent:'Order sent!',sentSub:'The bar has received your order.',more:'Order more',close:'Back to menu',
   noTable:'Please scan the QR code on your table to order.',err:'Could not send. Please try again or order at the bar.',loadErr:'The menu could not be loaded. Please check your connection.',retry:'Try again',
   hh:'Cocktail Hour — every cocktail 5 €, until',hhGone:'Cocktail Hour has ended, so those items were removed from your order.',
-  items:'items',age:'Alcohol is served only to guests aged 18 and over.',allergy:'Please tell our staff about any allergies.',allergens:'Allergens',welcome:'Welcome',tap:'Tap to continue',hhTitle:'COCKTAIL HOUR',sold:'Sold out',soldGone:'Some items just sold out and were removed from your order.',noteL:'Note for the bar (optional)',noteP:'e.g. no ice, nut allergy',tryT:'Try this too',addB:'Add',later:'No thanks',events:'Events',review:'Enjoying your visit? Leave us a Google review',insta:'Follow us on Instagram',loy:'Loyalty card',loyT:'Your loyalty card',loyRule:'Every cocktail = 1 stamp. 10 stamps = 1 free cocktail. Tell the staff your phone number when you pay.',loyPh:'Your phone number',loyCheck:'Show my stamps',loyFree:'free cocktail(s) waiting',loyNone:'No stamps yet — order a cocktail and give your number when paying.',loyErr:'Please enter a valid phone number.',loyPriv:'Your number is stored only as an anonymous code to count stamps.',hhSub:'Every cocktail 5 €',whoL:'Your name (optional — helps us split the bill)',whoP:'e.g. Anna',left:'left',min:'min',h:'h',photo:'Photo',noPhoto:'Photo could not be loaded.'},
+  items:'items',age:'Alcohol is served only to guests aged 18 and over.',allergy:'Please tell our staff about any allergies.',allergens:'Allergens',welcome:'Welcome',tap:'Tap to continue',hhTitle:'COCKTAIL HOUR',sold:'Sold out',soldGone:'Some items just sold out and were removed from your order.',noteL:'Note for the bar (optional)',noteP:'e.g. no ice, nut allergy',tryT:'Try this too',addB:'Add',later:'No thanks',events:'Events',review:'Enjoying your visit? Leave us a Google review',insta:'Follow us on Instagram',loy:'Loyalty card',loyT:'Your loyalty card',loyRule:'Every cocktail = 1 stamp. 10 stamps = 1 free cocktail. Tell the staff your phone number when you pay.',loyPh:'Your phone number',loyCheck:'Show my stamps',loyFree:'free cocktail(s) waiting',loyNone:'No stamps yet — order a cocktail and give your number when paying.',loyErr:'Please enter a valid phone number.',loyPriv:'Your number is stored only as an anonymous code to count stamps.',hhSub:'Every cocktail 5 €',whoL:'Your name (optional — helps us split the bill)',whoP:'e.g. Anna',left:'left',min:'min',h:'h',photo:'Photo',noPhoto:'Photo could not be loaded.',liT:'Collect stamps — get a free cocktail!',liS:'Every cocktail = 1 stamp · 10 stamps = 1 free cocktail',liH:'No app, no sign-up — just tell the staff your phone number when you pay.',liOk:'Got it',liFree:'FREE',banS:'10 cocktails = 1 free · tap to see your stamps'},
  lv:{table:'Galds',order:'Skatīt pasūtījumu',cart:'Jūsu pasūtījums',total:'Kopā',send:'Nosūtīt pasūtījumu',sending:'Sūta…',sent:'Pasūtījums nosūtīts!',sentSub:'Bārs ir saņēmis jūsu pasūtījumu.',more:'Pasūtīt vēl',close:'Atpakaļ uz ēdienkarti',
   noTable:'Lai pasūtītu, lūdzu, noskenējiet QR kodu uz sava galda.',err:'Neizdevās nosūtīt. Mēģiniet vēlreiz vai pasūtiet pie bāra.',loadErr:'Ēdienkarti neizdevās ielādēt. Lūdzu, pārbaudiet savienojumu.',retry:'Mēģināt vēlreiz',
   hh:'Kokteiļu stunda — visi kokteiļi 5 €, līdz',hhGone:'Kokteiļu stunda ir beigusies, tāpēc šīs pozīcijas tika noņemtas no pasūtījuma.',
-  items:'gab.',age:'Alkohols tiek pārdots tikai personām no 18 gadu vecuma.',allergy:'Lūdzu, informējiet personālu par alerģijām.',allergens:'Alergēni',welcome:'Laipni lūdzam',tap:'Pieskarieties, lai turpinātu',hhTitle:'KOKTEIĻU STUNDA',sold:'Izpārdots',soldGone:'Dažas pozīcijas tikko izpārdotas un noņemtas no pasūtījuma.',noteL:'Piezīme bāram (nav obligāti)',noteP:'piem., bez ledus, riekstu alerģija',tryT:'Pamēģiniet arī',addB:'Pievienot',later:'Nē, paldies',events:'Pasākumi',review:'Patīk pie mums? Atstājiet atsauksmi Google',insta:'Sekojiet mums Instagram',loy:'Lojalitātes karte',loyT:'Jūsu lojalitātes karte',loyRule:'Katrs kokteilis = 1 zīmogs. 10 zīmogi = 1 kokteilis bez maksas. Maksājot nosauciet savu tālruņa numuru.',loyPh:'Jūsu tālruņa numurs',loyCheck:'Rādīt manus zīmogus',loyFree:'bezmaksas kokteilis(-ļi) gaida',loyNone:'Vēl nav zīmogu — pasūtiet kokteili un maksājot nosauciet numuru.',loyErr:'Lūdzu, ievadiet derīgu tālruņa numuru.',loyPriv:'Jūsu numurs tiek glabāts tikai kā anonīms kods zīmogu skaitīšanai.',hhSub:'Visi kokteiļi 5 €',whoL:'Jūsu vārds (nav obligāti — palīdz sadalīt rēķinu)',whoP:'piem., Anna',left:'atlicis',min:'min',h:'st',photo:'Foto',noPhoto:'Fotoattēlu neizdevās ielādēt.'},
+  items:'gab.',age:'Alkohols tiek pārdots tikai personām no 18 gadu vecuma.',allergy:'Lūdzu, informējiet personālu par alerģijām.',allergens:'Alergēni',welcome:'Laipni lūdzam',tap:'Pieskarieties, lai turpinātu',hhTitle:'KOKTEIĻU STUNDA',sold:'Izpārdots',soldGone:'Dažas pozīcijas tikko izpārdotas un noņemtas no pasūtījuma.',noteL:'Piezīme bāram (nav obligāti)',noteP:'piem., bez ledus, riekstu alerģija',tryT:'Pamēģiniet arī',addB:'Pievienot',later:'Nē, paldies',events:'Pasākumi',review:'Patīk pie mums? Atstājiet atsauksmi Google',insta:'Sekojiet mums Instagram',loy:'Lojalitātes karte',loyT:'Jūsu lojalitātes karte',loyRule:'Katrs kokteilis = 1 zīmogs. 10 zīmogi = 1 kokteilis bez maksas. Maksājot nosauciet savu tālruņa numuru.',loyPh:'Jūsu tālruņa numurs',loyCheck:'Rādīt manus zīmogus',loyFree:'bezmaksas kokteilis(-ļi) gaida',loyNone:'Vēl nav zīmogu — pasūtiet kokteili un maksājot nosauciet numuru.',loyErr:'Lūdzu, ievadiet derīgu tālruņa numuru.',loyPriv:'Jūsu numurs tiek glabāts tikai kā anonīms kods zīmogu skaitīšanai.',hhSub:'Visi kokteiļi 5 €',whoL:'Jūsu vārds (nav obligāti — palīdz sadalīt rēķinu)',whoP:'piem., Anna',left:'atlicis',min:'min',h:'st',photo:'Foto',noPhoto:'Fotoattēlu neizdevās ielādēt.',liT:'Krājiet zīmogus — kokteilis bez maksas!',liS:'Katrs kokteilis = 1 zīmogs · 10 zīmogi = 1 kokteilis bez maksas',liH:'Bez lietotnes un reģistrācijas — maksājot vienkārši nosauciet savu tālruņa numuru.',liOk:'Skaidrs',liFree:'BEZ MAKSAS',banS:'10 kokteiļi = 1 bez maksas · pieskarieties, lai redzētu zīmogus'},
  ru:{table:'Стол',order:'Мой заказ',cart:'Ваш заказ',total:'Итого',send:'Отправить заказ',sending:'Отправка…',sent:'Заказ отправлен!',sentSub:'Бар получил ваш заказ.',more:'Заказать ещё',close:'Назад к меню',
   noTable:'Чтобы сделать заказ, отсканируйте QR-код на вашем столе.',err:'Не удалось отправить. Попробуйте ещё раз или закажите у бара.',loadErr:'Не удалось загрузить меню. Проверьте подключение.',retry:'Повторить',
   hh:'Коктейльный час — все коктейли по 5 €, до',hhGone:'Коктейльный час закончился, эти позиции удалены из заказа.',
-  items:'шт.',age:'Алкоголь продаётся только лицам старше 18 лет.',allergy:'Пожалуйста, сообщите персоналу об аллергиях.',allergens:'Аллергены',welcome:'Добро пожаловать',tap:'Нажмите, чтобы продолжить',hhTitle:'КОКТЕЙЛЬНЫЙ ЧАС',sold:'Нет в наличии',soldGone:'Некоторые позиции закончились и были удалены из заказа.',noteL:'Комментарий для бара (необязательно)',noteP:'напр., без льда, аллергия на орехи',tryT:'Попробуйте также',addB:'Добавить',later:'Нет, спасибо',events:'События',review:'Вам у нас нравится? Оставьте отзыв в Google',insta:'Мы в Instagram',loy:'Карта лояльности',loyT:'Ваша карта лояльности',loyRule:'Каждый коктейль = 1 штамп. 10 штампов = 1 коктейль в подарок. Назовите номер телефона при оплате.',loyPh:'Ваш номер телефона',loyCheck:'Показать мои штампы',loyFree:'коктейль(ей) в подарок ждут вас',loyNone:'Пока нет штампов — закажите коктейль и назовите номер при оплате.',loyErr:'Введите корректный номер телефона.',loyPriv:'Ваш номер хранится только как анонимный код для подсчёта штампов.',hhSub:'Все коктейли по 5 €',whoL:'Ваше имя (необязательно — поможет разделить счёт)',whoP:'напр., Анна',left:'осталось',min:'мин',h:'ч',photo:'Фото',noPhoto:'Не удалось загрузить фото.'}
+  items:'шт.',age:'Алкоголь продаётся только лицам старше 18 лет.',allergy:'Пожалуйста, сообщите персоналу об аллергиях.',allergens:'Аллергены',welcome:'Добро пожаловать',tap:'Нажмите, чтобы продолжить',hhTitle:'КОКТЕЙЛЬНЫЙ ЧАС',sold:'Нет в наличии',soldGone:'Некоторые позиции закончились и были удалены из заказа.',noteL:'Комментарий для бара (необязательно)',noteP:'напр., без льда, аллергия на орехи',tryT:'Попробуйте также',addB:'Добавить',later:'Нет, спасибо',events:'События',review:'Вам у нас нравится? Оставьте отзыв в Google',insta:'Мы в Instagram',loy:'Карта лояльности',loyT:'Ваша карта лояльности',loyRule:'Каждый коктейль = 1 штамп. 10 штампов = 1 коктейль в подарок. Назовите номер телефона при оплате.',loyPh:'Ваш номер телефона',loyCheck:'Показать мои штампы',loyFree:'коктейль(ей) в подарок ждут вас',loyNone:'Пока нет штампов — закажите коктейль и назовите номер при оплате.',loyErr:'Введите корректный номер телефона.',loyPriv:'Ваш номер хранится только как анонимный код для подсчёта штампов.',hhSub:'Все коктейли по 5 €',whoL:'Ваше имя (необязательно — поможет разделить счёт)',whoP:'напр., Анна',left:'осталось',min:'мин',h:'ч',photo:'Фото',noPhoto:'Не удалось загрузить фото.',liT:'Собирайте штампы — коктейль в подарок!',liS:'Каждый коктейль = 1 штамп · 10 штампов = 1 коктейль в подарок',liH:'Без приложения и регистрации — просто назовите номер телефона при оплате.',liOk:'Понятно',liFree:'ПОДАРОК',banS:'10 коктейлей = 1 в подарок · нажмите, чтобы увидеть штампы'}
 };
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -383,6 +416,7 @@ function render(){
   const lk=c=>look(c,menu.cats.indexOf(c));
   const evs=(menu.events||[]).filter(e=>e.on!==false&&e.title);
   $('#loyb span').textContent=tx('loy');
+  $('#lban').innerHTML=`<button class="lban" data-act="loy"><span class="li" aria-hidden="true">🎟️</span><span><b>${esc(tx('loy'))}</b><small>${esc(tx('banS'))}</small></span><span class="md" aria-hidden="true">${'<i class="on"></i>'.repeat(3)}${'<i></i>'.repeat(6)}<i class="g"></i></span></button>`;
   $('#catbtns').innerHTML=(evs.length?`<button data-act="jump" data-c="events" style="--acc:#b07cff">🎉 ${esc(tx('events'))}</button>`:'')+cats.map((c,i)=>`<button data-act="jump" data-c="${esc(c.id)}" aria-current="${i===0&&!evs.length}" style="--acc:${lk(c)[1]}">${lk(c)[0]} ${esc(cname(c))}</button>`).join('');
   const fban=`<button class="fb" data-act="fortune"><span class="fmini" aria-hidden="true">${pandaSVG('fpm')}</span><span><b>🔮 ${esc(ft('banner'))}</b><small>${esc(ft('bsub'))}</small></span></button>`;
   $('#main').innerHTML=fban+(evs.length?`<section class="cat" id="cat-events" style="--acc:#b07cff"><h2><i aria-hidden="true">🎉</i>${esc(tx('events'))}</h2><div class="evs">${evs.map(e=>`<div class="ev"><div class="ee">${esc(e.emoji||'✨')}</div><div><b>${esc(e.title)}</b>${e.when?`<span class="ew">${esc(e.when)}</span>`:''}${e.desc?`<p>${esc(e.desc)}</p>`:''}</div></div>`).join('')}</div></section>`:'')+cats.map(c=>`<section class="cat" id="cat-${esc(c.id)}" style="--acc:${lk(c)[1]}"><h2><i aria-hidden="true">${lk(c)[0]}</i>${esc(cname(c))}</h2>${c.items.map(it=>{
@@ -493,6 +527,20 @@ function suggest(k){
 }
 async function sha(phone){let d=String(phone||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);if(d.length===8)d='371'+d;if(d.length<8||d.length>15||!crypto.subtle)return null;
   const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('snuggest:'+d));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+/* ilk ziyarette sadakat kartı tanıtımı (cihaz başına 1 kez), kokteyl saati animasyonundan sonra */
+function loyIntro(tries=0){
+  let seen=false;try{seen=localStorage.getItem('snug.loyintro')==='1'}catch(e){}
+  if(seen||!menu)return;
+  if($('#sheet').innerHTML||fort||!$('#fw').hidden||!$('#hhpop').hidden){if(tries<20)setTimeout(()=>loyIntro(tries+1),1500);return}
+  try{localStorage.setItem('snug.loyintro','1')}catch(e){}
+  const st=Array.from({length:10},(_,i)=>{const g=i===9;return`<span class="st on${g?' gift':''}" style="--d:${(.25+i*.17).toFixed(2)}s"><span style="--d:${(.25+i*.17).toFixed(2)}s">${g?'🎁':'🍸'}</span></span>`}).join('');
+  const el=$('#loyintro');el.hidden=false;
+  el.innerHTML=`<div class="lc" role="dialog" aria-modal="true" aria-label="${esc(tx('loy'))}"><div class="lk">🎟️ ${esc(tx('loy')).toUpperCase()}</div>
+    <h3>${esc(tx('liT'))}</h3><div class="grid">${st}</div><span class="fr">🎁 ${esc(tx('liFree'))}</span>
+    <p class="s1">${esc(tx('liS'))}</p><p class="s2">${esc(tx('liH'))}</p>
+    <button class="btn primary" data-act="lishow">${esc(tx('loyCheck'))}</button><button class="btn" data-act="liok">${esc(tx('liOk'))}</button></div>`;
+}
+function loyIntroClose(){const el=$('#loyintro');el.hidden=true;el.innerHTML=''}
 function loySheet(res){
   let ph='';try{ph=localStorage.getItem('snug.phone')||''}catch(e){}
   const dots=res&&!res.err?Array.from({length:10},(_,i)=>`<span class="dot${i<res.stamps?' on':''}">${i<res.stamps?'🍸':''}</span>`).join(''):'';
@@ -844,6 +892,8 @@ document.addEventListener('click',e=>{
   else if(a==='retry')load();
   else if(a==='boom')celebrate();
   else if(a==='loy')loySheet(null);
+  else if(a==='liok')loyIntroClose();
+  else if(a==='lishow'){loyIntroClose();loySheet(null)}
   else if(a==='fortune')openFortune();
   else if(a==='fclose')closeFortune();
   else if(a==='fstart'){fort.step=1;renderFortune()}
@@ -863,7 +913,8 @@ function spy(){
   let cur=secs[0].id;for(const s of secs)if(s.getBoundingClientRect().top<90)cur=s.id;
   document.querySelectorAll('#catbtns button').forEach(b=>{const on='cat-'+b.dataset.c===cur;if(b.getAttribute('aria-current')!==String(on)){b.setAttribute('aria-current',String(on));if(on)b.scrollIntoView({block:'nearest',inline:'center'})}});
 }
-addEventListener('keydown',e=>{if(e.key==='Escape'&&fort)closeFortune()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&fort)closeFortune();if(e.key==='Escape'&&!$('#loyintro').hidden)loyIntroClose()});
+$('#loyintro').addEventListener('click',e=>{if(e.target.id==='loyintro')loyIntroClose()});
 addEventListener('scroll',()=>{if(spyT)return;spyT=requestAnimationFrame(()=>{spyT=0;spy()})},{passive:true});
 
 /* ---------- load ---------- */
@@ -880,7 +931,7 @@ async function load(){
     table=/^\d{1,3}$/.test(rawT)&&n>=1&&n<=(menu.tableCount||200)?String(n):null;
     for(const k of Object.keys(cart))if(!findLine(k))delete cart[k];
     render();
-    if(firstLoad){firstLoad=false;let b=false;try{b=sessionStorage.getItem('snug.hhboom')==='1';sessionStorage.setItem('snug.hhboom','1')}catch(e){}if(!b&&visibleCats().some(c=>c.hh))setTimeout(celebrate,250)}
+    if(firstLoad){firstLoad=false;let b=false;try{b=sessionStorage.getItem('snug.hhboom')==='1';sessionStorage.setItem('snug.hhboom','1')}catch(e){}const hhGo=!b&&visibleCats().some(c=>c.hh);if(hhGo)setTimeout(celebrate,250);setTimeout(loyIntro,hhGo?4600:900)}
   }catch(e){
     firstLoad=false;
     $('#main').innerHTML=`<div class="center"><h2>:(</h2><p>${esc(tx('loadErr'))}</p><button class="btn primary" data-act="retry" style="max-width:260px;margin:16px auto 0">${esc(tx('retry'))}</button></div>`;
