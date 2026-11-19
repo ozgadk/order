@@ -115,6 +115,10 @@ section.cat h2 i{display:inline-grid;place-items:center;width:40px;height:40px;b
 .hr{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .loyb{font-size:13px;font-weight:700;color:#ffe2a8;background:rgba(241,185,74,.14);border:1px solid rgba(241,185,74,.45);border-radius:999px;padding:5px 10px;white-space:nowrap}
 .it.out{opacity:.5}
+.it .ds,.sheet .ds{margin:4px 0 0;color:var(--muted);font-size:14.5px;line-height:1.35;font-style:italic}
+.it .al,.sheet .al{margin:3px 0 0;color:var(--muted);font-size:12.5px;opacity:.85}
+.tg{font-style:normal;font-size:12px;font-weight:700;color:#1a110b;background:var(--gold);border-radius:999px;padding:2px 8px;margin-left:4px;vertical-align:2px;white-space:nowrap}
+.tg.nw{background:#ff7a45}
 .it[data-ph]{cursor:pointer}
 .it .cam{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;margin-left:6px;vertical-align:-3px;font-size:16px;background:color-mix(in srgb,var(--acc) 18%,transparent);border:1px solid color-mix(in srgb,var(--acc) 45%,transparent)}
 .phx{position:relative;margin:-20px -16px 14px;min-height:200px;background:var(--panel2);display:grid;place-items:center;overflow:hidden;border-radius:16px 16px 0 0}
@@ -341,14 +345,19 @@ const rawT=(qs.get('masa')||qs.get('t')||qs.get('table')||'').trim();
 let lang=(()=>{try{const s=localStorage.getItem('snug.lang');if(s&&T[s])return s}catch(e){}const n=(navigator.language||'').slice(0,2);return n==='lv'?'lv':n==='ru'?'ru':'en'})();
 let menu=null,table=null,cart=LS.get('snug.cart.'+rawT,{}),sending=false;
 const tx=k=>T[lang][k];
-function iname(c,it){return it.name}
+function iname(c,it){return(lang!=='en'&&it.n2&&it.n2[lang])||it.name}
+const ALG={A07:['milk','piens','молоко'],A08:['nuts','rieksti','орехи'],A12:['sulphites','sulfīti','сульфиты']};
+const TAGS={sig:['Signature','Autordzēriens','Авторский'],new:['New','Jaunums','Новинка']};
+function idesc(it){const d=it.d&&(it.d[lang]||it.d.en);const al=(it.al||[]).map(a=>ALG[a]?ALG[a][LI[lang]]:a);
+  return(d?`<p class="ds">${esc(d)}</p>`:'')+(al.length?`<p class="al">${esc(tx('allergens'))}: ${esc(al.join(', '))}</p>`:'')}
+function itag(it){const t=TAGS[it.tag];return t?` <em class="tg${it.tag==='new'?' nw':''}">${esc(t[LI[lang]])}</em>`:''}
 const LI={en:0,lv:1,ru:2};
-const CATS={hh:['Cocktail Hour 5 €','Kokteiļu stunda 5 €','Коктейльный час 5 €'],c0:['Classics','Klasiskie kokteiļi','Классические коктейли'],c1:['House favourites','Mājas favorīti','Фирменные коктейли'],
+const CATS={hh:['Cocktail Hour 5 €','Kokteiļu stunda 5 €','Коктейльный час 5 €'],hotck:['Hot cocktails','Karstie kokteiļi','Горячие коктейли'],c0:['Classics','Klasiskie kokteiļi','Классические коктейли'],c1:['House favourites','Mājas favorīti','Фирменные коктейли'],
   c2:['Beer cocktails','Alus kokteiļi','Пивные коктейли'],c3:['Non-alcoholic cocktails','Bezalkoholiskie kokteiļi','Безалкогольные коктейли'],c4:['Shots','Šoti','Шоты'],
   c5:['Beer','Alus','Пиво'],c6:['Wine','Vīns','Вино'],c7:['Spirits','Stiprie dzērieni','Крепкие напитки'],c8:['Liqueurs','Liķieri','Ликёры'],
   c9:['Soft drinks','Bezalkoholiskie dzērieni','Безалкогольные напитки'],c10:['Hot drinks','Karstie dzērieni','Горячие напитки'],c11:['Burgers','Burgeri','Бургеры'],
   c12:['Mains','Galvenie ēdieni','Основные блюда'],c13:['Soups','Zupas','Супы'],c14:['Snacks','Uzkodas','Закуски'],c15:['Desserts','Deserti','Десерты'],c16:['Sauces','Mērces','Соусы']};
-const LOOK={hh:['🎆','#ff5d73'],c0:['🍸','#9bd04f'],c1:['🍹','#ff5d73'],c2:['🍺','#ffb23f'],c3:['🍓','#4fd1b5'],c4:['🥃','#b07cff'],c5:['🍻','#ffb23f'],
+const LOOK={hh:['🎆','#ff5d73'],hotck:['🔥','#ff7a45'],c0:['🍸','#9bd04f'],c1:['🍹','#ff5d73'],c2:['🍺','#ffb23f'],c3:['🍓','#4fd1b5'],c4:['🥃','#b07cff'],c5:['🍻','#ffb23f'],
   c6:['🍷','#e2557a'],c7:['🥃','#f1b94a'],c8:['🍶','#c98bff'],c9:['🥤','#4fc3f7'],c10:['☕','#d9925b'],c11:['🍔','#ff8a3d'],c12:['🍽️','#f2c14e'],
   c13:['🍲','#e9a23b'],c14:['🍟','#ffd166'],c15:['🍰','#f28fb2'],c16:['🫙','#9bd04f']};
 const PAL=['#9bd04f','#ff5d73','#4fc3f7','#ffb23f','#b07cff','#4fd1b5','#f28fb2','#f1b94a'];
@@ -377,7 +386,7 @@ function render(){
   $('#catbtns').innerHTML=(evs.length?`<button data-act="jump" data-c="events" style="--acc:#b07cff">🎉 ${esc(tx('events'))}</button>`:'')+cats.map((c,i)=>`<button data-act="jump" data-c="${esc(c.id)}" aria-current="${i===0&&!evs.length}" style="--acc:${lk(c)[1]}">${lk(c)[0]} ${esc(cname(c))}</button>`).join('');
   const fban=`<button class="fb" data-act="fortune"><span class="fmini" aria-hidden="true">${pandaSVG('fpm')}</span><span><b>🔮 ${esc(ft('banner'))}</b><small>${esc(ft('bsub'))}</small></span></button>`;
   $('#main').innerHTML=fban+(evs.length?`<section class="cat" id="cat-events" style="--acc:#b07cff"><h2><i aria-hidden="true">🎉</i>${esc(tx('events'))}</h2><div class="evs">${evs.map(e=>`<div class="ev"><div class="ee">${esc(e.emoji||'✨')}</div><div><b>${esc(e.title)}</b>${e.when?`<span class="ew">${esc(e.when)}</span>`:''}${e.desc?`<p>${esc(e.desc)}</p>`:''}</div></div>`).join('')}</div></section>`:'')+cats.map(c=>`<section class="cat" id="cat-${esc(c.id)}" style="--acc:${lk(c)[1]}"><h2><i aria-hidden="true">${lk(c)[0]}</i>${esc(cname(c))}</h2>${c.items.map(it=>{
-    return`<div class="it${it.out?' out':''}" data-it="${esc(it.id)}"${hasPh(it)?' data-ph="1"':''}><div class="nm">${esc(iname(c,it))}${hasPh(it)?`<button class="cam" data-act="photo" data-id="${esc(it.id)}" aria-label="${esc(tx('photo'))}">📷</button>`:''}${it.out?` <em class="sold">${esc(tx('sold'))}</em>`:''}</div>
+    return`<div class="it${it.out?' out':''}" data-it="${esc(it.id)}"${hasPh(it)?' data-ph="1"':''}><div class="nm">${esc(iname(c,it))}${itag(it)}${hasPh(it)?`<button class="cam" data-act="photo" data-id="${esc(it.id)}" aria-label="${esc(tx('photo'))}">📷</button>`:''}${it.out?` <em class="sold">${esc(tx('sold'))}</em>`:''}</div>${idesc(it)}
       ${it.v.map(v=>{const k=ckey(it.id,v.l),q=cart[k]||0,vl=c.hh?'':vlabel(v.l);return`<div class="vr"><div class="vp">${vl?`<b>${esc(vl)}</b>`:''}<span>${eur(cents(v.p))}</span></div>
         <div class="stp"><button data-act="sub" data-k="${esc(k)}" aria-label="−" ${q?'':'disabled'}>−</button><span class="cn${q?'':' z'}">${q}</span><button class="add" data-act="add" data-k="${esc(k)}" aria-label="+" ${it.out?'disabled':''}>+</button></div></div>`}).join('')}
     </div>`}).join('')}</section>`).join('')+footHtml();
@@ -422,7 +431,7 @@ async function openPhoto(id){
   if(!it.ph)phCache[ck]='foto/'+encodeURIComponent(id)+'.jpg?v='+FOTO[id];
   $('#sheet').innerHTML=`<div class="sheet" data-act="shut"><div class="in" role="dialog" aria-modal="true" data-phid="${esc(id)}" style="--acc:${look(c,menu.cats.indexOf(c))[1]}">
     <div class="phx">${phCache[ck]?`<img src="${phCache[ck]}" alt="${esc(iname(c,it))}">`:'<div class="ld"></div>'}<button class="xb" data-act="close" aria-label="${esc(tx('close'))}">✕</button></div>
-    <h3>${esc(iname(c,it))}${it.out?` <em class="sold">${esc(tx('sold'))}</em>`:''}</h3>
+    <h3>${esc(iname(c,it))}${itag(it)}${it.out?` <em class="sold">${esc(tx('sold'))}</em>`:''}</h3>${idesc(it)}
     ${it.v.map(v=>{const k=ckey(it.id,v.l),q=cart[k]||0,vl=c.hh?'':vlabel(v.l);return`<div class="vr"><div class="vp">${vl?`<b>${esc(vl)}</b>`:''}<span>${eur(cents(v.p))}</span></div>
       <div class="stp"><button data-act="sub" data-k="${esc(k)}" aria-label="−" ${q?'':'disabled'}>−</button><span class="cn${q?'':' z'}">${q}</span><button class="add" data-act="add" data-k="${esc(k)}" aria-label="+" ${it.out?'disabled':''}>+</button></div></div>`}).join('')}
     <button class="btn" data-act="close">${esc(tx('close'))}</button>

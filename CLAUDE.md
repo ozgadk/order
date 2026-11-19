@@ -31,9 +31,9 @@ Otomatik deploy (GitHub Actions, `.github/workflows/`):
 
 ## Firestore verisi
 - `bar/config` `{menu}` — menü (herkes okur). `menu = {ver, tableCount:12, notifyUrl, cats[], events[]}`
-  - `cats[] = {id, name, hh?, items[{id, name, v[{l, p(€ sayı)}], out?, stamp?, sug?}]}`
+  - `cats[] = {id, name, hh?, items[{id, name, v[{l, p(€ sayı)}], out?, n2?{lv,ru}, d?{lv,en,ru}, al?['A07'..], tag?'sig'|'new'}], stamp?, sug?}`
   - `hh` kategorisi = Kokteyl saati (5 €), `{from, to, days[]}` ile görünür.
-  - `migrate()` ile sürüm yükseltme (ver 2: hh kategorisi, ver 3: stamp/sug/events). Menü şeması değişirse yeni `ver` ekle, eskiyi bozma.
+  - `migrate()` ile sürüm yükseltme (ver 2: hh kategorisi, ver 3: stamp/sug/events, ver 4: `hotck` Sıcak kokteyller — personel uygulaması yükseltince menüyü Firestore'a kaydeder). Menü şeması değişirse yeni `ver` ekle, eskiyi bozma.
 - Ürün fotoğrafı: item'da `ph` (sürüm, Date.now) varsa foto `photos/{itemId}` `{d: JPEG dataURL ≤~300KB}` içinde (herkes `get` edebilir). Personel Menü düzenleyicisinden yükler (tarayıcıda küçültülür, kaydet'te yazılır); QR menüde 📷 / karta dokununca açılır. Firebase Storage yok (Spark plan).
   - Ayrıca depoda `foto/{itemId}.jpg` + `foto/list.json` `{itemId: sürüm}` (Wolt mağazası `the-snuggest-barcafe`'den alınan kendi fotoğrafları, 1000px). Firestore fotoğrafı varsa o öncelikli.
 - `tables/{n}` `{lines[{key, name, l, p(cent), q, who?}], openedAt, notes[], people[]?}` — boş masa dokümanı silinir.
@@ -51,6 +51,7 @@ Falcı Panda tarot/kahve falı uygulaması **ayrı bir proje**, bu depoda değil
 
 ## Kokteyl saati
 `ekran.html` ve `online-menu.html` kendi saatlerini kullanır: Paz–Per 18:00–21:00, Cum–Cmt 18:00–20:00.
+Dikey ekranın menüsü `ekran.html` içinde sabit (`S`, `PAGES`; Sıcak kokteyller slaytı `hotck`), fiyat/tükendi canlı menüden ada göre eşleşir.
 `index.html`/`menu.html` ise menüdeki `hh {from,to,days}` ayarını kullanır. Saat değişirse ikisini de güncelle.
 
 ## Test

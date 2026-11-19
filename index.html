@@ -341,6 +341,15 @@ const RAW=[
  ['Soslar',[['Special Yoghurt Sauce',1],['Mayonnaise',1],['Ketchup',1],['Mustard',1],['Barbecue Sauce',1],['Garlic Sauce',1]]]
 ];
 const HH_ITEMS=['Gin Tonic','Aperol Spritz','Rum & Cola','Whisky & Cola','Classic Mojito','Hugo Spritz','Espresso Martini','Bramble','Tequila Sunrise','Piña Colada','Moscow Mule','Snuggest Peach','Istanbul City','Antalya Sun','Anatolian','Troia','Mexican','Virgin Mojito','Piña Colada Virgin','Sunset Cooler Virgin','Green Apple Spritz Virgin'];
+/* ver 4: kış — sıcak kokteyller (A4 kartından). n2 = LV/RU ad, d = açıklama, al = alerjen, tag = sig|new */
+function hotCat(){const H=[
+ ['Snug Mulled Wine',5,'Snug Karstvīns','Глинтвейн Snug',['Sarkanvīns, apelsīns, kanēlis, krustnagliņas, zvaigžņu anīss','Red wine, orange, cinnamon, clove, star anise','Красное вино, апельсин, корица, гвоздика, бадьян'],['A12']],
+ ['Black Tea Toddy',8,'Melnās Tējas Toddy','Тодди на чёрном чае',['Melnā tēja, Tullamore Dew, medus, citrons','Black tea, Irish whiskey, honey, lemon, clove','Чёрный чай, ирландский виски, мёд, лимон, гвоздика'],[],'sig'],
+ ['Winter Mancolada',8,'Ziemas Mancolada','Зимняя Манколада',['Captain Morgan, kokosriekstu krēms, silts ananass, citrons, kanēlis','Spiced rum, coconut cream, warm pineapple, lemon, cinnamon','Пряный ром, кокосовые сливки, тёплый ананас, лимон, корица'],['A07']],
+ ['Hot Amaretto',8,'Karstais Amaretto','Горячий Амаретто',['Amaretto, burbons, citrons, medus, karsts ūdens, apelsīna miziņa','Amaretto, bourbon, lemon, honey, hot water, orange peel','Амаретто, бурбон, лимон, мёд, горячая вода, апельсиновая цедра'],['A08']],
+ ['Pistachio Winter Dream',8,'Pistāciju Ziemas Sapnis','Фисташковая зимняя мечта',['Pistāciju krēma liķieris, degvīns, karsts piens, vaniļa','Pistachio cream liqueur, vodka, hot milk, vanilla','Фисташковый крем-ликёр, водка, горячее молоко, ваниль'],['A07','A08']],
+ ['Hot Pomegranate Mystery',8,'Granātābola Noslēpums','Горячая гранатовая тайна',['Tumšais rums, silta granātābolu sula, granātābolu mērce, kazeņu sīrups, kanēlis','Dark rum, warm pomegranate juice & sauce, blackberry syrup, cinnamon','Тёмный ром, тёплый гранатовый сок и соус, ежевичный сироп, корица'],[],'new']];
+ return{id:'hotck',name:'Sıcak kokteyller',stamp:true,items:H.map(([n,p,lv,ru,d,al,tag],i)=>{const it={id:'hotck'+i,name:n,v:[{l:'',p}],n2:{lv,ru},d:{lv:d[0],en:d[1],ru:d[2]}};if(al.length)it.al=al;if(tag)it.tag=tag;return it})}}
 function hhCat(){return{id:'hh',name:'Kokteyl saati 5€',hh:{days:[0,4],from:'18:00',to:'23:00'},items:HH_ITEMS.map((n,i)=>({id:'hh'+i,name:n,v:[{l:'Kokteyl saati',p:5}]}))}}
 function migrate(m){
   if((m.ver||0)<2){m.cats.unshift(hhCat());m.ver=2}
@@ -348,6 +357,7 @@ function migrate(m){
     m.cats.forEach(c=>{if(['hh','c0','c1','c2','c3'].includes(c.id))c.stamp=true;if(c.id==='c11')c.sug='c14i2';if(c.id==='c12')c.sug='c15i0'});
     m.events=m.events||[];m.ver=3;
   }
+  if(m.ver<4){if(!m.cats.some(c=>c.id==='hotck')){const h=m.cats.findIndex(c=>c.hh);m.cats.splice(h+1,0,hotCat())}m.ver=4}
   return m;
 }
 function findItem(id){for(const c of menu.cats){const it=c.items.find(i=>i.id===id);if(it)return{c,it}}return null}
@@ -460,7 +470,7 @@ function startSync(){
     if(pending['bar/config'])return;
     if(!s.exists){saveMenu();startOrders();return}
     const mm=s.data().menu;if(!mm||!mm.cats)return;
-    menu=migrate(clone(mm));LS.set('snug.menu',menu);startOrders();
+    menu=migrate(clone(mm));LS.set('snug.menu',menu);if(menu.ver!==mm.ver)saveMenu();startOrders();
     if(view.screen!=='menu')render();
   },onDbErr));
   unsubs.push(db.collection('tables').onSnapshot(snap=>{

@@ -341,6 +341,14 @@ const SLIDE_SECONDS = 13, HERO_SECONDS = 9;
    p = price, d = description, tag = small label
    ========================================================= */
 const S = {
+ hotck:{lv:"Karstie kokteiļi",en:"Hot cocktails · ziema / winter",items:[
+  {n:"Snug Karstvīns",en:"Snug Mulled Wine",d:"Sarkanvīns, apelsīns, kanēlis, krustnagliņas, zvaigžņu anīss · Red wine, orange, cinnamon, clove, star anise",p:"5.00"},
+  {n:"Melnās Tējas Toddy",en:"Black Tea Toddy",d:"Melnā tēja, Tullamore Dew, medus, citrons · Black tea, Irish whiskey, honey, lemon, clove",p:"8.00",tag:"Autordzēriens"},
+  {n:"Ziemas Mancolada",en:"Winter Mancolada",d:"Captain Morgan, kokosriekstu krēms, silts ananass, citrons, kanēlis · Spiced rum, coconut cream, warm pineapple, lemon, cinnamon",p:"8.00"},
+  {n:"Karstais Amaretto",en:"Hot Amaretto",d:"Amaretto, burbons, citrons, medus, karsts ūdens, apelsīna miziņa · Amaretto, bourbon, lemon, honey, hot water, orange peel",p:"8.00"},
+  {n:"Pistāciju Ziemas Sapnis",en:"Pistachio Winter Dream",d:"Pistāciju krēma liķieris, degvīns, karsts piens, vaniļa · Pistachio cream liqueur, vodka, hot milk, vanilla",p:"8.00"},
+  {n:"Granātābola Noslēpums",en:"Hot Pomegranate Mystery",d:"Tumšais rums, silta granātābolu sula, granātābolu mērce, kazeņu sīrups, kanēlis · Dark rum, warm pomegranate juice & sauce, blackberry syrup, cinnamon",p:"8.00",tag:"Jaunums · New",hot:1},
+ ]},
  classics:{lv:"Klasiskie kokteiļi",en:"Classic cocktails",items:[
   {n:"Cuba Libre",d:"White rum, cola, lemon juice",p:"8.00",ck:1},
   {n:"Tom Collins",d:"Gin, lemon juice, soda, simple syrup",p:"8.00",ck:1},
@@ -458,6 +466,7 @@ const H = {hero:1, sec:8};
 const PAGES = [
  {hhmenu:1, sec:22},
  {lv:"Kokteiļi",en:"Cocktails",ck:1,blocks:[["classics"]], sec:18},
+ {lv:"Karstie kokteiļi",en:"Hot cocktails",blocks:[["hotck"]],alg:1, sec:18},
  {lv:"Kokteiļi",en:"Cocktails",ck:1,blocks:[["house"]], sec:18},
  {lv:"Kokteiļi",en:"Cocktails",ck:1,blocks:[["beer"],["virgin"]], sec:18},
  {lv:"Virtuve",en:"Kitchen",blocks:[["burgers"],["mains"]], sec:20},
@@ -627,7 +636,8 @@ slidesEl.innerHTML = PLAN.map(p=>{
   const rib = p.ck ? `<div class="rib"><span>Kokteiļu stunda tagad!</span><span>Cocktail Hour now!</span></div>` : "";
   const extra = (p.sauces?`<div class="sec"><h3>Mērces <small>Sauces · 1.00 €</small></h3><div class="sauce">Snuggest jogurta mērce, majonēze, kečups, sinepes, BBQ, ķiploku mērce<br>Special yoghurt, mayo, ketchup, mustard, BBQ, garlic</div></div>`:"")
     + (p.beer?`<div class="sec"><h3>Alus <small>Beer</small></h3><div class="note">Izvēle regulāri mainās, jautājiet bārmenim.<br>Our selection changes, ask the bartender.</div></div>`:"")
-    + `<div class="note" style="margin-top:22px;font-size:20px">Alergēni: jautājiet personālam / Ask staff about allergens</div>`;
+    + (p.alg?`<div class="note" style="margin-top:22px;font-size:20px">Alergēni / Allergens: Karstvīns — sulfīti / sulphites · Mancolada — piens / milk · Amaretto — rieksti / nuts · Pistāciju — piens, rieksti / milk, nuts</div>`
+            :`<div class="note" style="margin-top:22px;font-size:20px">Alergēni: jautājiet personālam / Ask staff about allergens</div>`);
   return `<div class="slide">${header(p.lv,p.en)}<div class="body">${rib}${p.blocks.map(section).join("")}${extra}</div></div>`;
 }).join("");
 
