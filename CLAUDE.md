@@ -15,7 +15,7 @@ Müşteriye görünen metinler LV / EN (+ çoğu yerde RU). Personel arayüzü T
 | `firebase/firestore.rules` | Firestore güvenlik kuralları | GitHub Actions ile otomatik deploy |
 | `qr/` | Masa QR kartları (PDF) ve tabela/sticker QR'ları | Baskı |
 
-Hepsi tek dosyalık HTML (CSS+JS içinde), build adımı yok. GitHub Pages: `https://ozgadk.github.io/order/` (main / root).
+Hepsi tek dosyalık HTML (CSS+JS içinde), build adımı yok. GitHub Pages: `https://order.thesnuggest.com/` (main / root, `CNAME` dosyası; DNS'te `order` CNAME → `ozgadk.github.io`). Eski `https://ozgadk.github.io/order/…` adresleri (basılı QR'lar) otomatik yönlenir. Ana site `thesnuggest.com` ayrı depo: `ozgadk/thesnuggest-site`.
 `main`'e push edilen değişiklik 1–2 dakikada yayına çıkar — **canlı sistem, push etmeden önce kullanıcıya sor.**
 Otomatik deploy (GitHub Actions, `.github/workflows/`):
 - `cloudflare/**` değişince → `wrangler deploy` (secret'lar: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`). Config: `cloudflare/wrangler.toml`.
@@ -24,7 +24,7 @@ Otomatik deploy (GitHub Actions, `.github/workflows/`):
 
 ## Altyapı
 - **Firebase** projesi `snuggest-order` (Spark/ücretsiz plan). Firestore (`persistentLocalCache`) + E-posta/şifre Auth, kayıt (sign-up) kapalı. Config HTML'lerin içinde (public, gizli değil).
-- **Cloudflare Worker** `https://snuggest-notify.ozguradk.workers.dev` — secret'lar `TG_TOKEN`, `TG_CHAT` Cloudflare'de. Sadece `Origin: https://ozgadk.github.io` kabul eder.
+- **Cloudflare Worker** `https://snuggest-notify.ozguradk.workers.dev` — secret'lar `TG_TOKEN`, `TG_CHAT` Cloudflare'de. Sadece `Origin: https://order.thesnuggest.com` ve `https://ozgadk.github.io` kabul eder (`SITES`).
   - `POST /` `{table, who?, lines, note, total}` → sipariş bildirimi; `{type:'report', text}` → gün sonu raporu.
 - Personel bildirimleri yalnızca Telegram'dan. QR siparişleri onaysız doğrudan masaya düşer.
 - **Token, şifre, API anahtarı asla depoya yazılmaz.**
