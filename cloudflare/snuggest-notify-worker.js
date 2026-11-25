@@ -1,14 +1,17 @@
-const SITE = "https://ozgadk.github.io";
+const SITES = ["https://order.thesnuggest.com", "https://ozgadk.github.io"];
 
 export default {
   async fetch(req, env) {
+    const origin = req.headers.get("Origin") || "";
+    const ok = SITES.includes(origin);
     const cors = {
-      "Access-Control-Allow-Origin": SITE,
+      "Access-Control-Allow-Origin": ok ? origin : SITES[0],
+      "Vary": "Origin",
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
     };
     if (req.method === "OPTIONS") return new Response(null, { headers: cors });
-    if (req.method !== "POST" || req.headers.get("Origin") !== SITE)
+    if (req.method !== "POST" || !ok)
       return new Response("forbidden", { status: 403 });
 
     let b;
