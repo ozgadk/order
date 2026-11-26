@@ -13,6 +13,7 @@ Müşteriye görünen metinler LV / EN (+ çoğu yerde RU). Personel arayüzü T
 | `online-menu.html` | Bağımsız online menü sayfası (Gloock/Instrument Sans tasarımı) | Herkes |
 | `cloudflare/snuggest-notify-worker.js` | Cloudflare Worker `snuggest-notify`: QR sipariş + gün sonu raporu → Telegram | GitHub Actions ile otomatik deploy |
 | `firebase/firestore.rules` | Firestore güvenlik kuralları | GitHub Actions ile otomatik deploy |
+| `app/` + `sw.js` | PWA: manifest (`start_url /index.html?app=1`), ikonlar, service worker (kendi dosyalar önce internet, Firebase SDK/fontlar önce önbellek; `CACHE` adını değiştirmek eski önbelleği siler). Sadece `index.html` bağlar | Personel — ana ekrana ekle |
 | `qr/` | Masa QR kartları (PDF) ve tabela/sticker QR'ları | Baskı |
 
 Hepsi tek dosyalık HTML (CSS+JS içinde), build adımı yok. GitHub Pages: `https://order.thesnuggest.com/` (main / root, `CNAME` dosyası; DNS'te `order` CNAME → `ozgadk.github.io`). Eski `https://ozgadk.github.io/order/…` adresleri (basılı QR'lar) otomatik yönlenir. Ana site `thesnuggest.com` ayrı depo: `ozgadk/thesnuggest-site`.
